@@ -1,4 +1,76 @@
 {
+  "common": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "phone": "Phone",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "submit": "Submit",
+    "or": "Or",
+    "continueWith": "Continue with",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "forgotPassword": "Forgot password?",
+    "verifyOtp": "Verify OTP",
+    "resendOtp": "Resend OTP",
+    "enterOtp": "Enter OTP",
+    "loading": "Loading...",
+    "sending": "Sending...",
+    "sendOtp": "Send OTP",
+    "signingUp": "Signing Up...",
+    "verifying": "Verifying...",
+    "backToLogin": "Back to Login"
+  },
+  "auth": {
+    "loginTitle": "Welcome Back",
+    "loginDescription": "Login to your account to continue",
+    "signupTitle": "Create an Account",
+    "signupDescription": "Sign up to get started with our service",
+    "verifyOtpTitle": "Verify OTP",
+    "verifyOtpDescription": "Enter the 6-digit code sent to your phone"
+  },
+  "errors": {
+    "invalidEmail": "Invalid email address",
+    "invalidPassword": "Password must be at least 6 characters",
+    "passwordsDontMatch": "Passwords don't match",
+    "invalidPhone": "Invalid phone number",
+    "requiredField": "This field is required"
+  },
+  "navbar": {
+    "categories": "Categories",
+    "restaurants": "Restaurants",
+    "deals": "Deals",
+    "searchPlaceholder": "Search for restaurant, cuisine or a dish",
+    "signIn": "Sign In",
+    "cart": "Cart",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "home": {
+    "heroTitle": "Delicious Meals, Delivered Fast",
+    "heroSubtitle": "Enjoy 20% off on your first order",
+    "orderNow": "Order Now",
+    "exploreCategories": "Explore Categories",
+    "whatCraving": "What are you craving today?",
+    "featuredProducts": "Featured Products",
+    "discoverPopular": "Discover our most popular dishes",
+    "viewAll": "View All",
+    "trendingNow": "Trending Now 🔥",
+    "mostOrdered": "Most ordered dishes near you",
+    "nearbyRestaurants": "Restaurants Near You",
+    "discoverGreatPlaces": "Discover great places to eat around you",
+    "setLocation": "Set Location",
+    "findNearby": "Find Nearby",
+    "exploreNearby": "Explore restaurants and cafes near your location"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "termsConditions": "Terms & Conditions",
+    "privacyPolicy": "Privacy Policy"
+  },
   "Error": {
     "description": "<p>We've unfortunately encountered an error</p><p>You can try to <retry>reload the page</retry> you were visiting</p>",
     "title": "Something went wrong!"

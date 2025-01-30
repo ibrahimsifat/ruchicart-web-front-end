@@ -4,12 +4,6 @@ import { CartDrawer } from "@/components/cart/cart-drawer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -21,8 +15,10 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 import { ImageType } from "@/types/image";
 import { ChevronDown, MenuIcon, ShoppingBag } from "lucide-react";
+import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { CONSTANT } from "../../config/constants";
 import LocaleSwitcher from "../LocaleSwitcher";
@@ -40,7 +36,9 @@ export function Navbar() {
   const [showCartDrawer, setShowCartDrawer] = useState(false);
   const cartIconRef = useRef<HTMLButtonElement>(null);
   const { data: categories, isLoading, error } = useCategories();
-
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
   const { itemCount } = useCart();
 
   useEffect(() => {
@@ -127,47 +125,6 @@ export function Navbar() {
           {/* Right Section */}
           <div className="flex items-center gap-4">
             {/* Language Switcher */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
-                >
-                  {/* Show the opposite language flag */}
-                  <Image
-                    src="/bd-flag.png"
-                    alt="Bangla"
-                    width={20}
-                    height={20}
-                    className="rounded-full"
-                  />
-                  <span className="font-medium">বাংলা</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem className="flex items-center gap-2">
-                  <Image
-                    src="/us-flag.png"
-                    alt="English"
-                    width={20}
-                    height={20}
-                    className="rounded-full"
-                  />
-                  <span>English</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
-                  <Image
-                    src="/bd-flag.png"
-                    alt="Bangla"
-                    width={20}
-                    height={20}
-                    className="rounded-full"
-                  />
-                  <span>বাংলা</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
             <LocaleSwitcher />
             {/* Cart */}
             <Button
@@ -187,7 +144,6 @@ export function Navbar() {
                 </Badge>
               )}
             </Button>
-
             {/* Sign In */}
             <Button className="hidden md:inline-flex"></Button>
             <Link href="/auth/login"> Sign In</Link>

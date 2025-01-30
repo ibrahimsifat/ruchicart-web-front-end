@@ -27,6 +27,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import PageLayout from "../../layouts/PageLayout";
 
 const otpSchema = z.object({
   otp: z.string().length(6, "OTP must be 6 digits"),
@@ -68,63 +69,68 @@ export default function VerifyOtpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-12">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <div className="flex justify-center mb-4">
-            <Image
-              src={CONSTANT.images.logo}
-              alt="Logo"
-              width={170}
-              height={50}
-              className="h-8 w-auto"
-            />
-          </div>
-          <CardTitle className="text-2xl font-bold text-center">
-            Verify OTP
-          </CardTitle>
-          <CardDescription className="text-center">
-            Enter the 6-digit code sent to your phone
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="otp"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>OTP</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter 6-digit OTP"
-                        {...field}
-                        maxLength={6}
-                        className="text-center text-2xl tracking-[1em] font-mono"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+    <PageLayout>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-12">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <div className="flex justify-center mb-4">
+              <Image
+                src={CONSTANT.images.logo}
+                alt="Logo"
+                width={170}
+                height={50}
+                className="h-8 w-auto"
               />
-              {error && (
-                <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Verifying..." : "Verify OTP"}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <Button variant="link" onClick={() => router.push("/auth/login")}>
-            Back to Login
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+            </div>
+            <CardTitle className="text-2xl font-bold text-center">
+              Verify OTP
+            </CardTitle>
+            <CardDescription className="text-center">
+              Enter the 6-digit code sent to your phone
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="otp"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>OTP</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter 6-digit OTP"
+                          {...field}
+                          maxLength={6}
+                          className="text-center text-2xl tracking-[1em] font-mono"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Verifying..." : "Verify OTP"}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+          <CardFooter className="flex justify-center">
+            <Button variant="link" onClick={() => router.push("/auth/login")}>
+              Back to Login
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </PageLayout>
   );
 }
