@@ -1,7 +1,14 @@
-import type { NextConfig } from "next";
+// @ts-check
 
-const nextConfig: NextConfig = {
-  /* config options here */
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
+/** @type {import('next').NextConfig} */
+const config = {
+  experimental: {
+    ppr: true,
+    dynamicIO: true,
+  },
 };
 
-export default nextConfig;
+module.exports = withNextIntl(config);
