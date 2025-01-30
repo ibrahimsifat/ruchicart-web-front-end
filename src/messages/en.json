@@ -3,19 +3,20 @@
     "description": "<p>We've unfortunately encountered an error</p><p>You can try to <retry>reload the page</retry> you were visiting</p>",
     "title": "Something went wrong!"
   },
-  "IndexPage": {
-    "description": "This is a basic example that demonstrates the usage of <code>next-intl</code> with the Nextjs App Router Try changing the locale in the top right corner and see how the content changes",
-    "title": "next-intl example"
+  "HomePage": {
+    "description": "Find the best restaurants near you Order your favorite food from your favorite restaurant Enjoy the fastest delivery",
+    "title": "Ruchicart - Welcome to Ruchicart"
   },
   "LocaleLayout": {
-    "title": "next-intl example"
+    "title": "Ruchicart - Welcome to Ruchicart",
+    "description": "Ruchicart - Welcome to Ruchicart"
   },
   "LocaleSwitcher": {
     "label": "Change language",
     "locale": "{locale, select, de {bd Bangla} en {🇺🇸 English} other {bangl}}"
   },
   "Manifest": {
-    "name": "next-intl example"
+    "name": "Ruchicart - Welcome to Ruchicart"
   },
   "Navigation": {
     "home": "Home",

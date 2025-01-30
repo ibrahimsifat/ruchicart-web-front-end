@@ -1,82 +1,31 @@
-import { type Metadata } from "next";
+import { Metadata } from "next";
 
-interface SeoProps {
-  title?: string;
-  description?: string;
-  keywords?: string[];
+// Utility function to generate metadata
+export const generateMetadata = (pageMetadata: {
+  title: string;
+  description: string;
   image?: string;
-  noIndex?: boolean;
-}
-
-const siteConfig = {
-  name: "ruchicart",
-  description: "Multi-branch restaurant management system",
-  url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  ogImage: "/og-image.jpg",
-  links: {
-    twitter: "https://twitter.com/ruchicart",
-    github: "https://github.com/ruchicart",
-  },
-};
-
-export function constructMetadata({
-  title,
-  description,
-  keywords = [],
-  image,
-  noIndex,
-}: SeoProps = {}): Metadata {
-  return {
-    title: title ? `${title} | ${siteConfig.name}` : siteConfig.name,
-    description: description || siteConfig.description,
-    keywords: [
-      "restaurant management",
-      "food delivery",
-      "restaurant system",
-      ...keywords,
-    ],
-    authors: [{ name: "ruchicart Team" }],
-    creator: "ruchicart",
-    openGraph: {
-      type: "website",
-      locale: "en_US",
-      url: siteConfig.url,
-      title: title ? `${title} | ${siteConfig.name}` : siteConfig.name,
-      description: description || siteConfig.description,
-      siteName: siteConfig.name,
-      images: [
-        {
-          url: image || siteConfig.ogImage,
-          width: 1200,
-          height: 630,
-          alt: title || siteConfig.name,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: title ? `${title} | ${siteConfig.name}` : siteConfig.name,
-      description: description || siteConfig.description,
-      images: [image || siteConfig.ogImage],
-      creator: "@ruchicart",
-    },
-    robots: {
-      index: !noIndex,
-      follow: !noIndex,
-      googleBot: {
-        index: !noIndex,
-        follow: !noIndex,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
+  url?: string;
+}): Metadata => ({
+  title: pageMetadata.title,
+  description: pageMetadata.description,
+  openGraph: {
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    images: [
+      {
+        url: pageMetadata.image || "/default-og-image.jpg", // Fallback image
+        width: 800,
+        height: 600,
+        alt: pageMetadata.title,
       },
-    },
-    icons: {
-      icon: "/favicon.ico",
-      shortcut: "/favicon-16x16.png",
-      apple: "/apple-touch-icon.png",
-    },
-    manifest: "/site.webmanifest",
-    metadataBase: new URL(siteConfig.url),
-  };
-}
+    ],
+    url: pageMetadata.url || "https://yourwebsite.com", // Fallback URL
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    images: [pageMetadata.image || "/default-twitter-image.jpg"], // Fallback image
+  },
+});

@@ -25,6 +25,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { CONSTANT } from "../../config/constants";
+import LocaleSwitcher from "../LocaleSwitcher";
 import { Card } from "../ui/card";
 import CustomImage from "../ui/customImage";
 import { getCategoryBGGradient } from "../utils/getCategoryBGGradient";
@@ -167,7 +168,7 @@ export function Navbar() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
+            <LocaleSwitcher />
             {/* Cart */}
             <Button
               ref={cartIconRef}
