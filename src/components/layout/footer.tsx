@@ -1,4 +1,4 @@
-import { CONSTANT } from "@/lib/utils/constants";
+import { CONSTANT } from "@/config/constants";
 import {
   Facebook,
   Instagram,

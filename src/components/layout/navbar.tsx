@@ -1,7 +1,5 @@
 "use client";
 
-import { LoginModal } from "@/components/auth/login-modal";
-import { SignupModal } from "@/components/auth/signup-modal";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,11 +20,11 @@ import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 import { ImageType } from "@/types/image";
-import { ChevronDown, Globe, MenuIcon, ShoppingBag } from "lucide-react";
+import { ChevronDown, MenuIcon, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import { CONSTANT } from "../../lib/utils/constants";
+import { CONSTANT } from "../../config/constants";
 import { Card } from "../ui/card";
 import CustomImage from "../ui/customImage";
 import { getCategoryBGGradient } from "../utils/getCategoryBGGradient";
@@ -38,9 +36,7 @@ export const CartIconRef =
 export function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
-  const [showSignupModal, setShowSignupModal] = useState(false);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const cartIconRef = useRef<HTMLButtonElement>(null);
   const { data: categories, isLoading, error } = useCategories();
 
@@ -135,17 +131,40 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hidden md:flex gap-2"
+                  className="hidden md:flex items-center gap-2 px-3 py-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
                 >
-                  <Globe className="h-4 w-4" />
-                  EN
-                  <ChevronDown className="h-4 w-4" />
+                  {/* Show the opposite language flag */}
+                  <Image
+                    src="/bd-flag.png"
+                    alt="Bangla"
+                    width={20}
+                    height={20}
+                    className="rounded-full"
+                  />
+                  <span className="font-medium">বাংলা</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>English</DropdownMenuItem>
-                <DropdownMenuItem>Spanish</DropdownMenuItem>
-                <DropdownMenuItem>French</DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <Image
+                    src="/us-flag.png"
+                    alt="English"
+                    width={20}
+                    height={20}
+                    className="rounded-full"
+                  />
+                  <span>English</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <Image
+                    src="/bd-flag.png"
+                    alt="Bangla"
+                    width={20}
+                    height={20}
+                    className="rounded-full"
+                  />
+                  <span>বাংলা</span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -169,12 +188,8 @@ export function Navbar() {
             </Button>
 
             {/* Sign In */}
-            <Button
-              className="hidden md:inline-flex"
-              onClick={() => setShowLoginModal(true)}
-            >
-              Sign In
-            </Button>
+            <Button className="hidden md:inline-flex"></Button>
+            <Link href="/auth/login"> Sign In</Link>
           </div>
         </div>
       </nav>
@@ -228,24 +243,6 @@ export function Navbar() {
           </div>
         </div>
       )}
-
-      <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onOpenSignUp={() => {
-          setShowLoginModal(false);
-          setShowSignupModal(true);
-        }}
-      />
-
-      <SignupModal
-        isOpen={showSignupModal}
-        onClose={() => setShowSignupModal(false)}
-        onOpenLogin={() => {
-          setShowSignupModal(false);
-          setShowLoginModal(true);
-        }}
-      />
 
       <CartDrawer open={showCartDrawer} onOpenChange={setShowCartDrawer} />
     </CartIconRef.Provider>

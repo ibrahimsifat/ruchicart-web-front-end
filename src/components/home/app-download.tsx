@@ -1,4 +1,4 @@
-import { CONSTANT } from "@/lib/utils/constants";
+import { CONSTANT } from "@/config/constants";
 import Image from "next/image";
 
 export function AppDownload() {
