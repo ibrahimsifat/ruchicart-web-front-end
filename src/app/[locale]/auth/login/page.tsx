@@ -2,6 +2,8 @@
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+
 import {
   Card,
   CardContent,
@@ -20,23 +22,26 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { auth } from "@/lib/firebase";
 import { useAuthStore } from "@/store/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 export default function LoginPage() {
   const t = useTranslations();
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState<"email" | "phone">("email");
   const router = useRouter();
-  const { login, loginWithOtp, error, isLoading, clearError } = useAuthStore();
+
+  const { login, getProfileInfo, error, isLoading, clearError } =
+    useAuthStore();
 
   const emailLoginSchema = z.object({
     email: z.string().email(t("errors.invalidEmail")),
@@ -61,25 +66,75 @@ export default function LoginPage() {
 
   const onEmailSubmit = async (values: z.infer<typeof emailLoginSchema>) => {
     try {
-      await login(values.email, values.password);
+      const { email, password } = values;
+      const LoginData = {
+        email_or_phone: email,
+        password: password,
+        type: "email",
+      };
+      await login({ ...LoginData });
+      await getProfileInfo();
+      //TODO: Redirect to the expected URL
       router.push("/");
     } catch (error) {
       // Error is handled by the store
     }
   };
 
+  useEffect(() => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "invisible", // Use "normal" for visible reCAPTCHA
+          // callback: (response) => {
+          //   console.log("reCAPTCHA solved:", response);
+          // },
+          "expired-callback": () => {
+            console.log("reCAPTCHA expired");
+          },
+        }
+      );
+    }
+  }, []);
   const onPhoneSubmit = async (values: z.infer<typeof phoneLoginSchema>) => {
     try {
-      await loginWithOtp(values.phone);
+      //TODO:: need to add country code
+      const formattedPhoneNumber = `+${values.phone}`;
+      if (!window.recaptchaVerifier) {
+        throw new Error("Recaptcha verifier not initialized");
+      }
+      const confirmationResult = await signInWithPhoneNumber(
+        auth,
+        formattedPhoneNumber,
+        window.recaptchaVerifier
+      );
+      window.confirmationResult = confirmationResult;
       router.push(`/auth/verify-otp?phone=${values.phone}&mode=login`);
     } catch (error) {
-      // Error is handled by the store
+      console.error("Error sending OTP:", error);
+      // Handle error (e.g., show error message to user)
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+    <div className=" min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
       <Card className="w-full max-w-md">
+        <motion.div
+          className="bg-gradient-to-r from-primary/50 to-secondary p-4 flex items-center justify-center gap-2 cursor-pointer"
+          whileHover={{ y: -2 }}
+          whileTap={{ y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-white hover:text-white/90 transition-colors"
+          >
+            <User className="h-5 w-5" />
+            <span className="font-medium">Continue as Guest</span>
+          </Link>
+        </motion.div>
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
             <Image
@@ -172,6 +227,7 @@ export default function LoginPage() {
                 </form>
               </Form>
             </TabsContent>
+            <div id="recaptcha-container"></div>
             <TabsContent value="phone">
               <Form {...phoneForm}>
                 <form

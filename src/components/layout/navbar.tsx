@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/sheet";
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/auth-store";
 import { useCart } from "@/store/cart";
 import { ImageType } from "@/types/image";
-import { ChevronDown, MenuIcon, ShoppingBag } from "lucide-react";
+import { ChevronDown, LogOut, MenuIcon, ShoppingBag, User } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,24 +23,33 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { CONSTANT } from "../../config/constants";
 import LocaleSwitcher from "../LocaleSwitcher";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card } from "../ui/card";
 import CustomImage from "../ui/customImage";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { getCategoryBGGradient } from "../utils/getCategoryBGGradient";
 import { SearchBar } from "./search-bar";
 
 export const CartIconRef =
-  React.createContext<React.RefObject<HTMLButtonElement> | null>(null);
+  React.createContext<React.RefObject<HTMLButtonElement | null> | null>(null);
 
 export function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
   const cartIconRef = useRef<HTMLButtonElement>(null);
-  const { data: categories, isLoading, error } = useCategories();
+  const { data: categories } = useCategories();
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const { itemCount } = useCart();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -145,8 +155,13 @@ export function Navbar() {
               )}
             </Button>
             {/* Sign In */}
-            <Button className="hidden md:inline-flex"></Button>
-            <Link href="/auth/login"> Sign In</Link>
+            {user ? (
+              <UserMenu />
+            ) : (
+              <Link href="/auth/login">
+                <Button className="hidden md:inline-flex">Sign In</Button>{" "}
+              </Link>
+            )}
           </div>
         </div>
       </nav>
@@ -205,3 +220,48 @@ export function Navbar() {
     </CartIconRef.Provider>
   );
 }
+const UserMenu = () => {
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="hidden md:flex items-center gap-2 p-1 px-2 hover:bg-primary/10"
+        >
+          <Avatar className="h-8 w-8">
+            <AvatarImage src="/placeholder.svg" alt={user?.f_name} />
+            <AvatarFallback>{user?.f_name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col items-start">
+            <span className="text-sm font-medium leading-none">
+              {user?.f_name}
+            </span>
+            <span className="text-xs text-muted-foreground">Personal</span>
+          </div>
+          <ChevronDown className="h-4 w-4 ml-2 text-muted-foreground" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuItem>
+          <User className="mr-2 h-4 w-4" />
+          <Link href="/profile">{"profile"}</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <ShoppingBag className="mr-2 h-4 w-4" />
+          <Link href="/orders">Orders</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={logout}
+          className="text-destructive cursor-pointer"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          {"logout"}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
