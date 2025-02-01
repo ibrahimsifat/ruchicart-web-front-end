@@ -86,6 +86,14 @@ interface AuthState {
     email: string,
     medium: string
   ) => Promise<void>;
+  forgotPassword: (phone: string) => Promise<void>;
+  verifyResetToken: (phone: string, token: string) => Promise<void>;
+  resetPassword: (
+    phone: string,
+    token: string,
+    password: string,
+    confirmPassword: string
+  ) => Promise<void>;
 }
 
 interface RegistrationData {
@@ -470,6 +478,65 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         try {
           const response = await api.post("/auth/existing-account-check", data);
+          set({ isLoading: false });
+          return response.data;
+        } catch (error) {
+          set({ error: (error as Error).message, isLoading: false });
+          throw error;
+        }
+      },
+
+      forgotPassword: async (phone: string) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await axios.post(
+            `${API_BASE_URL}/api/v1/auth/forgot-password`,
+            { phone }
+          );
+          set({ isLoading: false });
+          return response.data;
+        } catch (error) {
+          set({ error: (error as Error).message, isLoading: false });
+          throw error;
+        }
+      },
+
+      verifyResetToken: async (phone: string, token: string) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await axios.post(
+            `${API_BASE_URL}/api/v1/auth/verify-token`,
+            {
+              email_or_phone: phone,
+              reset_token: token,
+            }
+          );
+          set({ isLoading: false });
+          return response.data;
+        } catch (error) {
+          set({ error: (error as Error).message, isLoading: false });
+          throw error;
+        }
+      },
+
+      resetPassword: async (
+        phone: string,
+        token: string,
+        password: string,
+        confirmPassword: string
+      ) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await axios.put(
+            `${API_BASE_URL}/api/v1/auth/reset-password`,
+            {
+              email_or_phone: phone,
+              reset_token: token,
+              password,
+              confirm_password: confirmPassword,
+              type: "phone",
+            }
+          );
           set({ isLoading: false });
           return response.data;
         } catch (error) {

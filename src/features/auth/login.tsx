@@ -324,6 +324,15 @@ export default function LoginForm() {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
+          {/* Add Forgot Password link */}
+          <div className="text-center mt-4">
+            <Link
+              href="/auth/forgot-password"
+              className="text-sm text-primary hover:underline"
+            >
+              Forgot Password?
+            </Link>
+          </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
           <div className="relative">
