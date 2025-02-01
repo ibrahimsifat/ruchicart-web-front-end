@@ -75,7 +75,7 @@ export function GooglePhoneVerification({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Verify Phone Number</DialogTitle>
+          <DialogTitle>Add Phone Number</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -108,7 +108,7 @@ export function GooglePhoneVerification({
               )}
             />
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Verifying..." : "Verify Phone Number"}
+              {isLoading ? "Adding..." : "Add Phone Number"}
             </Button>
           </form>
         </Form>

@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CONSTANT } from "@/config/constants";
 import { GooglePhoneVerification } from "@/features/auth/google-phone-verification";
 import { auth } from "@/lib/firebase";
 import { useAuthStore } from "@/store/auth-store";
@@ -187,7 +188,7 @@ export default function LoginPage() {
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
             <Image
-              src="/placeholder.svg"
+              src={CONSTANT.images.logo}
               alt="Logo"
               width={120}
               height={40}
@@ -293,7 +294,7 @@ export default function LoginPage() {
                           <div className="relative">
                             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                               <Image
-                                src="/bd-flag.png"
+                                src={CONSTANT.images.bdFlag}
                                 alt="Bangladesh"
                                 width={20}
                                 height={15}
@@ -335,30 +336,20 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4 w-full">
+          <div className="w-80">
             <Button
               variant="outline"
               className="w-full"
               onClick={handleGoogleLogin}
             >
               <Image
-                src="/google.svg"
+                src={CONSTANT.images.googleSignin}
                 alt="Google"
                 width={20}
                 height={20}
                 className="mr-2"
               />
               Google
-            </Button>
-            <Button variant="outline" className="w-full">
-              <Image
-                src="/facebook.svg"
-                alt="Facebook"
-                width={20}
-                height={20}
-                className="mr-2"
-              />
-              Facebook
             </Button>
           </div>
           <div className="text-center text-sm">

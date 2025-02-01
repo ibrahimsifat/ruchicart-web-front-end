@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { CONSTANT } from "@/config/constants";
 import { useAuthStore } from "@/store/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -105,7 +106,7 @@ export default function VerifyOtpPage() {
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
             <Image
-              src="/placeholder.svg"
+              src={CONSTANT.images.logo}
               alt="Logo"
               width={120}
               height={40}
