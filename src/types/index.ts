@@ -80,7 +80,7 @@ export interface Prediction {
   reference?: string;
 }
 
-export interface SignUp {
+export interface Registration {
   fName?: string;
   lName?: string;
   phone?: string;

@@ -64,7 +64,7 @@ interface AuthState {
   error: string | null;
   verificationId: string | null;
   login: (loginData: LoginData) => Promise<void>;
-  signup: (userData: SignupData) => Promise<void>;
+  registration: (userData: RegistrationData) => Promise<void>;
   firebaseAuthVerify: (phone: string, otp: string) => Promise<void>;
   logout: () => void;
   verifyOtp: (phone: string, otp: string) => Promise<void>;
@@ -88,7 +88,7 @@ interface AuthState {
   ) => Promise<void>;
 }
 
-interface SignupData {
+interface RegistrationData {
   f_name: string;
   l_name: string;
   email: string;
@@ -259,7 +259,7 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: false });
         }
       },
-      signup: async (userData: SignupData) => {
+      registration: async (userData: RegistrationData) => {
         set({ isLoading: true, error: null });
         console.log(userData);
         try {
@@ -267,10 +267,10 @@ export const useAuthStore = create<AuthState>()(
             `/api/v1/auth/registration`,
             userData
           );
-          if (response.status !== 200) throw new Error("Signup failed");
+          if (response.status !== 200) throw new Error("Registration failed");
           set({ isLoading: false });
         } catch (error) {
-          let errorMessage = "Signup failed";
+          let errorMessage = "Registration failed";
 
           if (axios.isAxiosError(error)) {
             // Check if response exists and has an 'errors' array
@@ -326,7 +326,7 @@ export const useAuthStore = create<AuthState>()(
           throw new Error(errorMessage);
         }
       },
-      verifySignupOtp_manual: async (phone: string, otp: string) => {
+      verifyRegistrationOtp_manual: async (phone: string, otp: string) => {
         set({ isLoading: true, error: null });
         try {
           const response = await fetch(

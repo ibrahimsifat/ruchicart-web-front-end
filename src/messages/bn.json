@@ -1,7 +1,7 @@
 {
   "common": {
     "login": "লগইন",
-    "signup": "নিবন্ধন করুন",
+    "registration": "নিবন্ধন করুন",
     "email": "ইমেইল",
     "password": "পাসওয়ার্ড",
     "confirmPassword": "পাসওয়ার্ড নিশ্চিত করুন",
@@ -27,8 +27,8 @@
   "auth": {
     "loginTitle": "স্বাগতম",
     "loginDescription": "চালিয়ে যেতে আপনার অ্যাকাউন্টে লগইন করুন",
-    "signupTitle": "একটি অ্যাকাউন্ট তৈরি করুন",
-    "signupDescription": "আমাদের সেবা শুরু করতে নিবন্ধন করুন",
+    "registrationTitle": "একটি অ্যাকাউন্ট তৈরি করুন",
+    "registrationDescription": "আমাদের সেবা শুরু করতে নিবন্ধন করুন",
     "verifyOtpTitle": "ওটিপি যাচাই করুন",
     "verifyOtpDescription": "আপনার ফোনে পাঠানো ৬-সংখ্যার কোডটি প্রবেশ করান"
   },
@@ -769,7 +769,7 @@
   "Nid": "এনআইডি",
   "FreeLancer": "ফ্রিল্যান্সার",
   "Salary": "বেতন",
-  "Signup_successfully": " সফলভাবে সাইন আপ হয়েছে",
+  "Registration_successfully": " সফলভাবে সাইন আপ হয়েছে",
   "Please_enter_your_register_Mobile_Number": "আপনার রেজিস্টার মোবাইল নাম্বার এন্ট্রি করুন",
   "Enter_your_password": "আপনার পাসওয়ার্ড এন্ট্রি করুন",
   "Done": " সম্পন্ন",

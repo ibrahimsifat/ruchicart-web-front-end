@@ -1,7 +1,7 @@
 {
   "common": {
     "login": "Login",
-    "signup": "Sign Up",
+    "registration": "Sign Up",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm Password",
@@ -27,8 +27,8 @@
   "auth": {
     "loginTitle": "Welcome Back",
     "loginDescription": "Login to your account to continue",
-    "signupTitle": "Create an Account",
-    "signupDescription": "Sign up to get started with our service",
+    "registrationTitle": "Create an Account",
+    "registrationDescription": "Sign up to get started with our service",
     "verifyOtpTitle": "Verify OTP",
     "verifyOtpDescription": "Enter the 6-digit code sent to your phone"
   },
@@ -769,7 +769,7 @@
   "Nid": "Nid",
   "FreeLancer": "FreeLancer",
   "Salary": "Salary",
-  "Signup_successfully": "Signup successfully",
+  "Registration_successfully": "Registration successfully",
   "Please_enter_your_register_Mobile_Number": "Please enter your register Mobile Number",
   "Enter_your_password": "Enter your password",
   "Done": "Done",

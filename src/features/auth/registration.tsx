@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CONSTANT } from "@/config/constants";
+import { GooglePhoneVerification } from "@/features/auth/google-phone-verification";
 import { useAuthStore } from "@/store/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
@@ -30,7 +31,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-const signupSchema = z.object({
+const registrationSchema = z.object({
   f_name: z.string().min(2, "First name must be at least 2 characters"),
   l_name: z.string().min(2, "Last name must be at least 2 characters"),
   email: z
@@ -45,13 +46,24 @@ const signupSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export default function SignupPage() {
+export default function RegistrationForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showGooglePhoneVerification, setShowGooglePhoneVerification] =
+    useState(false);
+  const [googleUserData, setGoogleUserData] = useState<any>(null);
   const router = useRouter();
-  const { signup, error, isLoading, clearError } = useAuthStore();
+  const {
+    registration,
+    error,
+    isLoading,
+    clearError,
+    googleLogin,
+    getProfileInfo,
+    existingAccountCheck,
+  } = useAuthStore();
 
-  const form = useForm<z.infer<typeof signupSchema>>({
-    resolver: zodResolver(signupSchema),
+  const form = useForm<z.infer<typeof registrationSchema>>({
+    resolver: zodResolver(registrationSchema),
     defaultValues: {
       f_name: "",
       l_name: "",
@@ -65,12 +77,45 @@ export default function SignupPage() {
     clearError();
   }, []);
 
-  const onSubmit = async (values: z.infer<typeof signupSchema>) => {
+  const onSubmit = async (values: z.infer<typeof registrationSchema>) => {
     try {
-      await signup(values);
-      router.push(`/auth/verify-otp?phone=${values.phone}&mode=signup`);
+      await registration(values);
+      router.push(`/auth/verify-otp?phone=${values.phone}&mode=registration`);
     } catch (error) {
       // Error is handled by the store
+    }
+  };
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await googleLogin();
+      if (result.status) {
+        // User successfully logged in
+        // get the profile data
+        getProfileInfo();
+        router.push("/");
+      } else if (result.tempToken && result?.userData?.email) {
+        // Need to verify if user wants to use existing account or create new one
+        const emailExistsResponse = await existingAccountCheck({
+          email: result?.userData.email,
+          // sending user_response Because this is new user
+          user_response: 1,
+          medium: "google",
+        });
+
+        if (emailExistsResponse.status) {
+          // User chose to use existing account
+          router.push("/");
+        } else {
+          // User chose to create new account
+          // Only now show phone verification if needed
+          setGoogleUserData(result.userData);
+          setShowGooglePhoneVerification(true);
+        }
+      } else {
+        console.error("Unexpected response from Google login");
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
     }
   };
 
@@ -235,7 +280,11 @@ export default function SignupPage() {
             </div>
           </div>
           <div className=" w-80">
-            <Button variant="outline" className="w-full">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleGoogleLogin}
+            >
               <Image
                 src={CONSTANT.images.googleSignin}
                 alt="Google"
@@ -257,6 +306,13 @@ export default function SignupPage() {
           </div>
         </CardFooter>
       </Card>
+      {showGooglePhoneVerification && (
+        <GooglePhoneVerification
+          isOpen={showGooglePhoneVerification}
+          onClose={() => setShowGooglePhoneVerification(false)}
+          googleUserData={googleUserData}
+        />
+      )}
     </div>
   );
 }

@@ -18,13 +18,13 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   loginWithOtp: (phone: string) => Promise<void>;
   verifyLoginOtp: (phone: string, otp: string) => Promise<void>;
-  signup: (userData: SignupData) => Promise<void>;
-  verifySignupOtp: (phone: string, otp: string) => Promise<void>;
+  registration: (userData: RegistrationData) => Promise<void>;
+  verifyRegistrationOtp: (phone: string, otp: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
 }
 
-interface SignupData {
+interface RegistrationData {
   f_name: string;
   l_name: string;
   email: string;
@@ -91,7 +91,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      signup: async (userData: SignupData) => {
+      registration: async (userData: RegistrationData) => {
         set({ isLoading: true, error: null });
         try {
           const response = await axios.post(
@@ -101,7 +101,7 @@ export const useAuthStore = create<AuthState>()(
               headers: commonHeaders,
             }
           );
-          if (response.status !== 200) throw new Error("Signup failed");
+          if (response.status !== 200) throw new Error("Registration failed");
           set({ isLoading: false });
         } catch (error) {
           set({ error: (error as Error).message, isLoading: false });
@@ -109,7 +109,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      verifySignupOtp: async (phone: string, otp: string) => {
+      verifyRegistrationOtp: async (phone: string, otp: string) => {
         set({ isLoading: true, error: null });
         try {
           const response = await axios.post(

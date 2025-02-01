@@ -1,19 +1,19 @@
-import * as z from "zod"
+import * as z from "zod";
 
 export const loginFormSchema = z.object({
   emailOrPhone: z
     .string()
     .min(1, "Email or phone number is required")
     .refine((value) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      const phoneRegex = /^\+?[1-9]\d{1,14}$/
-      return emailRegex.test(value) || phoneRegex.test(value)
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+      return emailRegex.test(value) || phoneRegex.test(value);
     }, "Invalid email or phone number"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   rememberMe: z.boolean().default(false),
-})
+});
 
-export const signupFormSchema = z
+export const registrationFormSchema = z
   .object({
     username: z.string().min(3, "Username must be at least 3 characters"),
     email: z.string().email("Invalid email address"),
@@ -28,5 +28,4 @@ export const signupFormSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
-  })
-
+  });

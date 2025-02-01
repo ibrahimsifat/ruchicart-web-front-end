@@ -4,7 +4,7 @@ export interface LoginFormData {
   rememberMe: boolean;
 }
 
-export interface SignUpFormData {
+export interface RegistrationFormData {
   username: string;
   email: string;
   phone: string;
