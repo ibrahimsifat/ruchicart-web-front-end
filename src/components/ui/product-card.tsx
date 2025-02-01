@@ -1,6 +1,5 @@
 "use client";
 
-import { CartIconRef } from "@/components/layout/navbar";
 import { AddToCartAnimation } from "@/components/ui/add-to-cart-animation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CartIconRef } from "@/features/layout/navbar";
 import { useCart } from "@/store/cart";
 import { ImageType } from "@/types/image";
 import { AnimatePresence, motion } from "framer-motion";

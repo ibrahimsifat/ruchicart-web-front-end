@@ -1,6 +1,6 @@
-import { Footer } from "@/components/layout/footer";
-import { Navbar } from "@/components/layout/navbar";
-import { TopBar } from "@/components/layout/top-bar";
+import { Footer } from "@/features/layout/footer";
+import { Navbar } from "@/features/layout/navbar";
+import { TopBar } from "@/features/layout/top-bar";
 import { ReactNode, Suspense } from "react";
 
 type Props = {

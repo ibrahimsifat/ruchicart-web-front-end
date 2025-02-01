@@ -1,16 +1,16 @@
 "use client";
 
-import { CartIconRef } from "@/components/layout/navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import CustomImage from "@/components/ui/customImage";
 import { SectionHeader } from "@/components/ui/section-header";
+import { CartIconRef } from "@/features/layout/navbar";
 import { useBranch } from "@/lib/hooks/queries/Branch/useBranch";
 import { ImageType } from "@/types/image";
 import { ChevronDown, Clock, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
-import CustomImage from "../ui/customImage";
 
 export function NearbyBranch() {
   const { data: branches, isLoading, error } = useBranch();

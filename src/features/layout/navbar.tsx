@@ -1,6 +1,5 @@
 "use client";
 
-import { CartDrawer } from "@/components/cart/cart-drawer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { CartDrawer } from "@/features/cart/cart-drawer";
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth-store";
@@ -21,19 +21,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { CONSTANT } from "../../config/constants";
-import LocaleSwitcher from "../LocaleSwitcher";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Card } from "../ui/card";
-import CustomImage from "../ui/customImage";
+import LocaleSwitcher from "../../components/LocaleSwitcher";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
+import { Card } from "../../components/ui/card";
+import CustomImage from "../../components/ui/customImage";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { getCategoryBGGradient } from "../utils/getCategoryBGGradient";
+} from "../../components/ui/dropdown-menu";
+import { getCategoryBGGradient } from "../../components/utils/getCategoryBGGradient";
+import { CONSTANT } from "../../config/constants";
 import { SearchBar } from "./search-bar";
 
 export const CartIconRef =

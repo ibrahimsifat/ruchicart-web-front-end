@@ -1,11 +1,11 @@
-import { AppDownload } from "@/components/home/app-download";
-import { DiscountBanner } from "@/components/home/discount-banner";
-import { ExploreCategories } from "@/components/home/explore-categories";
-import { FeaturedProducts } from "@/components/home/featured-products";
-import { HeroSlider } from "@/components/home/hero-slider";
-import { NearbyBranch } from "@/components/home/nearby-branch";
-import { TrendingDishes } from "@/components/home/trending-dishes";
 import { CategorySkeleton } from "@/features/category/CategorySkeleton";
+import { AppDownload } from "@/features/home/app-download";
+import { DiscountBanner } from "@/features/home/discount-banner";
+import { ExploreCategories } from "@/features/home/explore-categories";
+import { FeaturedProducts } from "@/features/home/featured-products";
+import { HeroSlider } from "@/features/home/hero-slider";
+import { NearbyBranch } from "@/features/home/nearby-branch";
+import { TrendingDishes } from "@/features/home/trending-dishes";
 import { fetchData } from "@/lib/api/fetch-utils";
 import { getQueryClient, queryKeys } from "@/lib/api/queries";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";

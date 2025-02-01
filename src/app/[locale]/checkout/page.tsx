@@ -1,10 +1,10 @@
 "use client";
 
-import { CheckoutForm } from "@/components/checkout/checkout-form";
-import { OrderSummary } from "@/components/checkout/order-summary";
-import { Footer } from "@/components/layout/footer";
-import { Navbar } from "@/components/layout/navbar";
-import { TopBar } from "@/components/layout/top-bar";
+import { CheckoutForm } from "@/features/checkout/checkout-form";
+import { OrderSummary } from "@/features/checkout/order-summary";
+import { Footer } from "@/features/layout/footer";
+import { Navbar } from "@/features/layout/navbar";
+import { TopBar } from "@/features/layout/top-bar";
 import { useCart } from "@/store/cart";
 import { useRouter } from "next/navigation";
 

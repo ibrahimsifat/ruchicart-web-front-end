@@ -1,10 +1,10 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { Product } from "@/types";
 import { ImageType } from "@/types/image";
+import { Product } from "@/types/product";
 import { Star } from "lucide-react";
-import CustomImage from "../ui/customImage";
+import CustomImage from "../../components/ui/customImage";
 
 interface ProductGridProps {
   products: Product[];

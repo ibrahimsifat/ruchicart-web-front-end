@@ -6,14 +6,14 @@ import { useCart } from "@/store/cart";
 import { ImageType } from "@/types/image";
 import { ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import CustomImage from "../ui/customImage";
+import { Button } from "../../components/ui/button";
+import CustomImage from "../../components/ui/customImage";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
+} from "../../components/ui/tooltip";
 export function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { data: slides, isLoading, error } = useBanners();

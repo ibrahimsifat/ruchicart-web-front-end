@@ -1,6 +1,5 @@
 "use client";
 
-import { CartIconRef } from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/carousel";
 import { ProductCard } from "@/components/ui/product-card";
 import { SectionHeader } from "@/components/ui/section-header";
+import { CartIconRef } from "@/features/layout/navbar";
 import { useLatestProducts } from "@/lib/hooks/queries/product/useProducts";
 import { Product } from "@/types/product";
 

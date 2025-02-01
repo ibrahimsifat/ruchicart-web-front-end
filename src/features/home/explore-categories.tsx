@@ -9,8 +9,8 @@ import { Category } from "@/types";
 import { ImageType } from "@/types/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import CustomImage from "../ui/customImage";
-import { getCategoryBGGradient } from "../utils/getCategoryBGGradient";
+import CustomImage from "../../components/ui/customImage";
+import { getCategoryBGGradient } from "../../components/utils/getCategoryBGGradient";
 
 export function ExploreCategories() {
   const { data: categories, isLoading, error } = useCategories();

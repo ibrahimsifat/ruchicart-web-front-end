@@ -1,9 +1,9 @@
-import { CategoryHeader } from "@/components/category/category-header";
-import { FilterSidebar } from "@/components/category/filter-sidebar";
-import { ProductGrid } from "@/components/category/product-grid";
-import { Footer } from "@/components/layout/footer";
-import { Navbar } from "@/components/layout/navbar";
-import { TopBar } from "@/components/layout/top-bar";
+import { CategoryHeader } from "@/features/category/category-header";
+import { FilterSidebar } from "@/features/category/filter-sidebar";
+import { ProductGrid } from "@/features/category/product-grid";
+import { Footer } from "@/features/layout/footer";
+import { Navbar } from "@/features/layout/navbar";
+import { TopBar } from "@/features/layout/top-bar";
 import { notFound } from "next/navigation";
 
 async function getCategoryDetails(id: string) {

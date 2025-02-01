@@ -1,9 +1,9 @@
-import { Footer } from "@/components/layout/footer";
-import { Navbar } from "@/components/layout/navbar";
-import { TopBar } from "@/components/layout/top-bar";
-import { ProductDetails } from "@/components/product/product-details";
-import { RelatedProducts } from "@/components/product/related-products";
 import { Separator } from "@/components/ui/separator";
+import { Footer } from "@/features/layout/footer";
+import { Navbar } from "@/features/layout/navbar";
+import { TopBar } from "@/features/layout/top-bar";
+import { ProductDetails } from "@/features/product/product-details";
+import { RelatedProducts } from "@/features/product/related-products";
 import { notFound } from "next/navigation";
 
 async function getProductDetails(slug: string) {

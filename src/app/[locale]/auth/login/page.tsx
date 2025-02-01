@@ -4,7 +4,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
-import { GooglePhoneVerification } from "@/components/auth/google-phone-verification";
 import {
   Card,
   CardContent,
@@ -23,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { GooglePhoneVerification } from "@/features/auth/google-phone-verification";
 import { auth } from "@/lib/firebase";
 import { useAuthStore } from "@/store/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";

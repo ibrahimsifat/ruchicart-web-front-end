@@ -1,9 +1,9 @@
-import { FilterSidebar } from "@/components/category/filter-sidebar";
-import { ProductGrid } from "@/components/category/product-grid";
-import { Footer } from "@/components/layout/footer";
-import { Navbar } from "@/components/layout/navbar";
-import { TopBar } from "@/components/layout/top-bar";
 import ItemNotFound from "@/components/utils/itemNotFound";
+import { FilterSidebar } from "@/features/category/filter-sidebar";
+import { ProductGrid } from "@/features/category/product-grid";
+import { Footer } from "@/features/layout/footer";
+import { Navbar } from "@/features/layout/navbar";
+import { TopBar } from "@/features/layout/top-bar";
 import { getCategoryProducts } from "@/lib/hooks/queries/category/useCategories";
 
 export default async function CategoryPage({

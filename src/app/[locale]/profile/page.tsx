@@ -1,9 +1,9 @@
-import { ShoppingBag, Wallet, Award, Heart } from "lucide-react"
-import { ProfileSidebar } from "@/components/profile/profile-sidebar"
-import { StatsCard } from "@/components/profile/stats-card"
-import { PersonalDetails } from "@/components/profile/personal-details"
-import { AddressSection } from "@/components/profile/address-section"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AddressSection } from "@/features/profile/address-section";
+import { PersonalDetails } from "@/features/profile/personal-details";
+import { ProfileSidebar } from "@/features/profile/profile-sidebar";
+import { StatsCard } from "@/features/profile/stats-card";
+import { Award, Heart, ShoppingBag, Wallet } from "lucide-react";
 
 const mockUser = {
   name: "Mohammad Ibrahim Sifat",
@@ -16,7 +16,7 @@ const mockUser = {
     loyaltyPoints: 0,
     wishlist: 0,
   },
-}
+};
 
 export default function ProfilePage() {
   return (
@@ -37,7 +37,9 @@ export default function ProfilePage() {
             <div>
               <h2 className="font-semibold">{mockUser.name}</h2>
               <p className="text-sm text-muted-foreground">{mockUser.phone}</p>
-              <p className="text-xs text-muted-foreground">Joined {mockUser.joinedDate}</p>
+              <p className="text-xs text-muted-foreground">
+                Joined {mockUser.joinedDate}
+              </p>
             </div>
           </div>
           <ProfileSidebar />
@@ -77,6 +79,5 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
