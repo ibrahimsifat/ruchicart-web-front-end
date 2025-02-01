@@ -1,5 +1,4 @@
 // lib/api/fetch-utils.ts
-import { unstable_noStore as noStore } from "next/cache";
 import { api } from "./api";
 import { getQueryClient } from "./queries";
 
@@ -13,8 +12,6 @@ export async function fetchData<T>(
   url: string,
   options: FetchOptions = {}
 ): Promise<T> {
-  noStore();
-
   const { data } = await api.get(url, {
     params: options.params,
   });
@@ -25,7 +22,6 @@ export async function prefetchQuery(
   queryKey: readonly unknown[],
   queryFn: () => Promise<any>
 ) {
-  noStore();
   const queryClient = getQueryClient();
 
   try {

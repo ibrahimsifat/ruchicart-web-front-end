@@ -1,23 +1,22 @@
-import { unstable_noStore as noStore } from "next/cache"
-import { notFound } from "next/navigation"
-import { TopBar } from "@/components/layout/top-bar"
-import { Navbar } from "@/components/layout/navbar"
-import { Footer } from "@/components/layout/footer"
-import { ProductDetails } from "@/components/product/product-details"
-import { RelatedProducts } from "@/components/product/related-products"
-import { Separator } from "@/components/ui/separator"
+import { Footer } from "@/components/layout/footer";
+import { Navbar } from "@/components/layout/navbar";
+import { TopBar } from "@/components/layout/top-bar";
+import { ProductDetails } from "@/components/product/product-details";
+import { RelatedProducts } from "@/components/product/related-products";
+import { Separator } from "@/components/ui/separator";
+import { notFound } from "next/navigation";
 
 async function getProductDetails(slug: string) {
-  noStore()
   // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   return {
     id: "1",
     name: "FRIED RICE",
     description:
       "This Chinese-inspired fried rice recipe is my absolute fave. It's quick and easy to make, customizable with any of your favorite mix-ins, and perfect for using up leftover rice and veggies. Feel free to use any kind of rice that you prefer.",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-80cXhc9uioyJlEnqkCPivuO9GiBLBk.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-80cXhc9uioyJlEnqkCPivuO9GiBLBk.png",
     rating: 0.0,
     restaurant: "The Capital Grill",
     price: 216.0,
@@ -33,12 +32,18 @@ async function getProductDetails(slug: string) {
       carbs: "45g",
       fat: "14g",
     },
-    ingredients: ["Rice", "Shrimp", "Mixed Vegetables", "Soy Sauce", "Sesame Oil", "Green Onions"],
-  }
+    ingredients: [
+      "Rice",
+      "Shrimp",
+      "Mixed Vegetables",
+      "Soy Sauce",
+      "Sesame Oil",
+      "Green Onions",
+    ],
+  };
 }
 
 async function getRelatedProducts() {
-  noStore()
   return Array(6)
     .fill(null)
     .map((_, i) => ({
@@ -48,14 +53,19 @@ async function getRelatedProducts() {
       price: Math.floor(Math.random() * 20) + 15,
       image: "/placeholder.svg",
       rating: (Math.random() * 2 + 3).toFixed(1),
-    }))
+    }));
 }
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const product = await getProductDetails(params.slug)
-  if (!product) notFound()
+export default async function ProductPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = await params;
+  const product = await getProductDetails(id);
+  if (!product) notFound();
 
-  const relatedProducts = await getRelatedProducts()
+  const relatedProducts = await getRelatedProducts();
 
   return (
     <div className="min-h-screen bg-background">
@@ -68,6 +78,5 @@ export default async function ProductPage({ params }: { params: { slug: string }
       </main>
       <Footer />
     </div>
-  )
+  );
 }
-

@@ -11,10 +11,10 @@ import { getQueryClient, queryKeys } from "@/lib/api/queries";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { unstable_noStore as noStore } from "next/cache";
 import { Suspense } from "react";
 import PageLayout from "./layouts/PageLayout";
 
+// Separate metadata generation
 export async function generateMetadata({
   params,
 }: {
@@ -27,77 +27,100 @@ export async function generateMetadata({
   });
 
   return {
-    title: t("title"), // Localized title for the Home page
-    description: t("description"), // Localized description for the Home page
+    title: t("title"),
+    description: t("description"),
     openGraph: {
       title: t("title"),
       description: t("description"),
       images: [
         {
-          url: "/home-og-image.jpg", // Home page-specific OpenGraph image
+          url: "/home-og-image.jpg",
           width: 800,
           height: 600,
           alt: t("title"),
         },
       ],
-      url: "https://yourwebsite.com/home", // Home page URL
+      url: "https://yourwebsite.com/home",
     },
     twitter: {
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
-      images: ["/home-twitter-image.jpg"], // Home page-specific Twitter image
+      images: ["/home-twitter-image.jpg"],
     },
   };
 }
-export default async function Home() {
-  noStore();
+
+// Separate data fetching component for dynamic content
+async function DynamicContent() {
   const queryClient = getQueryClient();
 
-  // Prefetch data on the server
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.categories.all,
-    queryFn: () => fetchData("/categories"),
-  });
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.products.latest,
-    queryFn: () => fetchData("/products/latest"),
-  });
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.products.popular,
-    queryFn: () => fetchData("/products/popular"),
-  });
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.banners.all,
-    queryFn: () => fetchData("/banners"),
-  });
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.branches.all,
-    queryFn: () => fetchData("/branch/list"),
-  });
+  // Prefetch all data in parallel
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.categories.all,
+      queryFn: () => fetchData("/categories"),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.products.latest,
+      queryFn: () => fetchData("/products/latest"),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.products.popular,
+      queryFn: () => fetchData("/products/popular"),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.banners.all,
+      queryFn: () => fetchData("/banners"),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.branches.all,
+      queryFn: () => fetchData("/branch/list"),
+    }),
+  ]);
 
   return (
-    <PageLayout>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<div>Loading featured products...</div>}>
-          <HeroSlider />
-        </Suspense>
-        <Suspense fallback={<CategorySkeleton />}>
-          {/* <CategorySection /> */}
-          <ExploreCategories />
-        </Suspense>
-        <Suspense fallback={<div>Loading featured products...</div>}>
-          <FeaturedProducts />
-        </Suspense>
-        <Suspense fallback={<div>Loading trending dishes...</div>}>
-          <TrendingDishes />
-        </Suspense>
-        <Suspense fallback={<div>Loading nearby Branch...</div>}>
-          <NearbyBranch />
-        </Suspense>
-      </HydrationBoundary>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Suspense fallback={<div>Loading featured products...</div>}>
+        <HeroSlider />
+      </Suspense>
+      <Suspense fallback={<CategorySkeleton />}>
+        <ExploreCategories />
+      </Suspense>
+      <Suspense fallback={<div>Loading featured products...</div>}>
+        <FeaturedProducts />
+      </Suspense>
+      <Suspense fallback={<div>Loading trending dishes...</div>}>
+        <TrendingDishes />
+      </Suspense>
+      <Suspense fallback={<div>Loading nearby Branch...</div>}>
+        <NearbyBranch />
+      </Suspense>
+    </HydrationBoundary>
+  );
+}
+
+// Static components that don't need data fetching
+function StaticContent() {
+  return (
+    <>
       <DiscountBanner />
       <AppDownload />
+    </>
+  );
+}
+
+// Main page component
+export default function Home() {
+  return (
+    <PageLayout>
+      {/* Static content renders immediately */}
+      <Suspense fallback={<CategorySkeleton />}>
+        <DynamicContent />
+      </Suspense>
+      <StaticContent />
+
+      {/* Dynamic content wrapped in Suspense */}
     </PageLayout>
   );
 }

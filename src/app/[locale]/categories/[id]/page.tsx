@@ -11,7 +11,7 @@ export default async function CategoryPage({
 }: {
   params: { id: string };
 }) {
-  const { id } = params;
+  const { id } = await params;
   const productResponse = await getCategoryProducts(id);
   const products = productResponse?.products;
 

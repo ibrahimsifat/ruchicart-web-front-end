@@ -4,11 +4,9 @@ import { ProductGrid } from "@/components/category/product-grid";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { TopBar } from "@/components/layout/top-bar";
-import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 
 async function getCategoryDetails(id: string) {
-  noStore();
   // Simulate API call
   await new Promise((resolve) => setTimeout(resolve, 1000));
   const categories = {
@@ -23,7 +21,6 @@ async function getCategoryDetails(id: string) {
 }
 
 async function getProducts(id: string) {
-  noStore();
   // Simulate API call
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return Array(12)
@@ -46,10 +43,11 @@ export default async function CategoryPage({
 }: {
   params: { id: string };
 }) {
-  const category = await getCategoryDetails(params.id);
+  const { id } = await params;
+  const category = await getCategoryDetails(id);
   if (!category) notFound();
 
-  const products = await getProducts(params.id);
+  const products = await getProducts(id);
 
   return (
     <div className="min-h-screen bg-background">

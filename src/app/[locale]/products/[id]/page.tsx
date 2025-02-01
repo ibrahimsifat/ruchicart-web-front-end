@@ -4,7 +4,6 @@ import { TopBar } from "@/components/layout/top-bar";
 import { ProductDetails } from "@/components/product/product-details";
 import { RelatedProducts } from "@/components/product/related-products";
 import { Separator } from "@/components/ui/separator";
-import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 interface PageProps {
   params: { id: string | any };
@@ -29,7 +28,6 @@ interface PageProps {
 //   }
 // }
 async function getProductDetails(slug: string) {
-  noStore();
   // Simulate API call
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -67,7 +65,6 @@ async function getProductDetails(slug: string) {
 }
 
 async function getRelatedProducts() {
-  noStore();
   return Array(6)
     .fill(null)
     .map((_, i) => ({
@@ -83,9 +80,10 @@ async function getRelatedProducts() {
 export default async function ProductPage({
   params,
 }: {
-  params: { slug: string };
+  params: { id: string };
 }) {
-  const product = await getProductDetails(params.slug);
+  const { id } = await params;
+  const product = await getProductDetails(id);
   if (!product) notFound();
 
   const relatedProducts = await getRelatedProducts();
