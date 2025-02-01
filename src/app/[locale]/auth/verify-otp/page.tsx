@@ -74,8 +74,6 @@ export default function VerifyOtpPage() {
 
   const handleSendOTP = async (phoneNumber: string) => {
     try {
-      // Ensure reCAPTCHA is initialized before sending OTP
-      await initializeRecaptcha("recaptcha-container");
       await sendOTP(phoneNumber);
       setCountdown(60);
     } catch (error) {

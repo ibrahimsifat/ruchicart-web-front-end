@@ -1,12 +1,15 @@
 import { API_BASE_URL } from "@/config";
 import { api } from "@/lib/api/api";
-import { auth } from "@/lib/firebase";
+import { auth, googleProvider } from "@/lib/firebase";
 import { formatFirebaseAuthError } from "@/lib/utils/firebase-errors";
+import { SocialMediaData } from "@/types/auth";
 import axios from "axios";
 import {
   ConfirmationResult,
+  GoogleAuthProvider,
   RecaptchaVerifier,
   signInWithPhoneNumber,
+  signInWithPopup,
 } from "firebase/auth";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -21,6 +24,37 @@ interface LoginData {
   email_or_phone: string;
   password: string;
   type: string;
+}
+
+interface GoogleUserData {
+  name: string;
+  email: string;
+  unique_id: string;
+  token: string;
+  medium: string;
+}
+type GoogleLoginResponse = {
+  status: boolean;
+  token?: string;
+  tempToken?: boolean;
+  userData?: {
+    name: string | null;
+    email: string | null;
+    unique_id: string;
+    token: string;
+    medium: "google";
+  };
+};
+
+export type ExistingAccountResponse = {
+  temp_token?: string;
+  token?: string;
+  status: boolean;
+};
+interface GooglePhoneVerificationProps {
+  isOpen: boolean;
+  onClose: () => void;
+  googleUserData: GoogleUserData;
 }
 
 interface AuthState {
@@ -38,6 +72,14 @@ interface AuthState {
   getProfileInfo: () => Promise<User | null>;
   initializeRecaptcha: (elementId?: string) => Promise<RecaptchaVerifier>;
   sendOTP: (phone: string) => Promise<void>;
+  registerWithSocialMedia: (data: SocialMediaData) => Promise<void>;
+  existingAccountCheck: (
+    data: ExistingAccountCheckData
+  ) => Promise<ExistingAccountResponse>;
+
+  googleLogin: () => Promise<GoogleLoginResponse>;
+
+  checkEmail: (email: string) => Promise<boolean>;
   socialLogin: (
     token: string,
     uniqueId: string,
@@ -53,6 +95,12 @@ interface SignupData {
   phone: string;
   password: string;
 }
+type ExistingAccountCheckData = {
+  email?: string;
+  phone?: string;
+  medium: "google" | "facebook" | "apple" | "otp";
+  user_response: 0 | 1; // 0 for new account, 1 for use existing
+};
 
 declare global {
   interface Window {
@@ -216,7 +264,7 @@ export const useAuthStore = create<AuthState>()(
         console.log(userData);
         try {
           const response = await api.post(
-            `${API_BASE_URL}/api/v1/auth/registration`,
+            `/api/v1/auth/registration`,
             userData
           );
           if (response.status !== 200) throw new Error("Signup failed");
@@ -323,20 +371,107 @@ export const useAuthStore = create<AuthState>()(
       ) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await axios.post(
-            `${API_BASE_URL}/auth/social-customer-login`,
-            {
-              token,
-              unique_id: uniqueId,
-              email,
-              medium,
-            }
-          );
+          const response = await api.post(`/auth/social-customer-login`, {
+            token,
+            unique_id: uniqueId,
+            email,
+            medium,
+          });
           set({
             user: response.data.user,
             token: response.data.token,
             isLoading: false,
           });
+        } catch (error) {
+          set({ error: (error as Error).message, isLoading: false });
+          throw error;
+        }
+      },
+
+      googleLogin: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const result = await signInWithPopup(auth, googleProvider);
+          const user = result.user;
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const accessToken = credential?.accessToken;
+
+          if (!accessToken) {
+            throw new Error("No access token found");
+          }
+
+          // First check if email exists
+          const emailExists = await api.post(`/auth/check-email`, {
+            email: user.email,
+          });
+
+          if (emailExists.data.isExist == 1) {
+            // If email exists, directly try social login
+            const response = await api.post(`/auth/social-customer-login`, {
+              token: accessToken,
+              unique_id: user.uid,
+              email: user.email,
+              medium: "google",
+            });
+
+            set({ isLoading: false, token: response?.data.token });
+            return response.data;
+          } else {
+            // If email doesn't exist, return data for registration
+            console.log("userdata", user);
+            set({ isLoading: false });
+            return {
+              status: false,
+              tempToken: true,
+              userData: {
+                name: user.displayName,
+                email: user.email,
+                unique_id: user.uid,
+                token: accessToken,
+                medium: "google",
+              },
+            };
+          }
+        } catch (error) {
+          set({ error: (error as Error).message, isLoading: false });
+          throw error;
+        }
+      },
+      checkEmail: async (email: string) => {
+        try {
+          const response = await api.post(`/auth/check-email`, {
+            email,
+          });
+          return response.data.isExist === 1;
+        } catch (error) {
+          console.error("Error checking email:", error);
+          return false;
+        }
+      },
+
+      registerWithSocialMedia: async (data: SocialMediaData) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await api.post(
+            `/auth/registration-with-social-media`,
+            data
+          );
+          set({
+            token: response.data.token,
+            isLoading: false,
+          });
+          return response.data;
+        } catch (error) {
+          set({ error: (error as Error).message, isLoading: false });
+          throw error;
+        }
+      },
+      existingAccountCheck: async (data: ExistingAccountCheckData) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await api.post("/auth/existing-account-check", data);
+          set({ isLoading: false });
+          return response.data;
         } catch (error) {
           set({ error: (error as Error).message, isLoading: false });
           throw error;

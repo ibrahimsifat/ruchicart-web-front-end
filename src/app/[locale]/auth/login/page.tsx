@@ -4,6 +4,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
+import { GooglePhoneVerification } from "@/components/auth/google-phone-verification";
 import {
   Card,
   CardContent,
@@ -38,10 +39,20 @@ export default function LoginPage() {
   const t = useTranslations();
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState<"email" | "phone">("email");
+  const [showGooglePhoneVerification, setShowGooglePhoneVerification] =
+    useState(false);
+  const [googleUserData, setGoogleUserData] = useState<any>(null);
   const router = useRouter();
 
-  const { login, getProfileInfo, error, isLoading, clearError } =
-    useAuthStore();
+  const {
+    login,
+    getProfileInfo,
+    error,
+    isLoading,
+    clearError,
+    googleLogin,
+    existingAccountCheck,
+  } = useAuthStore();
 
   const emailLoginSchema = z.object({
     email: z.string().email(t("errors.invalidEmail")),
@@ -82,22 +93,26 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
+    // clear any from error if exist
+    clearError();
+
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(
         auth,
         "recaptcha-container",
         {
           size: "invisible", // Use "normal" for visible reCAPTCHA
-          // callback: (response) => {
-          //   console.log("reCAPTCHA solved:", response);
-          // },
+          callback: () => {
+            // reCAPTCHA solved, allow signInWithPhoneNumber.
+            onPhoneSubmit(phoneForm.getValues());
+          },
           "expired-callback": () => {
             console.log("reCAPTCHA expired");
           },
         }
       );
     }
-  }, []);
+  }, [auth]);
   const onPhoneSubmit = async (values: z.infer<typeof phoneLoginSchema>) => {
     try {
       //TODO:: need to add country code
@@ -115,6 +130,40 @@ export default function LoginPage() {
     } catch (error) {
       console.error("Error sending OTP:", error);
       // Handle error (e.g., show error message to user)
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await googleLogin();
+      if (result.status) {
+        // User successfully logged in
+        // get the profile data
+        getProfileInfo();
+        router.push("/");
+      } else if (result.tempToken && result?.userData?.email) {
+        // Need to verify if user wants to use existing account or create new one
+        const emailExistsResponse = await existingAccountCheck({
+          email: result?.userData.email,
+          // sending user_response Because this is new user
+          user_response: 1,
+          medium: "google",
+        });
+
+        if (emailExistsResponse.status) {
+          // User chose to use existing account
+          router.push("/");
+        } else {
+          // User chose to create new account
+          // Only now show phone verification if needed
+          setGoogleUserData(result.userData);
+          setShowGooglePhoneVerification(true);
+        }
+      } else {
+        console.error("Unexpected response from Google login");
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
     }
   };
 
@@ -287,7 +336,11 @@ export default function LoginPage() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 w-full">
-            <Button variant="outline" className="w-full">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleGoogleLogin}
+            >
               <Image
                 src="/google.svg"
                 alt="Google"
@@ -319,6 +372,13 @@ export default function LoginPage() {
           </div>
         </CardFooter>
       </Card>
+      {showGooglePhoneVerification && (
+        <GooglePhoneVerification
+          isOpen={showGooglePhoneVerification}
+          onClose={() => setShowGooglePhoneVerification(false)}
+          googleUserData={googleUserData}
+        />
+      )}
     </div>
   );
 }

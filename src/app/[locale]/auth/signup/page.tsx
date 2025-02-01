@@ -25,7 +25,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -47,7 +47,7 @@ const signupSchema = z.object({
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  const { signup, error, isLoading } = useAuthStore();
+  const { signup, error, isLoading, clearError } = useAuthStore();
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -59,6 +59,10 @@ export default function SignupPage() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    clearError();
+  }, []);
 
   const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     try {
