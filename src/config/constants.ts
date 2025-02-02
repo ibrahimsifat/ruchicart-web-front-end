@@ -1,4 +1,7 @@
 export const CONSTANT = {
+  privatePages: ["/profile", "/checkout"],
+  locales: ["en", "bn"],
+  defaultLocale: "en",
   // images
   images: {
     logo: "/images/logo.png",

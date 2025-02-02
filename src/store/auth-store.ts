@@ -1,9 +1,9 @@
-import { API_BASE_URL } from "@/config";
+import { CONSTANT } from "@/config/constants";
 import { api } from "@/lib/api/api";
 import { auth, googleProvider } from "@/lib/firebase";
 import { formatFirebaseAuthError } from "@/lib/utils/firebase-errors";
+import { getAxiosErrorMessage } from "@/lib/utils/getAxiosErrorMessage";
 import { SocialMediaData } from "@/types/auth";
-import axios from "axios";
 import {
   ConfirmationResult,
   GoogleAuthProvider,
@@ -11,9 +11,14 @@ import {
   signInWithPhoneNumber,
   signInWithPopup,
 } from "firebase/auth";
+import Cookies from "js-cookie";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
+const { privatePages } = CONSTANT;
+const isPrivatePage = () => {
+  const currentPath = window.location.pathname;
+  return privatePages.some((page) => currentPath.includes(page));
+};
 interface User {
   id: string;
   email: string;
@@ -26,13 +31,6 @@ interface LoginData {
   type: string;
 }
 
-interface GoogleUserData {
-  name: string;
-  email: string;
-  unique_id: string;
-  token: string;
-  medium: string;
-}
 type GoogleLoginResponse = {
   status: boolean;
   token?: string;
@@ -51,12 +49,6 @@ export type ExistingAccountResponse = {
   token?: string;
   status: boolean;
 };
-interface GooglePhoneVerificationProps {
-  isOpen: boolean;
-  onClose: () => void;
-  googleUserData: GoogleUserData;
-}
-
 interface AuthState {
   user: User | null;
   token: string | null;
@@ -172,7 +164,11 @@ export const useAuthStore = create<AuthState>()(
 
           set({ verificationId: confirmationResult.verificationId });
         } catch (error: any) {
-          set({ error: error.message });
+          const errorMessage = getAxiosErrorMessage(
+            error,
+            "Failed to fetch profile information"
+          );
+          set({ error: errorMessage });
           throw error;
         } finally {
           set({ isLoading: false });
@@ -186,23 +182,17 @@ export const useAuthStore = create<AuthState>()(
         }
 
         set({ isLoading: true, error: null });
+        Cookies.set("auth-token", token, { path: "/" });
         try {
           const response = await api.get("/customer/info");
           const userData = response.data;
           set({ user: userData, isLoading: false });
           return userData;
         } catch (error) {
-          let errorMessage = "Failed to fetch profile information";
-
-          if (axios.isAxiosError(error)) {
-            if (error.response?.data?.errors?.length) {
-              errorMessage = error.response.data.errors[0].message;
-            } else {
-              errorMessage = error.message;
-            }
-          } else if (error instanceof Error) {
-            errorMessage = error.message;
-          }
+          const errorMessage = getAxiosErrorMessage(
+            error,
+            "Failed to fetch profile information"
+          );
 
           set({ error: errorMessage, isLoading: false });
           console.error("Profile Info Error:", errorMessage);
@@ -215,20 +205,12 @@ export const useAuthStore = create<AuthState>()(
           const response = await api.post("/auth/login", loginData);
           const data = response.data;
           set({ token: data.token, isLoading: false });
+          Cookies.set("auth-token", data.token, { path: "/" });
         } catch (error) {
-          let errorMessage = "Invalid login credentials";
-
-          if (axios.isAxiosError(error)) {
-            // Check if response exists and has an 'errors' array
-            if (error.response?.data?.errors?.length) {
-              errorMessage = error.response.data.errors[0].message;
-            } else {
-              errorMessage = error.message;
-            }
-          } else if (error instanceof Error) {
-            errorMessage = error.message;
-          }
-
+          const errorMessage = getAxiosErrorMessage(
+            error,
+            "Invalid login credentials"
+          );
           set({ error: errorMessage, isLoading: false });
           console.error("Login Error:", errorMessage);
           throw new Error(errorMessage);
@@ -278,19 +260,10 @@ export const useAuthStore = create<AuthState>()(
           if (response.status !== 200) throw new Error("Registration failed");
           set({ isLoading: false });
         } catch (error) {
-          let errorMessage = "Registration failed";
-
-          if (axios.isAxiosError(error)) {
-            // Check if response exists and has an 'errors' array
-            if (error.response?.data?.errors?.length) {
-              errorMessage = error.response.data.errors[0].message;
-            } else {
-              errorMessage = error.message;
-            }
-          } else if (error instanceof Error) {
-            errorMessage = error.message;
-          }
-
+          const errorMessage = getAxiosErrorMessage(
+            error,
+            "Registration failed"
+          );
           set({ error: errorMessage, isLoading: false });
           console.error("Login Error:", errorMessage);
           throw new Error(errorMessage);
@@ -300,34 +273,19 @@ export const useAuthStore = create<AuthState>()(
       firebaseAuthVerify: async (phone: string, otp: string) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await fetch(
-            `${API_BASE_URL}/api/v1/auth/firebase-auth-verify`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "branch-id": "1",
-                "X-localization": "en",
-              },
-              body: JSON.stringify({ phone, token: otp }),
-            }
-          );
-          if (!response.ok) throw new Error("OTP verification failed");
-          const data = await response.json();
+          const response = await api.post(`/auth/firebase-auth-verify`, {
+            phone,
+            token: otp,
+          });
+          if (response.status !== 200)
+            throw new Error("OTP verification failed");
+          const data = response.data;
           set({ user: data.user, token: data.token, isLoading: false });
         } catch (error) {
-          let errorMessage = "OTP verification failed";
-
-          if (axios.isAxiosError(error)) {
-            // Check if response exists and has an 'errors' array
-            if (error.response?.data?.errors?.length) {
-              errorMessage = error.response.data.errors[0].message;
-            } else {
-              errorMessage = error.message;
-            }
-          } else if (error instanceof Error) {
-            errorMessage = error.message;
-          }
+          const errorMessage = getAxiosErrorMessage(
+            error,
+            "OTP verification failed"
+          );
 
           set({ error: errorMessage, isLoading: false });
           console.error("Login Error:", errorMessage);
@@ -337,34 +295,19 @@ export const useAuthStore = create<AuthState>()(
       verifyRegistrationOtp_manual: async (phone: string, otp: string) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await fetch(
-            `${API_BASE_URL}/api/v1/auth/verify-phone`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "branch-id": "1",
-                "X-localization": "en",
-              },
-              body: JSON.stringify({ phone, token: otp }),
-            }
-          );
-          if (!response.ok) throw new Error("OTP verification failed");
-          const data = await response.json();
+          const response = await api.post(`/api/v1/auth/verify-phone`, {
+            phone,
+            token: otp,
+          });
+          if (response.status !== 200)
+            throw new Error("OTP verification failed");
+          const data = response.data;
           set({ user: data.user, token: data.token, isLoading: false });
         } catch (error) {
-          let errorMessage = "OTP verification failed";
-
-          if (axios.isAxiosError(error)) {
-            // Check if response exists and has an 'errors' array
-            if (error.response?.data?.errors?.length) {
-              errorMessage = error.response.data.errors[0].message;
-            } else {
-              errorMessage = error.message;
-            }
-          } else if (error instanceof Error) {
-            errorMessage = error.message;
-          }
+          const errorMessage = getAxiosErrorMessage(
+            error,
+            "OTP verification failed"
+          );
 
           set({ error: errorMessage, isLoading: false });
           console.error("Login Error:", errorMessage);
@@ -421,8 +364,9 @@ export const useAuthStore = create<AuthState>()(
               email: user.email,
               medium: "google",
             });
-
-            set({ isLoading: false, token: response?.data.token });
+            const token = response?.data.token;
+            set({ isLoading: false, token });
+            Cookies.set("auth-token", token, { path: "/" });
             return response.data;
           } else {
             // If email doesn't exist, return data for registration
@@ -489,10 +433,7 @@ export const useAuthStore = create<AuthState>()(
       forgotPassword: async (phone: string) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await axios.post(
-            `${API_BASE_URL}/api/v1/auth/forgot-password`,
-            { phone }
-          );
+          const response = await api.post(`/auth/forgot-password`, { phone });
           set({ isLoading: false });
           return response.data;
         } catch (error) {
@@ -504,13 +445,10 @@ export const useAuthStore = create<AuthState>()(
       verifyResetToken: async (phone: string, token: string) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await axios.post(
-            `${API_BASE_URL}/api/v1/auth/verify-token`,
-            {
-              email_or_phone: phone,
-              reset_token: token,
-            }
-          );
+          const response = await api.post(`/auth/verify-token`, {
+            email_or_phone: phone,
+            reset_token: token,
+          });
           set({ isLoading: false });
           return response.data;
         } catch (error) {
@@ -527,16 +465,13 @@ export const useAuthStore = create<AuthState>()(
       ) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await axios.put(
-            `${API_BASE_URL}/api/v1/auth/reset-password`,
-            {
-              email_or_phone: phone,
-              reset_token: token,
-              password,
-              confirm_password: confirmPassword,
-              type: "phone",
-            }
-          );
+          const response = await api.put(`/auth/reset-password`, {
+            email_or_phone: phone,
+            reset_token: token,
+            password,
+            confirm_password: confirmPassword,
+            type: "phone",
+          });
           set({ isLoading: false });
           return response.data;
         } catch (error) {
@@ -546,6 +481,12 @@ export const useAuthStore = create<AuthState>()(
       },
       logout: () => {
         set({ user: null, token: null });
+        Cookies.remove("auth-token", { path: "/" });
+        if (isPrivatePage()) {
+          const locale = window.location.pathname.split("/")[1];
+          const loginPath = locale ? `/${locale}/auth/login` : "/en/auth/login";
+          window.location.href = loginPath;
+        }
       },
 
       clearError: () => {
@@ -555,6 +496,12 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "auth-storage",
       getStorage: () => localStorage,
+      onRehydrateStorage: () => (state) => {
+        // Sync cookie with rehydrated state
+        if (state?.token) {
+          Cookies.set("auth-token", state.token, { path: "/" });
+        }
+      },
     }
   )
 );
