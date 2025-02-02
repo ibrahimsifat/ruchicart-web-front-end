@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
-import { CategorySkeleton } from "@/features/category/CategorySkeleton";
+import { CategorySkeleton } from "@/components/ui/skeletons";
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import { cn } from "@/lib/utils";
 import { Category } from "@/types";

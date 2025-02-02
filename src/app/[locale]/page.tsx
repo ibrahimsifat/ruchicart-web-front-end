@@ -1,4 +1,10 @@
-import { CategorySkeleton } from "@/features/category/CategorySkeleton";
+import {
+  BranchCardSkeleton,
+  CategorySkeleton,
+  HeroSkeleton,
+  ProductCardSkeleton,
+  PromoCardSkeleton,
+} from "@/components/ui/skeletons";
 import { AppDownload } from "@/features/home/app-download";
 import { DiscountBanner } from "@/features/home/discount-banner";
 import { ExploreCategories } from "@/features/home/explore-categories";
@@ -40,7 +46,7 @@ export async function generateMetadata({
           alt: t("title"),
         },
       ],
-      url: "https://yourwebsite.com/home",
+      url: "https://ruchicart.com/",
     },
     twitter: {
       card: "summary_large_image",
@@ -81,19 +87,19 @@ async function DynamicContent() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<div>Loading featured products...</div>}>
+      <Suspense fallback={<HeroSkeleton />}>
         <HeroSlider />
       </Suspense>
       <Suspense fallback={<CategorySkeleton />}>
         <ExploreCategories />
       </Suspense>
-      <Suspense fallback={<div>Loading featured products...</div>}>
+      <Suspense fallback={<ProductCardSkeleton />}>
         <FeaturedProducts />
       </Suspense>
-      <Suspense fallback={<div>Loading trending dishes...</div>}>
+      <Suspense fallback={<PromoCardSkeleton />}>
         <TrendingDishes />
       </Suspense>
-      <Suspense fallback={<div>Loading nearby Branch...</div>}>
+      <Suspense fallback={<BranchCardSkeleton />}>
         <NearbyBranch />
       </Suspense>
     </HydrationBoundary>
