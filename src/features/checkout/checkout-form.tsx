@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -10,7 +11,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -20,131 +20,65 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetDistance } from "@/lib/hooks/queries/location/useLocation";
+import { Textarea } from "@/components/ui/textarea";
 import { useLocationStore } from "@/store/locationStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Building2,
-  Edit2,
-  Home,
-  MapPin,
-  MapPinned,
-  Plus,
-  Search,
-  ShoppingBag,
-} from "lucide-react";
-import { useEffect, useState } from "react";
+import { Edit2, MapPin, Plus, ShoppingBag, UtensilsIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { AddressModal } from "./address-modal";
 import { DeliveryTips } from "./delivery-tips";
-import { OrderSummary } from "./order-summary"; // Import OrderSummary component
 import { PaymentMethods } from "./payment-methods";
 
 const formSchema = z.object({
   deliveryOption: z.enum(["home", "takeaway"]),
   address: z.string().optional(),
-  contactInfo: z.string().optional(),
-  deliveryTip: z.number().optional(),
-  paymentMethod: z.string().optional(),
+  deliveryTip: z.number().min(0).optional(),
+  paymentMethod: z.string(),
   branch: z.string().optional(),
-  deliveryFee: z.number(),
+  orderNote: z.string().optional(),
+  cutlery: z.boolean().optional(),
+  deliveryArea: z.string().optional(),
 });
 
-const savedAddresses = [
-  {
-    id: "1",
-    type: "home",
-    fullAddress:
-      "4673 Sayyid Ash Shuhada, 7698, Al Amir Abdoulmajed District, Jeddah 22432, Saudi Arabia",
-    contactPerson: "John Doe",
-    phone: "+966 558845503",
-  },
-  {
-    id: "2",
-    type: "office",
-    fullAddress:
-      "123 Business Center, King Abdullah Road, Jeddah 23456, Saudi Arabia",
-    contactPerson: "John Doe",
-    phone: "+966 558845503",
-  },
-];
+interface CheckoutFormProps {
+  onPlaceOrder: (values: any) => void;
+  placingOrder: boolean;
+}
 
-const nearbyBranches = [
-  { id: "1", name: "Downtown Branch", address: "123 Main St, Downtown" },
-  { id: "2", name: "Westside Branch", address: "456 West Ave, Westside" },
-  { id: "3", name: "Northend Branch", address: "789 North Blvd, Northend" },
-];
-
-export function CheckoutForm() {
+export function CheckoutForm({
+  onPlaceOrder,
+  placingOrder,
+}: CheckoutFormProps) {
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<any>(null);
-  const [filteredBranches, setFilteredBranches] = useState(nearbyBranches);
-  const { location } = useLocationStore();
-  const [selectedAddress, setSelectedAddress] = useState<any>(null);
-
-  const { data: distanceData, refetch: refetchDistance } = useGetDistance(
-    location ? { lat: location.lat, lng: location.lng } : { lat: 0, lng: 0 },
-    selectedAddress
-      ? { lat: selectedAddress.lat, lng: selectedAddress.lng }
-      : { lat: 0, lng: 0 }
-  );
-
-  useEffect(() => {
-    if (location && selectedAddress) {
-      refetchDistance();
-    }
-  }, [location, selectedAddress, refetchDistance]);
-
-  const handleAddressSelect = (address: any) => {
-    setSelectedAddress(address);
-    form.setValue("address", address.id);
-  };
+  const { currentLocation, savedLocations } = useLocationStore();
+  const t = useTranslations("checkout");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       deliveryOption: "home",
-      address: "",
-      contactInfo: "",
+      address: currentLocation?.address || "",
       deliveryTip: 0,
       paymentMethod: "",
       branch: "",
-      deliveryFee: 30, // Added default value for deliveryFee
+      orderNote: "",
+      cutlery: false,
+      deliveryArea: "",
     },
   });
 
   const deliveryOption = form.watch("deliveryOption");
 
-  useEffect(() => {
-    const fee = deliveryOption === "takeaway" ? 0 : 4715.38;
-    form.setValue("deliveryFee", fee);
-  }, [deliveryOption, form]);
-
-  const handleEditAddress = (address: any) => {
-    setEditingAddress(address);
-    setShowAddressModal(true);
-  };
-
-  const handleSaveAddress = (address: any) => {
-    console.log("Saving address:", address);
+  const handleAddressSelect = (address: any) => {
+    form.setValue("address", address.id);
     setShowAddressModal(false);
-    setEditingAddress(null);
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
-
-  const getAddressIcon = (type: string) => {
-    switch (type) {
-      case "home":
-        return <Home className="h-5 w-5" />;
-      case "office":
-        return <Building2 className="h-5 w-5" />;
-      default:
-        return <MapPinned className="h-5 w-5" />;
-    }
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    onPlaceOrder(values);
   };
 
   return (
@@ -155,7 +89,7 @@ export function CheckoutForm() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MapPin className="h-5 w-5 text-primary" />
-              Order Details
+              {t("orderDetails")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-8">
@@ -164,7 +98,9 @@ export function CheckoutForm() {
               name="deliveryOption"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base">Delivery Options</FormLabel>
+                  <FormLabel className="text-base">
+                    {t("deliveryOptions")}
+                  </FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
@@ -184,7 +120,7 @@ export function CheckoutForm() {
                           className="flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                         >
                           <MapPin className="mb-2 h-6 w-6" />
-                          Home Delivery
+                          {t("homeDelivery")}
                         </Label>
                       </FormItem>
                       <FormItem className="relative">
@@ -200,7 +136,7 @@ export function CheckoutForm() {
                           className="flex flex-col items-center justify-center rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                         >
                           <ShoppingBag className="mb-2 h-6 w-6" />
-                          Take Away
+                          {t("takeAway")}
                         </Label>
                       </FormItem>
                     </RadioGroup>
@@ -212,73 +148,72 @@ export function CheckoutForm() {
 
             {deliveryOption === "home" && (
               <>
-                {/* Delivery Addresses */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-base font-medium">
-                      Delivery Addresses
+                      {t("deliveryAddress")}
                     </h3>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setEditingAddress(null);
-                        setShowAddressModal(true);
-                      }}
+                      onClick={() => setShowAddressModal(true)}
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Address
+                      {t("addAddress")}
                     </Button>
                   </div>
 
-                  <div className="grid gap-4">
-                    {savedAddresses.map((address) => (
-                      <div
-                        key={address.id}
-                        className="flex items-start gap-4 p-4 rounded-lg border bg-card transition-colors hover:bg-accent"
-                      >
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                          {getAddressIcon(address.type)}
-                        </div>
-                        <div className="flex-1 space-y-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium capitalize">
-                              {address.type}
-                            </span>
-                            <span className="text-sm text-muted-foreground">
-                              ({address.contactPerson})
-                            </span>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {address.fullAddress}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {address.phone}
-                          </p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0"
-                          onClick={() => handleEditAddress(address)}
-                        >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            className="space-y-2"
+                          >
+                            {savedLocations.map((location, index) => (
+                              <FormItem
+                                key={index}
+                                className="flex items-center space-x-3 space-y-0 rounded-lg border p-4 cursor-pointer hover:bg-accent transition-colors"
+                              >
+                                <FormControl>
+                                  <RadioGroupItem value={location.id} />
+                                </FormControl>
+                                <Label className="flex-1 cursor-pointer">
+                                  <div className="font-medium">
+                                    {location.type}
+                                  </div>
+                                  <div className="text-sm text-muted-foreground">
+                                    {location.address}
+                                  </div>
+                                </Label>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowAddressModal(true);
+                                  }}
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </Button>
+                              </FormItem>
+                            ))}
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
-                {/* Delivery Tips */}
                 <DeliveryTips
                   value={form.watch("deliveryTip") || 0}
                   onChange={(value) => form.setValue("deliveryTip", value)}
-                />
-
-                {/* Payment Methods */}
-                <PaymentMethods
-                  value={form.watch("paymentMethod") || ""}
-                  onChange={(value) => form.setValue("paymentMethod", value)}
                 />
               </>
             )}
@@ -290,50 +225,16 @@ export function CheckoutForm() {
                 render={({ field }) => (
                   <FormItem className="space-y-4">
                     <FormLabel className="text-lg font-semibold">
-                      Select Nearby Branch
+                      {t("selectNearbyBranch")}
                     </FormLabel>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        placeholder="Search branches..."
-                        className="pl-10 pr-4 py-2 w-full"
-                        onChange={(e) => {
-                          const searchTerm = e.target.value.toLowerCase();
-                          setFilteredBranches(
-                            nearbyBranches.filter(
-                              (branch) =>
-                                branch.name
-                                  .toLowerCase()
-                                  .includes(searchTerm) ||
-                                branch.address
-                                  .toLowerCase()
-                                  .includes(searchTerm)
-                            )
-                          );
-                        }}
-                      />
-                    </div>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Choose a branch" />
+                          <SelectValue placeholder={t("chooseBranch")} />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="max-h-[300px]">
-                        {filteredBranches.map((branch) => (
-                          <SelectItem
-                            key={branch.id}
-                            value={branch.id}
-                            className="py-3 px-4 hover:bg-accent cursor-pointer"
-                          >
-                            <div className="flex flex-col">
-                              <span className="font-medium">{branch.name}</span>
-                              <span className="text-sm text-muted-foreground">
-                                {branch.address}
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
+                      <SelectContent>
+                        {/* Add your branch options here */}
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -341,31 +242,91 @@ export function CheckoutForm() {
                 )}
               />
             )}
+
+            <FormField
+              control={form.control}
+              name="orderNote"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Order Note (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Add any special instructions"
+                      className="resize-none"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="cutlery"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel className="text-sm">
+                    <UtensilsIcon className="h-4 w-4 mr-2" />
+                    Add cutlery
+                  </FormLabel>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="deliveryArea"
+              render={({ field }) => (
+                <FormItem className="space-y-4">
+                  <FormLabel className="text-lg font-semibold">
+                    Select Delivery Area
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Choose your area" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {/* Replace with your actual delivery area options */}
+                      <SelectItem value="area1">Area 1</SelectItem>
+                      <SelectItem value="area2">Area 2</SelectItem>
+                      <SelectItem value="area3">Area 3</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <PaymentMethods
+              value={form.watch("paymentMethod") || ""}
+              onChange={(value) => form.setValue("paymentMethod", value)}
+            />
           </CardContent>
         </Card>
 
-        {/* Added OrderSummary component */}
-        <OrderSummary
-          items={[]}
-          total={0}
-          deliveryFee={form.watch("deliveryFee")}
-        />
-
-        <Button type="submit" className="w-full">
-          {deliveryOption === "home"
-            ? "Proceed to Payment"
-            : "Confirm Take Away Order"}
+        <Button type="submit" className="w-full" disabled={placingOrder}>
+          {placingOrder
+            ? "Placing Order..."
+            : deliveryOption === "home"
+            ? t("proceedToPayment")
+            : t("confirmTakeAwayOrder")}
         </Button>
       </form>
 
       <AddressModal
         isOpen={showAddressModal}
-        onClose={() => {
-          setShowAddressModal(false);
-          setEditingAddress(null);
-        }}
-        onSave={handleSaveAddress}
-        initialAddress={editingAddress}
+        onClose={() => setShowAddressModal(false)}
+        onSave={handleAddressSelect}
+        initialAddress={null}
       />
     </Form>
   );

@@ -178,7 +178,7 @@ export default function LoginForm() {
           transition={{ duration: 0.2 }}
         >
           <Link
-            href="/"
+            href="/checkout"
             className="flex items-center gap-2 text-white hover:text-white/90 transition-colors"
           >
             <User className="h-5 w-5" />

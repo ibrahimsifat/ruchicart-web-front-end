@@ -112,8 +112,8 @@ declare global {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
+      token: Cookies.get("auth-token") || null,
       user: null,
-      token: null,
       isLoading: false,
       error: null,
       verificationId: null,

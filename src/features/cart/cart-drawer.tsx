@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import CustomImage from "@/components/ui/customImage";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
@@ -10,8 +11,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useCart } from "@/store/cart";
+import { ImageType } from "@/types/image";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 interface CartDrawerProps {
@@ -49,7 +50,8 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                     className="flex items-center gap-4 pb-4 border-b"
                   >
                     <div className="relative h-20 w-20 rounded-lg overflow-hidden bg-muted">
-                      <Image
+                      <CustomImage
+                        type={ImageType.PRODUCT}
                         src={item.image || "/placeholder.svg"}
                         alt={item.name}
                         fill

@@ -53,9 +53,12 @@ export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const { itemCount } = useCart();
-  const { user } = useAuthStore();
+  const { token, user, getProfileInfo } = useAuthStore();
 
   useEffect(() => {
+    if (token) {
+      getProfileInfo();
+    }
     const handleScroll = () => {
       setIsSticky(window.scrollY > 0);
     };
@@ -159,7 +162,7 @@ export function Navbar() {
               )}
             </Button>
             {/* Sign In */}
-            {user ? (
+            {token ? (
               <UserMenu />
             ) : (
               <Link href="/auth/login">

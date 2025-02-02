@@ -1,182 +1,345 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Search, X, Loader2, AlertTriangle } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import { useLocationStore } from "@/store/locationStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Building2, Check, ChevronRight, Home, MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { LocationSelector } from "../location/LocationSelector";
+
+const addressSchema = z.object({
+  type: z.enum(["home", "work", "other"]),
+  label: z.string().min(1, "Label is required"),
+  address: z.string().min(1, "Address is required"),
+  area: z.string().min(1, "Area is required"),
+  city: z.string().min(1, "City is required"),
+  contactPerson: z.string().min(1, "Contact person name is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  additionalInfo: z.string().optional(),
+});
 
 interface AddressModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSave: (address: any) => void
-  initialAddress?: any
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (address: any) => void;
+  initialAddress?: any;
 }
 
-export function AddressModal({ isOpen, onClose, onSave, initialAddress }: AddressModalProps) {
-  const [addressType, setAddressType] = useState(initialAddress?.type || "home")
-  const [searchQuery, setSearchQuery] = useState(initialAddress?.fullAddress || "")
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export function AddressModal({
+  isOpen,
+  onClose,
+  onSave,
+  initialAddress,
+}: AddressModalProps) {
+  const [step, setStep] = useState(1);
+  const [showMap, setShowMap] = useState(false);
+  const { currentLocation, addSavedLocation } = useLocationStore();
+  const t = useTranslations("checkout");
+
+  const form = useForm<z.infer<typeof addressSchema>>({
+    resolver: zodResolver(addressSchema),
+    defaultValues: initialAddress || {
+      type: "home",
+      label: "",
+      address: "",
+      area: "",
+      city: "",
+      contactPerson: "",
+      phone: "",
+      additionalInfo: "",
+    },
+  });
 
   useEffect(() => {
     if (initialAddress) {
-      setAddressType(initialAddress.type || "home")
-      setSearchQuery(initialAddress.fullAddress || "")
-      // Load other fields as needed
+      form.reset(initialAddress);
     }
-  }, [initialAddress])
+  }, [initialAddress, form]);
 
-  const handleAddressSearch = () => {
-    setIsLoading(true)
-    setError(null)
-    // Simulating an API call
-    setTimeout(() => {
-      setIsLoading(false)
-      // If you have an actual API, handle potential errors here
-      // setError("Error message")
-    }, 1500)
-  }
+  const onSubmit = async (values: z.infer<typeof addressSchema>) => {
+    const newAddress = {
+      ...values,
+      id: initialAddress?.id || Date.now().toString(),
+      lat: currentLocation?.lat || 0,
+      lng: currentLocation?.lng || 0,
+    };
+    addSavedLocation(newAddress);
+    onSave(newAddress);
+    onClose();
+  };
+
+  const handleLocationSelect = (location: {
+    address: string;
+    lat: number;
+    lng: number;
+  }) => {
+    form.setValue("address", location.address);
+    setShowMap(false);
+  };
+
+  const nextStep = () => {
+    if (step < 3) setStep(step + 1);
+  };
+
+  const prevStep = () => {
+    if (step > 1) setStep(step - 1);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl p-0">
-        <DialogHeader className="p-6 pb-4 bg-gradient-to-r from-primary/10 to-primary/5 border-b">
-          <div className="flex justify-between items-center">
-            <DialogTitle className="text-2xl font-semibold text-primary">
-              {initialAddress ? "Edit" : "Add"} Delivery Address
-            </DialogTitle>
-            <Button variant="ghost" size="icon" onClick={onClose} className="text-primary hover:text-primary/80">
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
+      <DialogContent className="sm:max-w-[550px]">
+        <DialogHeader>
+          <DialogTitle>
+            {initialAddress ? t("editAddress") : t("addNewAddress")}
+          </DialogTitle>
         </DialogHeader>
-        <div className="grid md:grid-cols-5 gap-8 p-6">
-          {/* Map Section */}
-          <div className="md:col-span-3 space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                placeholder="Search location..."
-                className="pl-10 pr-12 py-6 text-lg rounded-full shadow-sm border-2 border-primary/20 focus:border-primary transition-all duration-300"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleAddressSearch()}
-              />
-              <Button
-                size="sm"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full"
-                onClick={handleAddressSearch}
-              >
-                Search
-              </Button>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="flex justify-between mb-8">
+              {[1, 2, 3].map((s) => (
+                <div key={s} className="flex items-center">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      step >= s
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {step > s ? <Check className="w-5 h-5" /> : s}
+                  </div>
+                  {s < 3 && (
+                    <ChevronRight
+                      className={`w-4 h-4 mx-2 ${
+                        step > s ? "text-primary" : "text-muted-foreground"
+                      }`}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
-            <div className="relative aspect-[4/3] rounded-lg overflow-hidden border-2 border-primary/20 shadow-md">
-              {isLoading ? (
-                <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-                  <div className="flex flex-col items-center">
-                    <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                    <p className="mt-2 text-sm text-muted-foreground">Loading map...</p>
-                  </div>
-                </div>
-              ) : error ? (
-                <div className="absolute inset-0 flex items-center justify-center bg-destructive/10 text-destructive">
-                  <div className="flex flex-col items-center">
-                    <AlertTriangle className="h-10 w-10 mb-2" />
-                    <p>Error loading map</p>
-                    <Button variant="outline" size="sm" onClick={handleAddressSearch} className="mt-2">
-                      Retry
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.727010735933!2d91.837871!3d24.907291!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDU0JzI2LjIiTiA5McKwNTAnMTYuMyJF!5e0!3m2!1sen!2sbd!4v1620120000000!5m2!1sen!2sbd"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
+
+            {step === 1 && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("addressType")}</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          className="flex flex-col space-y-1"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="home" id="home" />
+                            <Label htmlFor="home" className="flex items-center">
+                              <Home className="w-4 h-4 mr-2" />
+                              {t("home")}
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="work" id="work" />
+                            <Label htmlFor="work" className="flex items-center">
+                              <Building2 className="w-4 h-4 mr-2" />
+                              {t("work")}
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="other" id="other" />
+                            <Label htmlFor="other">{t("other")}</Label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+                <FormField
+                  control={form.control}
+                  name="label"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address Label</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="E.g., Home, Office, Mom's House"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("address")}</FormLabel>
+                      <FormControl>
+                        <div className="flex gap-2">
+                          <Input
+                            {...field}
+                            placeholder={t("enterAddress")}
+                            className="flex-1"
+                          />
+                          <Button
+                            type="button"
+                            onClick={() => setShowMap(true)}
+                          >
+                            <MapPin className="w-4 h-4 mr-2" />
+                            {t("selectOnMap")}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="area"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Area</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Enter area or neighborhood"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>City</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Enter city" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="additionalInfo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Information</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          placeholder="E.g., Landmark, delivery instructions"
+                          className="resize-none"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
+            {step === 3 && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="contactPerson"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("contactPerson")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder={t("enterContactPerson")}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("phoneNumber")}</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder={t("enterPhoneNumber")} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
+            <div className="flex justify-between mt-6">
+              {step > 1 && (
+                <Button type="button" variant="outline" onClick={prevStep}>
+                  Previous
+                </Button>
+              )}
+              {step < 3 ? (
+                <Button type="button" onClick={nextStep} className="ml-auto">
+                  Next
+                </Button>
+              ) : (
+                <Button type="submit" className="ml-auto">
+                  {t("saveAddress")}
+                </Button>
               )}
             </div>
-          </div>
-
-          {/* Form Section */}
-          <div className="md:col-span-2 space-y-6 bg-card p-6 rounded-lg shadow-sm border border-border">
-            <div className="space-y-2">
-              <Label className="text-lg font-medium">Label As</Label>
-              <RadioGroup defaultValue={addressType} onValueChange={setAddressType} className="flex gap-4">
-                {["home", "office", "other"].map((type) => (
-                  <div key={type} className="flex items-center space-x-2">
-                    <RadioGroupItem value={type} id={type} />
-                    <Label htmlFor={type} className="cursor-pointer capitalize">
-                      {type}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-lg font-medium">Address</Label>
-              <Input value={searchQuery} readOnly className="bg-muted" />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-lg font-medium">Contact Person Name *</Label>
-              <Input placeholder="Enter contact person name" className="border-2 focus:border-primary" />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-lg font-medium">Phone</Label>
-              <div className="flex gap-2">
-                <Select defaultValue="+1">
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="+1">🇺🇸 +1</SelectItem>
-                    <SelectItem value="+44">🇬🇧 +44</SelectItem>
-                    <SelectItem value="+91">🇮🇳 +91</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Input type="tel" placeholder="Enter phone number" className="flex-1 border-2 focus:border-primary" />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-lg font-medium">House</Label>
-                <Input placeholder="House number" className="border-2 focus:border-primary" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-lg font-medium">Floor</Label>
-                <Input placeholder="Floor number" className="border-2 focus:border-primary" />
-              </div>
-            </div>
-
-            <Button
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-              size="lg"
-              onClick={() => {
-                onSave({
-                  type: addressType,
-                  fullAddress: searchQuery,
-                  // Add other form values
-                })
-              }}
-            >
-              Save Address
-            </Button>
-          </div>
-        </div>
+          </form>
+        </Form>
       </DialogContent>
-    </Dialog>
-  )
-}
 
+      {showMap && (
+        <Dialog open={showMap} onOpenChange={setShowMap}>
+          <DialogContent className="sm:max-w-[700px] p-0">
+            <DialogHeader className="p-6 pb-2">
+              <DialogTitle>{t("selectLocation")}</DialogTitle>
+            </DialogHeader>
+            <LocationSelector
+              onSelectLocation={handleLocationSelect}
+              initialLocation={currentLocation}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
+    </Dialog>
+  );
+}
