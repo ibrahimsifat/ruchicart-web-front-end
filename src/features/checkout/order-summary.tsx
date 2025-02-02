@@ -1,48 +1,78 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import { useState } from "react"
-import { Info } from "lucide-react"
-import type { CartItem } from "@/types/cart"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import CustomImage from "@/components/ui/customImage";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import type { CartItem } from "@/store/cart";
+import { ImageType } from "@/types/image";
+import { Info } from "lucide-react";
+import { useState } from "react";
 
 interface OrderSummaryProps {
-  items: CartItem[]
-  total: number
+  items: CartItem[];
+  total: number;
 }
 
 export function OrderSummary({ items, total }: OrderSummaryProps) {
-  const [acceptTerms, setAcceptTerms] = useState(false)
-  const subtotal = total
-  const discount = 0
-  const vat = subtotal * 0.1 // 10% VAT
-  const serviceCharge = 10
-  const deliveryFee = 4715.38
-  const finalTotal = subtotal + vat + serviceCharge + deliveryFee - discount
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const subtotal = total;
+  const discount = 0;
+  const vat = subtotal * 0.15; // 15% VAT
+  const serviceCharge = 10;
+  const deliveryFee = 45;
+  const finalTotal = subtotal + vat + serviceCharge + deliveryFee - discount;
 
   return (
     <Card className="sticky top-4 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 z-0" />
       <CardHeader className="relative z-10 border-b">
-        <CardTitle className="text-2xl font-semibold text-primary">Order Summary</CardTitle>
+        <CardTitle className="text-2xl font-semibold text-primary">
+          Order Summary
+        </CardTitle>
       </CardHeader>
       <CardContent className="relative z-10 space-y-6 p-6">
         {/* Order Items */}
         <div className="space-y-4">
           {items.map((item) => (
-            <div key={item.id} className="flex gap-4">
+            <div
+              key={`${item.id}-${JSON.stringify(item.variations)}`}
+              className="flex gap-4"
+            >
               <div className="relative h-20 w-20 rounded-lg overflow-hidden flex-shrink-0">
-                <Image src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" />
+                <CustomImage
+                  type={ImageType.PRODUCT}
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  className="object-cover"
+                />
               </div>
               <div className="flex-1">
                 <h4 className="font-medium">{item.name}</h4>
-                {item.variation && <p className="text-sm text-muted-foreground">Variation: {item.variation}</p>}
+                {item.variations &&
+                  Object.entries(item.variations).map(([key, values]) => (
+                    <p key={key} className="text-sm text-muted-foreground">
+                      {key}: {values.join(", ")}
+                    </p>
+                  ))}
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-sm">Qty: {item.quantity}</p>
-                  <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-medium">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </p>
                 </div>
               </div>
             </div>
@@ -85,7 +115,9 @@ export function OrderSummary({ items, total }: OrderSummaryProps) {
           </div>
           <div className="border-t pt-4 flex justify-between font-semibold text-lg">
             <span>Total</span>
-            <span className="text-primary text-xl">${finalTotal.toFixed(2)}</span>
+            <span className="text-primary text-xl">
+              ${finalTotal.toFixed(2)}
+            </span>
           </div>
         </div>
       </CardContent>
@@ -116,6 +148,5 @@ export function OrderSummary({ items, total }: OrderSummaryProps) {
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
-

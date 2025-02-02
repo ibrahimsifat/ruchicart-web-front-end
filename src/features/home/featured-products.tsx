@@ -37,7 +37,7 @@ export function FeaturedProducts() {
                 key={product.id}
                 className="md:basis-1/3 lg:basis-1/4"
               >
-                <ProductCard product={product} />
+                <ProductCard product={product as Product} />
               </CarouselItem>
             ))}
           </CarouselContent>

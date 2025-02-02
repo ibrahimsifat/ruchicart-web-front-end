@@ -3,32 +3,21 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 import { ImageType } from "@/types/image";
+import { Product } from "@/types/product";
 import { Eye, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomImage from "./customImage";
 
 interface ProductPreviewModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  product: {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    price: number;
-    originalPrice?: number;
-    addOns?: Array<{
-      id: string;
-      name: string;
-      price: number;
-      description?: string;
-      image?: string;
-    }>;
-  };
+  product: Product;
 }
 
 export function ProductPreviewModal({
@@ -38,7 +27,17 @@ export function ProductPreviewModal({
 }: ProductPreviewModalProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
+  const [selectedVariations, setSelectedVariations] = useState<
+    Record<string, string[]>
+  >({});
   const { addItem } = useCart();
+
+  useEffect(() => {
+    // Reset selected variations when modal opens
+    if (open) {
+      setSelectedVariations({});
+    }
+  }, [open]);
 
   const handleQuantityChange = (delta: number) => {
     setQuantity(Math.max(1, quantity + delta));
@@ -52,10 +51,52 @@ export function ProductPreviewModal({
     );
   };
 
+  const handleVariationChange = (
+    variationName: string,
+    value: string,
+    type: string
+  ) => {
+    if (type === "single") {
+      setSelectedVariations((prev) => ({ ...prev, [variationName]: [value] }));
+    } else if (type === "multi") {
+      setSelectedVariations((prev) => {
+        const currentValues = prev[variationName] || [];
+        if (currentValues.includes(value)) {
+          return {
+            ...prev,
+            [variationName]: currentValues.filter((v) => v !== value),
+          };
+        } else {
+          return { ...prev, [variationName]: [...currentValues, value] };
+        }
+      });
+    }
+  };
+
+  const calculateTotalPrice = () => {
+    let total = product.price;
+    Object.entries(selectedVariations).forEach(
+      ([variationName, selectedValues]) => {
+        const variation = product.variations?.find(
+          (v) => v.name === variationName
+        );
+        if (variation) {
+          selectedValues.forEach((value) => {
+            const option = variation.values.find((v) => v.label === value);
+            if (option) {
+              total += Number.parseFloat(option.optionPrice);
+            }
+          });
+        }
+      }
+    );
+    return total;
+  };
+
   const calculateTotal = () => {
     const basePrice = product.price * quantity;
     const addOnsTotal = selectedAddOns.reduce((total, addOnId) => {
-      const addOn = product.addOns?.find((a) => a.id === addOnId);
+      const addOn = product.add_ons?.find((a) => a.id === addOnId);
       return total + (addOn?.price || 0);
     }, 0);
     return basePrice + addOnsTotal;
@@ -63,7 +104,7 @@ export function ProductPreviewModal({
 
   const handleAddToCart = () => {
     const selectedAddOnsList = selectedAddOns
-      .map((id) => product.addOns?.find((addon) => addon.id === id))
+      .map((id) => product.add_ons?.find((addon) => addon.id === id))
       .filter(Boolean);
 
     const addOnsCost = selectedAddOnsList.reduce(
@@ -75,11 +116,9 @@ export function ProductPreviewModal({
       id: product.id,
       name: product.name,
       image: product.image,
-      price: product.price + addOnsCost,
+      price: calculateTotalPrice(),
       quantity: quantity,
-      variation: selectedAddOnsList.length
-        ? `With ${selectedAddOnsList.map((a) => a?.name).join(", ")}`
-        : undefined,
+      variations: selectedVariations,
     });
     onOpenChange(false);
   };
@@ -98,8 +137,8 @@ export function ProductPreviewModal({
           </Button>
           <div className="relative h-[200px]">
             <CustomImage
-              src={product.image}
               type={ImageType.PRODUCT}
+              src={product.image}
               alt={product.name}
               fill
               className="object-cover"
@@ -112,7 +151,7 @@ export function ProductPreviewModal({
           <div className="space-y-2">
             <h2 className="text-xl font-semibold">{product.name}</h2>
             <p className="text-sm text-muted-foreground">
-              {product.description}
+              {product.description.slice(0, 150)}...
             </p>
           </div>
 
@@ -121,7 +160,7 @@ export function ProductPreviewModal({
             <span className="text-sm text-muted-foreground">Starts From:</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-primary">
-                ${product.price.toFixed(2)}
+                ${calculateTotalPrice().toFixed(2)}
               </span>
               {product.originalPrice &&
                 product.originalPrice > product.price && (
@@ -133,14 +172,14 @@ export function ProductPreviewModal({
           </div>
 
           {/* Add Ons */}
-          {product.addOns && product.addOns.length > 0 && (
+          {product.add_ons && product.add_ons.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-lg">Add Ons</h3>
                 <span className="text-sm text-muted-foreground">Optional</span>
               </div>
               <div className="space-y-3">
-                {product.addOns.map((addOn) => (
+                {product.add_ons.map((addOn) => (
                   <div
                     key={addOn.id}
                     className={cn(
@@ -173,6 +212,67 @@ export function ProductPreviewModal({
             </div>
           )}
 
+          {product.variations && (
+            <div className="space-y-4 mb-4">
+              {product.variations.map((variation) => (
+                <div key={variation.name}>
+                  <h4 className="font-semibold mb-2">{variation.name}</h4>
+                  {variation.type === "single" ? (
+                    <RadioGroup
+                      onValueChange={(value) =>
+                        handleVariationChange(variation.name, value, "single")
+                      }
+                      value={selectedVariations[variation.name]?.[0] || ""}
+                    >
+                      {variation.values.map((option) => (
+                        <div
+                          key={option.label}
+                          className="flex items-center space-x-2"
+                        >
+                          <RadioGroupItem
+                            value={option.label}
+                            id={`${variation.name}-${option.label}`}
+                          />
+                          <Label htmlFor={`${variation.name}-${option.label}`}>
+                            {option.label} (+${option.optionPrice})
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  ) : (
+                    <div className="space-y-2">
+                      {variation.values.map((option) => (
+                        <div
+                          key={option.label}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={`${variation.name}-${option.label}`}
+                            checked={
+                              selectedVariations[variation.name]?.includes(
+                                option.label
+                              ) || false
+                            }
+                            onCheckedChange={(checked) =>
+                              handleVariationChange(
+                                variation.name,
+                                option.label,
+                                "multi"
+                              )
+                            }
+                          />
+                          <Label htmlFor={`${variation.name}-${option.label}`}>
+                            {option.label} (+${option.optionPrice})
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Quantity */}
           <div className="flex items-center justify-center gap-4">
             <button
@@ -198,7 +298,7 @@ export function ProductPreviewModal({
               <span className="font-medium">Total:</span>
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-bold text-primary">
-                  ${calculateTotal().toFixed(2)}
+                  ${calculateTotalPrice().toFixed(2)}
                 </span>
                 {product.originalPrice && (
                   <span className="text-sm text-muted-foreground line-through">

@@ -6,7 +6,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
+import { useState } from "react";
 import { LocationSelector } from "./LocationSelector";
 
 interface LocationModalProps {
@@ -25,6 +27,8 @@ export function LocationModal({
   onLocationSelect,
 }: LocationModalProps) {
   const { currentLocation } = useLocationStore();
+  const { currentBranch } = useBranchStore();
+  const [showBranchSelector, setShowBranchSelector] = useState(false);
 
   const handleLocationSelect = (location: {
     address: string;
@@ -32,7 +36,11 @@ export function LocationModal({
     lng: number;
   }) => {
     onLocationSelect(location);
-    onClose();
+    if (!currentBranch) {
+      setShowBranchSelector(true);
+    } else {
+      onClose();
+    }
   };
 
   return (

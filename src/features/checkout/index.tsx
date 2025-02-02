@@ -7,6 +7,7 @@ import { OrderSummary } from "@/features/checkout/order-summary";
 import { LocationModal } from "@/features/location/location-modal";
 import { api } from "@/lib/api/api";
 import { useAuthStore } from "@/store/authStore";
+import { useBranchStore } from "@/store/branchStore";
 import { useCart } from "@/store/cart";
 import { useLocationStore } from "@/store/locationStore";
 import { useRouter } from "next/navigation";
@@ -23,7 +24,7 @@ export default function CheckoutPage() {
   const [placingOrder, setPlacingOrder] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
-
+  const { currentBranch } = useBranchStore();
   useEffect(() => {
     if (!currentLocation) {
       setShowLocationModal(true);
@@ -53,17 +54,17 @@ export default function CheckoutPage() {
       payment_method: values.paymentMethod,
       order_type: values.deliveryOption,
       delivery_address_id: values.address,
-      branch_id: values.branch,
+      branch_id: currentBranch?.id,
       delivery_time: "now", // Replace with actual delivery time
       delivery_date: new Date().toISOString().slice(0, 10), // Replace with actual delivery date
       distance: 0, // Replace with actual distance
+
       guest_id: !user ? "guest_id" : undefined, // Replace with actual guest ID if available
       is_partial: 0, // Replace with 1 if partial payment
       cart: items.map((item) => ({
         product_id: item.id,
         quantity: item.quantity,
-        variant: item.variation,
-        variations: [], // Replace with actual variations if needed
+        variations: item.variations, // Replace with actual variations if needed
         add_on_ids: [], // Replace with actual add-on IDs if needed
         add_on_qtys: [], // Replace with actual add-on quantities if needed
       })),
@@ -76,7 +77,7 @@ export default function CheckoutPage() {
     };
 
     try {
-      const response = await api.post("/order/place", orderData);
+      const response = await api.post("/customer/order/place", orderData);
       setOrderId(response.data.order_id);
       setOrderPlaced(true);
       clearCart();

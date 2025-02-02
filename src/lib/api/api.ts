@@ -1,16 +1,19 @@
 import { useAuthStore } from "@/store/authStore";
+import { useBranchStore } from "@/store/branchStore";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const API_V1 = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
-
+const Branch_ID = useBranchStore.getState().currentBranch?.id;
+const locale = Cookies.get("NEXT_LOCALE");
 const api = axios.create({
   baseURL: API_V1,
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
-    "branch-id": "1",
-    "X-localization": "en",
+    "branch-id": `${Branch_ID}`,
+    "X-localization": `${locale}`,
   },
 });
 

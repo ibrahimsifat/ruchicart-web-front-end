@@ -1,103 +1,242 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import CustomImage from "@/components/ui/customImage";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { Footer } from "@/features/layout/footer";
-import { Navbar } from "@/features/layout/navbar";
-import { TopBar } from "@/features/layout/top-bar";
-import { ProductDetails } from "@/features/product/product-details";
-import { RelatedProducts } from "@/features/product/related-products";
-import { notFound } from "next/navigation";
-interface PageProps {
-  params: { id: string | any };
-}
+import { useCart } from "@/store/cart";
+import { ImageType } from "@/types/image";
+import { Clock, ShoppingCart, Star } from "lucide-react";
+import type { GetServerSideProps } from "next";
+import { useState } from "react";
 
-// export async function generateMetadata({ params }: PageProps) {
-//   const { id } = await params;
-//   try {
-//     const category = await getCategor
-
-//     return constructMetadata({
-//       title: category.name,
-//       description: `Visit ${category.name} - ${category.address}`,
-//       keywords: ["restaurant", "category", category.name],
-//       image: category.image,
-//     });
-//   } catch (error) {
-//     return constructMetadata({
-//       title: "Category Not Found",
-//       noIndex: true,
-//     });
-//   }
-// }
-async function getProductDetails(slug: string) {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  return {
-    id: "1",
-    name: "FRIED RICE",
-    description:
-      "This Chinese-inspired fried rice recipe is my absolute fave. It's quick and easy to make, customizable with any of your favorite mix-ins, and perfect for using up leftover rice and veggies. Feel free to use any kind of rice that you prefer.",
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-80cXhc9uioyJlEnqkCPivuO9GiBLBk.png",
-    rating: 0.0,
-    restaurant: "The Capital Grill",
-    price: 216.0,
-    originalPrice: 240.0,
-    options: [
-      { name: "Half", price: 340.0 },
-      { name: "Quarter", price: 440.0 },
-      { name: "Full", price: 500.0 },
-    ],
-    nutritionInfo: {
-      calories: "320 kcal",
-      protein: "12g",
-      carbs: "45g",
-      fat: "14g",
-    },
-    ingredients: [
-      "Rice",
-      "Shrimp",
-      "Mixed Vegetables",
-      "Soy Sauce",
-      "Sesame Oil",
-      "Green Onions",
-    ],
+interface ProductPageProps {
+  product: {
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+    price: number;
+    variations: Array<{
+      name: string;
+      type: string;
+      min: string;
+      max: string;
+      required: string;
+      values: Array<{
+        label: string;
+        optionPrice: string;
+      }>;
+    }>;
+    discount: number;
+    discount_type: string;
+    available_time_starts: string;
+    available_time_ends: string;
+    product_type: string;
+    is_recommended: number;
+    rating: any[];
   };
 }
 
-async function getRelatedProducts() {
-  return Array(6)
-    .fill(null)
-    .map((_, i) => ({
-      id: i + 2,
-      name: `Related Dish ${i + 1}`,
-      restaurant: "The Capital Grill",
-      price: Math.floor(Math.random() * 20) + 15,
-      image: "/placeholder.svg",
-      rating: (Math.random() * 2 + 3).toFixed(1),
-    }));
-}
+export default function ProductPage({ product }: ProductPageProps) {
+  const [selectedVariations, setSelectedVariations] = useState<
+    Record<string, string[]>
+  >({});
+  const { addItem } = useCart();
 
-export default async function ProductPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const { id } = await params;
-  const product = await getProductDetails(id);
-  if (!product) notFound();
+  const handleVariationChange = (
+    variationName: string,
+    value: string,
+    type: string
+  ) => {
+    if (type === "single") {
+      setSelectedVariations((prev) => ({ ...prev, [variationName]: [value] }));
+    } else if (type === "multi") {
+      setSelectedVariations((prev) => {
+        const currentValues = prev[variationName] || [];
+        if (currentValues.includes(value)) {
+          return {
+            ...prev,
+            [variationName]: currentValues.filter((v) => v !== value),
+          };
+        } else {
+          return { ...prev, [variationName]: [...currentValues, value] };
+        }
+      });
+    }
+  };
 
-  const relatedProducts = await getRelatedProducts();
+  const calculateTotalPrice = () => {
+    let total = product.price;
+    Object.entries(selectedVariations).forEach(
+      ([variationName, selectedValues]) => {
+        const variation = product.variations.find(
+          (v) => v.name === variationName
+        );
+        if (variation) {
+          selectedValues.forEach((value) => {
+            const option = variation.values.find((v) => v.label === value);
+            if (option) {
+              total += Number.parseFloat(option.optionPrice);
+            }
+          });
+        }
+      }
+    );
+    if (product.discount_type === "percent") {
+      total -= total * (product.discount / 100);
+    } else {
+      total -= product.discount;
+    }
+    return total;
+  };
+
+  const handleAddToCart = () => {
+    addItem({
+      id: product.id.toString(),
+      name: product.name,
+      image: product.image,
+      price: calculateTotalPrice(),
+      quantity: 1,
+      variations: selectedVariations,
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <TopBar />
-      <Navbar />
-      <main className="container mx-auto px-4 py-8">
-        <ProductDetails product={product} />
-        <Separator className="my-16" />
-        <RelatedProducts products={relatedProducts} />
-      </main>
-      <Footer />
+    <div className="container mx-auto px-4 py-8">
+      <Card className="overflow-hidden">
+        <div className="md:flex">
+          <div className="md:w-1/2">
+            <div className="relative aspect-square">
+              <CustomImage
+                type={ImageType.PRODUCT}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/${product.image}`}
+                alt={product.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+          <div className="md:w-1/2 p-6">
+            <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+            <div className="flex items-center gap-2 mb-4">
+              <Badge
+                variant={product.product_type === "veg" ? "success" : "default"}
+              >
+                {product.product_type}
+              </Badge>
+              {product.is_recommended === 1 && (
+                <Badge variant="secondary">Recommended</Badge>
+              )}
+              <div className="flex items-center">
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                <span className="text-sm font-medium">
+                  {product.rating.length > 0
+                    ? (
+                        product.rating.reduce((acc, curr) => acc + curr, 0) /
+                        product.rating.length
+                      ).toFixed(1)
+                    : "N/A"}
+                </span>
+              </div>
+            </div>
+            <p className="text-gray-600 mb-4">{product.description}</p>
+            <div className="flex items-center gap-2 mb-4">
+              <Clock className="h-5 w-5 text-gray-500" />
+              <span className="text-sm text-gray-500">
+                Available: {product.available_time_starts} -{" "}
+                {product.available_time_ends}
+              </span>
+            </div>
+            <div className="mb-6">
+              <span className="text-3xl font-bold">
+                ${calculateTotalPrice().toFixed(2)}
+              </span>
+              {product.discount > 0 && (
+                <span className="text-xl text-gray-500 line-through ml-2">
+                  ${product.price.toFixed(2)}
+                </span>
+              )}
+            </div>
+            <Separator className="my-6" />
+            {product.variations.map((variation) => (
+              <div key={variation.name} className="mb-6">
+                <h3 className="text-lg font-semibold mb-2">{variation.name}</h3>
+                {variation.type === "single" ? (
+                  <RadioGroup
+                    onValueChange={(value) =>
+                      handleVariationChange(variation.name, value, "single")
+                    }
+                    value={selectedVariations[variation.name]?.[0] || ""}
+                  >
+                    {variation.values.map((option) => (
+                      <div
+                        key={option.label}
+                        className="flex items-center space-x-2"
+                      >
+                        <RadioGroupItem
+                          value={option.label}
+                          id={`${variation.name}-${option.label}`}
+                        />
+                        <Label htmlFor={`${variation.name}-${option.label}`}>
+                          {option.label} (+${option.optionPrice})
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                ) : (
+                  <div className="space-y-2">
+                    {variation.values.map((option) => (
+                      <div
+                        key={option.label}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={`${variation.name}-${option.label}`}
+                          checked={
+                            selectedVariations[variation.name]?.includes(
+                              option.label
+                            ) || false
+                          }
+                          onCheckedChange={(checked) =>
+                            handleVariationChange(
+                              variation.name,
+                              option.label,
+                              "multi"
+                            )
+                          }
+                        />
+                        <Label htmlFor={`${variation.name}-${option.label}`}>
+                          {option.label} (+${option.optionPrice})
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            <Button className="w-full" size="lg" onClick={handleAddToCart}>
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              Add to Cart
+            </Button>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.params as { id: string };
+  // Fetch product data from your API
+  const res = await fetch(`${process.env.API_URL}/product/${id}`);
+  const product = await res.json();
+
+  return {
+    props: {
+      product,
+    },
+  };
+};

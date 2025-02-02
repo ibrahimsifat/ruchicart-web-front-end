@@ -1,14 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { BranchSelector } from "@/features/branch/branchSelector";
 import { LocationModal } from "@/features/location/location-modal";
+import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
-import { MapPin } from "lucide-react";
+import { GitBranch, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function TopBar() {
   const [showLocationModal, setShowLocationModal] = useState(false);
+  const [showBranchSelector, setShowBranchSelector] = useState(false);
   const { currentLocation, setCurrentLocation } = useLocationStore();
+  const { currentBranch } = useBranchStore();
 
   useEffect(() => {
     if (!currentLocation) {
@@ -41,6 +45,14 @@ export function TopBar() {
           <Button variant="ghost" size="sm">
             Download App
           </Button>
+          <Button
+            variant="link"
+            className="p-0 h-auto font-medium"
+            onClick={() => setShowBranchSelector(true)}
+          >
+            <GitBranch className="h-4 w-4 mr-2 text-primary" />
+            {currentBranch ? currentBranch.name : "Select Branch"}
+          </Button>
         </div>
 
         <LocationModal
@@ -50,6 +62,10 @@ export function TopBar() {
             setCurrentLocation(location);
             setShowLocationModal(false);
           }}
+        />
+        <BranchSelector
+          isOpen={showBranchSelector}
+          onClose={() => setShowBranchSelector(false)}
         />
       </div>
     </div>
