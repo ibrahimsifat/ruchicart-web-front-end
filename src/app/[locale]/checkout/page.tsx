@@ -1,4 +1,4 @@
-import Checkout from "@/features/category";
+import Checkout from "@/features/checkout";
 import { Suspense } from "react";
 import PageLayout from "../layouts/PageLayout";
 

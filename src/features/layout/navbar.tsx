@@ -12,7 +12,7 @@ import {
 import { CartDrawer } from "@/features/cart/cart-drawer";
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/store/auth-store";
+import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cart";
 import { ImageType } from "@/types/image";
 import { ChevronDown, LogOut, MenuIcon, ShoppingBag, User } from "lucide-react";

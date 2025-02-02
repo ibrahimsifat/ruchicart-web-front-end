@@ -1,47 +1,24 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { LocationModal } from "@/features/location/location-modal";
+import { useLocationStore } from "@/store/locationStore";
 import { MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-interface LocationStore {
-  address: string | null;
-  coordinates: { lat: number; lng: number } | null;
-  setLocation: (location: {
-    address: string;
-    lat: number;
-    lng: number;
-  }) => void;
-}
-
-const useLocation = create<LocationStore>()(
-  persist(
-    (set) => ({
-      address: null,
-      coordinates: null,
-      setLocation: (location) =>
-        set({
-          address: location.address,
-          coordinates: { lat: location.lat, lng: location.lng },
-        }),
-    }),
-    {
-      name: "food-delivery-location",
-    }
-  )
-);
 
 export function TopBar() {
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const { address, setLocation } = useLocation();
+  const { currentLocation, setCurrentLocation } = useLocationStore();
 
   useEffect(() => {
-    if (!address) {
+    if (!currentLocation) {
       setShowLocationModal(true);
     }
-  }, [address]);
+  }, [currentLocation]);
+
+  const handleOpenLocationModal = () => {
+    setShowLocationModal(true);
+  };
 
   return (
     <div className="w-full bg-primary/5 border-b">
@@ -52,9 +29,9 @@ export function TopBar() {
           <Button
             variant="link"
             className="p-0 h-auto font-medium max-w-[200px] truncate"
-            onClick={() => setShowLocationModal(true)}
+            onClick={handleOpenLocationModal}
           >
-            {address || "Select Location"}
+            {currentLocation?.address || "Select Location"}
           </Button>
         </div>
         <div className="hidden md:flex items-center gap-4">
@@ -66,14 +43,14 @@ export function TopBar() {
           </Button>
         </div>
 
-        {/* <LocationModal
+        <LocationModal
           isOpen={showLocationModal}
           onClose={() => setShowLocationModal(false)}
           onLocationSelect={(location) => {
-            setLocation(location)
-            setShowLocationModal(false)
+            setCurrentLocation(location);
+            setShowLocationModal(false);
           }}
-        /> */}
+        />
       </div>
     </div>
   );

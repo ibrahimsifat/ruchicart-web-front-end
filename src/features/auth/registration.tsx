@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { CONSTANT } from "@/config/constants";
 import { GooglePhoneVerification } from "@/features/auth/google-phone-verification";
-import { useAuthStore } from "@/store/auth-store";
+import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
