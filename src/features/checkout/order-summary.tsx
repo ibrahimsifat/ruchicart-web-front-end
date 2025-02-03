@@ -1,14 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
 import {
   Tooltip,
@@ -19,21 +11,21 @@ import {
 import type { CartItem } from "@/store/cart";
 import { ImageType } from "@/types/image";
 import { Info } from "lucide-react";
-import { useState } from "react";
 
 interface OrderSummaryProps {
   items: CartItem[];
   total: number;
+  deliveryTip: number;
 }
 
-export function OrderSummary({ items, total }: OrderSummaryProps) {
-  const [acceptTerms, setAcceptTerms] = useState(false);
+export function OrderSummary({ items, total, deliveryTip }: OrderSummaryProps) {
   const subtotal = total;
   const discount = 0;
   const vat = subtotal * 0.15; // 15% VAT
   const serviceCharge = 10;
   const deliveryFee = 45;
-  const finalTotal = subtotal + vat + serviceCharge + deliveryFee - discount;
+  const finalTotal =
+    subtotal + vat + serviceCharge + deliveryFee + deliveryTip - discount;
 
   return (
     <Card className="sticky top-4 overflow-hidden">
@@ -65,7 +57,7 @@ export function OrderSummary({ items, total }: OrderSummaryProps) {
                 {item.variations &&
                   Object.entries(item.variations).map(([key, values]) => (
                     <p key={key} className="text-sm text-muted-foreground">
-                      {key}: {values.join(", ")}
+                      {key}: {values?.join(", ")}
                     </p>
                   ))}
                 <div className="flex items-center justify-between mt-1">
@@ -89,6 +81,12 @@ export function OrderSummary({ items, total }: OrderSummaryProps) {
             <span>Discount</span>
             <span className="text-red-500">-${discount.toFixed(2)}</span>
           </div>
+          {deliveryTip > 0 && (
+            <div className="flex justify-between text-green-500">
+              <span>Delivery Tip</span>
+              <span>${deliveryTip.toFixed(2)}</span>
+            </div>
+          )}
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-1">
               <span>VAT/TAX (10% Excluded)</span>
@@ -121,32 +119,6 @@ export function OrderSummary({ items, total }: OrderSummaryProps) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="relative z-10 flex flex-col gap-4 bg-background/80 backdrop-blur-sm p-6 border-t">
-        <div className="flex items-start gap-2">
-          <Checkbox
-            id="terms"
-            checked={acceptTerms}
-            onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
-          />
-          <label htmlFor="terms" className="text-sm leading-none">
-            I agree that placing the order places me under{" "}
-            <Button variant="link" className="h-auto p-0">
-              Terms and Conditions
-            </Button>{" "}
-            &{" "}
-            <Button variant="link" className="h-auto p-0">
-              Privacy Policy
-            </Button>
-          </label>
-        </div>
-        <Button
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-          size="lg"
-          disabled={!acceptTerms}
-        >
-          Place Order
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

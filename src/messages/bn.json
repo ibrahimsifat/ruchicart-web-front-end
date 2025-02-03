@@ -33,7 +33,7 @@
     "deliveryAddress": "ডেলিভারি ঠিকানা",
     "addAddress": "ঠিকানা যোগ করুন",
     "editAddress": "ঠিকানা সম্পাদনা করুন",
-    "selectNearbyBranch": "নিকটবর্তী শাখা নির্বাচন করুন",
+    "selectedBranch": "এই অর্ডারের ডেলিভারি:",
     "chooseBranch": "একটি শাখা বেছে নিন",
     "proceedToPayment": "পেমেন্টে এগিয়ে যান",
     "confirmTakeAwayOrder": "টেক অ্যাওয়ে অর্ডার নিশ্চিত করুন",

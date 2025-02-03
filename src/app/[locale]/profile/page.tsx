@@ -1,9 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { OrderHistoryItem } from "@/features/checkout/order-history-item";
 import { AddressSection } from "@/features/profile/address-section";
 import { PersonalDetails } from "@/features/profile/personal-details";
 import { ProfileSidebar } from "@/features/profile/profile-sidebar";
 import { StatsCard } from "@/features/profile/stats-card";
+import { useRouter } from "@/i18n/routing";
+import { useAuthStore } from "@/store/authStore";
 import { Award, Heart, ShoppingBag, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const mockUser = {
   name: "Mohammad Ibrahim Sifat",
@@ -19,6 +25,42 @@ const mockUser = {
 };
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const { token } = useAuthStore();
+  const [orders, setOrders] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!token) {
+      router.push(`/auth/login`);
+    } else {
+      fetchOrders();
+    }
+  }, [token, router]);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch("/api/order/history", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch order history");
+      }
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch order history. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
@@ -54,6 +96,26 @@ export default function ProfilePage() {
               value={mockUser.stats.orders}
               label="Orders"
             />
+            <div className="flex-1">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Order History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div>Loading...</div>
+                  ) : orders.length > 0 ? (
+                    <div className="space-y-4">
+                      {orders.map((order) => (
+                        <OrderHistoryItem key={order.id} order={order} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div>No orders found.</div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
             <StatsCard
               icon={<Wallet className="h-6 w-6 text-primary" />}
               value={`$${mockUser.stats.wallet.toFixed(2)}`}

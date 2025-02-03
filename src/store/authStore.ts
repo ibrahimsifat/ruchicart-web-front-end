@@ -86,6 +86,7 @@ interface AuthState {
     password: string,
     confirmPassword: string
   ) => Promise<void>;
+  getGuestId: () => string;
 }
 
 interface RegistrationData {
@@ -478,6 +479,14 @@ export const useAuthStore = create<AuthState>()(
           set({ error: (error as Error).message, isLoading: false });
           throw error;
         }
+      },
+      getGuestId: () => {
+        let guestId = localStorage.getItem("guestId");
+        if (!guestId) {
+          guestId = "guest_" + Math.random().toString(36).substr(2, 9);
+          localStorage.setItem("guestId", guestId);
+        }
+        return guestId;
       },
       logout: () => {
         set({ user: null, token: null });

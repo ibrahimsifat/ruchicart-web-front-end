@@ -24,15 +24,6 @@ interface BranchState {
   currentBranch: BaseBranch | null;
   setCurrentBranch: (branch: BaseBranch) => void;
 }
-// 'product_id',
-//         'price',
-//         'discount_type',
-//         'discount',
-//         'branch_id',
-//         'is_available',
-//         'variations',
-//         'stock_type',
-//         'stock',
 export const useBranchStore = create<BranchState>()(
   persist(
     (set) => ({

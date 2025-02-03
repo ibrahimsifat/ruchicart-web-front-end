@@ -33,7 +33,7 @@
     "deliveryAddress": "Delivery Address",
     "addAddress": "Add Address",
     "editAddress": "Edit Address",
-    "selectNearbyBranch": "Select Nearby Branch",
+    "selectedBranch": "This Order Delivery:",
     "chooseBranch": "Choose a branch",
     "proceedToPayment": "Proceed to Payment",
     "confirmTakeAwayOrder": "Confirm Take Away Order",

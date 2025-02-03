@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -18,7 +19,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
+import {
+  useAddAddress,
+  useUpdateAddress,
+} from "@/lib/hooks/queries/address/useAddress";
+import { useAddressStore } from "@/store/addressStore";
 import { useLocationStore } from "@/store/locationStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Building2, Check, ChevronRight, Home, MapPin } from "lucide-react";
@@ -29,14 +35,14 @@ import * as z from "zod";
 import { LocationSelector } from "../location/LocationSelector";
 
 const addressSchema = z.object({
-  type: z.enum(["home", "work", "other"]),
-  label: z.string().min(1, "Label is required"),
+  address_type: z.enum(["home", "work", "other"]),
   address: z.string().min(1, "Address is required"),
-  area: z.string().min(1, "Area is required"),
-  city: z.string().min(1, "City is required"),
-  contactPerson: z.string().min(1, "Contact person name is required"),
-  phone: z.string().min(1, "Phone number is required"),
-  additionalInfo: z.string().optional(),
+  road: z.string().min(1, "Road is required"),
+  floor: z.string().min(1, "Floor is required"),
+  house: z.string().min(1, "House is required"),
+  contact_person_name: z.string().min(1, "Contact person name is required"),
+  contact_person_number: z.string().min(1, "Phone number is required"),
+  is_default: z.boolean().optional(),
 });
 
 interface AddressModalProps {
@@ -54,20 +60,27 @@ export function AddressModal({
 }: AddressModalProps) {
   const [step, setStep] = useState(1);
   const [showMap, setShowMap] = useState(false);
-  const { currentLocation, addSavedLocation } = useLocationStore();
+  const { currentLocation } = useLocationStore();
   const t = useTranslations("checkout");
+  const addAddressMutation = useAddAddress();
+  const updateAddressMutation = useUpdateAddress();
+  const { addAddress, updateAddress } = useAddressStore();
 
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
     defaultValues: initialAddress || {
-      type: "home",
+      address_type: "home",
       label: "",
       address: "",
-      area: "",
-      city: "",
-      contactPerson: "",
-      phone: "",
-      additionalInfo: "",
+      road: "",
+      floor: "",
+      house: "",
+      is_guest: 0,
+      contact_person_name: "",
+      contact_person_number: "",
+      latitude: 0,
+      longitude: 0,
+      is_default: false,
     },
   });
 
@@ -80,13 +93,39 @@ export function AddressModal({
   const onSubmit = async (values: z.infer<typeof addressSchema>) => {
     const newAddress = {
       ...values,
-      id: initialAddress?.id || Date.now().toString(),
-      lat: currentLocation?.lat || 0,
-      lng: currentLocation?.lng || 0,
+      id: initialAddress?.id || Date.now(),
+      latitude: currentLocation?.lat || 0,
+      longitude: currentLocation?.lng || 0,
+      is_default: values.is_default ? 1 : 0,
+      is_guest: 0,
     };
-    addSavedLocation(newAddress);
-    onSave(newAddress);
-    onClose();
+
+    try {
+      if (initialAddress) {
+        await updateAddressMutation.mutateAsync(newAddress);
+        updateAddress(newAddress);
+        toast({
+          title: "Address Updated",
+          description: "Your address has been updated successfully.",
+        });
+      } else {
+        await addAddressMutation.mutateAsync(newAddress);
+        addAddress(newAddress);
+        toast({
+          title: "Address Added",
+          description: "Your address has been added successfully.",
+        });
+      }
+
+      onSave(newAddress);
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save address. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleLocationSelect = (location: {
@@ -99,7 +138,7 @@ export function AddressModal({
   };
 
   const nextStep = () => {
-    if (step < 3) setStep(step + 1);
+    if (step < 2) setStep(step + 1);
   };
 
   const prevStep = () => {
@@ -113,11 +152,16 @@ export function AddressModal({
           <DialogTitle>
             {initialAddress ? t("editAddress") : t("addNewAddress")}
           </DialogTitle>
+          <DialogDescription>
+            {step === 1
+              ? "Enter your address details and location"
+              : "Provide contact information for this address"}
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="flex justify-between mb-8">
-              {[1, 2, 3].map((s) => (
+              {[1, 2].map((s) => (
                 <div key={s} className="flex items-center">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -128,7 +172,7 @@ export function AddressModal({
                   >
                     {step > s ? <Check className="w-5 h-5" /> : s}
                   </div>
-                  {s < 3 && (
+                  {s < 2 && (
                     <ChevronRight
                       className={`w-4 h-4 mx-2 ${
                         step > s ? "text-primary" : "text-muted-foreground"
@@ -143,7 +187,7 @@ export function AddressModal({
               <>
                 <FormField
                   control={form.control}
-                  name="type"
+                  name="address_type"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t("addressType")}</FormLabel>
@@ -177,27 +221,7 @@ export function AddressModal({
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="label"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address Label</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="E.g., Home, Office, Mom's House"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
 
-            {step === 2 && (
-              <>
                 <FormField
                   control={form.control}
                   name="address"
@@ -224,60 +248,43 @@ export function AddressModal({
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="area"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Area</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="Enter area or neighborhood"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>City</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Enter city" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="additionalInfo"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Additional Information</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          {...field}
-                          placeholder="E.g., Landmark, delivery instructions"
-                          className="resize-none"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="road"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Road</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter road name" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="floor"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Floor</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Enter floor number" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </>
             )}
 
-            {step === 3 && (
+            {step === 2 && (
               <>
                 <FormField
                   control={form.control}
-                  name="contactPerson"
+                  name="contact_person_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t("contactPerson")}</FormLabel>
@@ -293,12 +300,39 @@ export function AddressModal({
                 />
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="contact_person_number"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t("phoneNumber")}</FormLabel>
                       <FormControl>
                         <Input {...field} placeholder={t("enterPhoneNumber")} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="is_default"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Set as default address</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          onValueChange={(value) =>
+                            field.onChange(value === "true")
+                          }
+                          className="flex space-x-4"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="true" id="default-true" />
+                            <Label htmlFor="default-true">Yes</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="false" id="default-false" />
+                            <Label htmlFor="default-false">No</Label>
+                          </div>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -313,7 +347,7 @@ export function AddressModal({
                   Previous
                 </Button>
               )}
-              {step < 3 ? (
+              {step < 2 ? (
                 <Button type="button" onClick={nextStep} className="ml-auto">
                   Next
                 </Button>
@@ -332,6 +366,9 @@ export function AddressModal({
           <DialogContent className="sm:max-w-[700px] p-0">
             <DialogHeader className="p-6 pb-2">
               <DialogTitle>{t("selectLocation")}</DialogTitle>
+              <DialogDescription>
+                Select your location on the map or search for an address
+              </DialogDescription>
             </DialogHeader>
             <LocationSelector
               onSelectLocation={handleLocationSelect}
