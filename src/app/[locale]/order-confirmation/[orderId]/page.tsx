@@ -1,61 +1,26 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useOrderTrack } from "@/lib/hooks/queries/order/useOrders";
 import { useAuthStore } from "@/store/authStore";
 import { CheckCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
-interface OrderConfirmationProps {
-  params: {
-    orderId: string;
-  };
-}
-
-export default function OrderConfirmationPage({
-  params,
-}: OrderConfirmationProps) {
-  const router = useRouter();
+export default function OrderConfirmationPage() {
+  const params = useParams<{ orderId: string }>();
   const { toast } = useToast();
   const { token, getGuestId } = useAuthStore();
-  const [orderDetails, setOrderDetails] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const response = await fetch(
-          `/api/order/details?order_id=${params.orderId}&guest_id=${
-            !token ? getGuestId() : ""
-          }`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch order details");
-        }
-
-        const data = await response.json();
-        setOrderDetails(data);
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch order details. Please try again.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchOrderDetails();
-  }, [params.orderId, toast, token, getGuestId]);
+  const { data: orderTrack, isLoading } = useOrderTrack({
+    order_id: params.orderId,
+    guest_id: !token ? getGuestId() : "",
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!orderDetails) {
+  if (!orderTrack) {
     return <div>Order not found</div>;
   }
 
@@ -72,27 +37,49 @@ export default function OrderConfirmationPage({
           <div className="space-y-4 text-center">
             <p className="text-lg">Thank you for your order!</p>
             <p>
-              Order ID: <span className="font-semibold">{orderDetails.id}</span>
+              Order ID: <span className="font-semibold">{orderTrack.id}</span>
             </p>
             <p>
-              Total Amount:{" "}
+              Order Date:{" "}
               <span className="font-semibold">
-                ${orderDetails.order_amount.toFixed(2)}
+                {new Date(orderTrack.updated_at).toLocaleDateString()}
               </span>
             </p>
             <p>
-              Status:{" "}
-              <span className="font-semibold">{orderDetails.order_status}</span>
+              Branch Name:{" "}
+              <span className="font-semibold">{orderTrack.branch.name}</span>
             </p>
+
+            <p>
+              Total Amount:{" "}
+              <span className="font-semibold">${orderTrack.order_amount}</span>
+            </p>
+            <p>
+              Status:{" "}
+              <span className="font-semibold">{orderTrack.order_status}</span>
+            </p>
+            <p>
+              Payment Status:{" "}
+              <span className="font-semibold">{orderTrack.payment_status}</span>
+            </p>
+            <p>
+              Payment Method:{" "}
+              <span className="font-semibold">{orderTrack.payment_method}</span>
+            </p>
+            <p>
+              Delivery Time:{" "}
+              <span className="font-semibold">{orderTrack.delivery_time}</span>
+            </p>
+
             <div className="flex justify-center space-x-4 mt-8">
-              <Button
+              {/* <Button
                 onClick={() => router.push(`/order-tracking/${params.orderId}`)}
               >
                 Track Order
-              </Button>
-              <Button variant="outline" onClick={() => router.push("/")}>
+              </Button> */}
+              {/* <Button variant="outline" onClick={() => router.push("/")}>
                 Continue Shopping
-              </Button>
+              </Button> */}
             </div>
           </div>
         </CardContent>

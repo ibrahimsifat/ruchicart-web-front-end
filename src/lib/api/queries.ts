@@ -22,6 +22,11 @@ export const queryKeys = {
   branches: {
     all: ["branches"] as const,
   },
+  orders: {
+    details: (order_id: string) => ["orders", order_id] as const,
+    track: (order_id: string) => ["orders", order_id, "track"] as const,
+    all: ["orders"] as const,
+  },
 } as const;
 
 const createQueryClient = () => {

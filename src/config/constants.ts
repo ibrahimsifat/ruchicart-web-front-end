@@ -2,6 +2,7 @@ export const CONSTANT = {
   privatePages: ["/profile", "/checkout"],
   locales: ["en", "bn"],
   defaultLocale: "en",
+  cashOnDeliveryChangeAmount: 20,
   // images
   images: {
     logo: "/images/logo.png",

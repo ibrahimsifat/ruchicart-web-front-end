@@ -55,7 +55,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { LocationSelector } from "../location/LocationSelector";
@@ -66,13 +66,14 @@ const formSchema = z.object({
   order_amount: z.number(),
   payment_method: z.string(),
   order_type: z.enum(["delivery", "take_away"]),
-  delivery_address_id: z.string().optional(),
+  delivery_address_id: z.number().optional(),
   branch_id: z.string(),
   delivery_time: z.string(),
   delivery_date: z.string(),
   distance: z.number(),
-  is_partial: z.boolean(),
+  is_partial: z.number(),
   delivery_tip: z.number().optional(),
+  stripe_payment_intent_id: z.string().optional(),
 });
 
 const addressSchema = z.object({
@@ -91,6 +92,7 @@ interface CheckoutFormProps {
   isLoading: boolean;
   deliveryTip: number;
   setDeliveryTip: React.Dispatch<React.SetStateAction<number>>;
+  setIsCashOnDelivery: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function CheckoutForm({
@@ -98,12 +100,13 @@ export function CheckoutForm({
   isLoading,
   deliveryTip,
   setDeliveryTip,
+  setIsCashOnDelivery,
 }: CheckoutFormProps) {
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
   const { currentLocation } = useLocationStore();
   const { currentBranch: branch } = useBranchStore();
-  const { total } = useCart();
+  const { items, total } = useCart();
   const t = useTranslations("checkout");
   const { token, getGuestId } = useAuthStore();
   const { addresses, addAddress, updateAddress, deleteAddress } =
@@ -119,16 +122,24 @@ export function CheckoutForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       order_amount: total,
+      guest_id: !token ? getGuestId() : undefined,
       payment_method: "",
       order_type: "delivery",
       branch_id: branch?.id || "",
       delivery_time: "now",
       delivery_date: new Date().toISOString().split("T")[0],
       distance: 0,
-      is_partial: false,
+      is_partial: 0,
       delivery_tip: deliveryTip,
     },
   });
+  useEffect(() => {
+    if (form.watch("payment_method") === "cash_on_delivery") {
+      setIsCashOnDelivery(true);
+    } else {
+      setIsCashOnDelivery(false);
+    }
+  }, [form.watch("payment_method")]);
 
   const addressForm = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
@@ -217,14 +228,51 @@ export function CheckoutForm({
     addressForm.setValue("address", location.address);
     setShowMap(false);
   };
-  const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
+  const handleStripePaymentSuccess = (paymentIntentId: string) => {
+    // Update the form data with the payment intent ID
+    form.setValue("stripe_payment_intent_id", paymentIntentId);
+    console.log("Strapi payment success", paymentIntentId);
+    // Submit the form
+    form.handleSubmit(handleFormSubmit)();
+  };
+  const handleCashOnDeliverySubmit = () => {
+    form.setValue("payment_method", "cash_on_delivery");
+    form.setValue("is_partial", 0);
     const orderData = {
-      ...values,
+      ...form.getValues(),
+      payment_method: "cash_on_delivery",
+      is_partial: 0,
       guest_id: !token ? getGuestId() : undefined,
     };
     onSubmit(orderData);
   };
 
+  const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
+    const orderData = {
+      ...values,
+      guest_id: !token ? getGuestId() : undefined,
+      cart: items.map((item) => ({
+        product_id: item.id,
+        quantity: item.quantity,
+        variations: item.variations,
+        add_on_ids: [], //  if have add-ons
+        add_on_qtys: [], //  if have add-ons
+      })),
+    };
+    if (
+      values.payment_method === "stripe" &&
+      !values.stripe_payment_intent_id
+    ) {
+      toast({
+        title: "Payment Error",
+        description:
+          "Please complete the Stripe payment before submitting the order.",
+        variant: "destructive",
+      });
+      return;
+    }
+    onSubmit(orderData);
+  };
   return (
     <Form {...form}>
       <form
@@ -250,7 +298,7 @@ export function CheckoutForm({
                   </FormLabel>
                   <FormControl>
                     <RadioGroup
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => field.onChange(Number(value))}
                       defaultValue={field.value}
                       className="grid grid-cols-2 gap-4"
                     >
@@ -324,6 +372,7 @@ export function CheckoutForm({
                             onValueChange={field.onChange}
                             value={field.value}
                             className="space-y-2"
+                            required
                           >
                             <AnimatePresence>
                               {addresses.map((address) => (
@@ -336,9 +385,7 @@ export function CheckoutForm({
                                 >
                                   <FormItem className="flex items-center space-x-3 space-y-0 rounded-lg border p-4 cursor-pointer hover:bg-accent transition-colors">
                                     <FormControl>
-                                      <RadioGroupItem
-                                        value={address.id.toString()}
-                                      />
+                                      <RadioGroupItem value={address.id} />
                                     </FormControl>
                                     <Label className="flex-1 cursor-pointer">
                                       <div className="font-medium">
@@ -677,6 +724,8 @@ export function CheckoutForm({
             <PaymentMethods
               value={form.watch("payment_method")}
               onChange={(value) => form.setValue("payment_method", value)}
+              onStripePaymentSuccess={handleStripePaymentSuccess}
+              onCashOnDeliverySubmit={handleCashOnDeliverySubmit}
             />
           </CardContent>
           <CardFooter className="relative z-10 flex flex-col gap-4 bg-background/80 backdrop-blur-sm p-6 border-t">

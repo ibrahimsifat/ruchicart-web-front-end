@@ -13,17 +13,24 @@ interface OrderData {
   is_partial: boolean;
   cart: any[];
   guest_id?: string;
+  change_amount?: string;
+  stripe_payment_intent_id?: string;
 }
 
 export async function placeOrder(orderData: OrderData) {
   try {
-    const response = await api.post(`/customer/order/place`, orderData);
-
-    if (response.status !== 200) {
-      throw new Error("Failed to place order");
+    if (orderData.payment_method === "cash_on_delivery") {
+      orderData = { ...orderData, change_amount: orderData.change_amount };
+    } else if (orderData.payment_method === "stripe") {
+      orderData = {
+        ...orderData,
+        stripe_payment_intent_id: orderData.stripe_payment_intent_id,
+      };
     }
 
-    return response.data;
+    const response = await api.post(`/customer/order/place`, orderData);
+
+    return response;
   } catch (error) {
     throw error;
   }
@@ -53,15 +60,13 @@ export async function ordertrak({ order_id, phone }: TrackOrderData) {
 
 interface OrderDetailsParams {
   order_id: string;
-  phone?: string;
 }
 
-export async function getOrderDetails({ order_id, phone }: OrderDetailsParams) {
+export async function getOrderDetails({ order_id }: OrderDetailsParams) {
   try {
     const response = await api.get(`/customer/order/details`, {
       params: {
         order_id,
-        phone: useAuthStore.getState().token ? undefined : phone,
       },
     });
 

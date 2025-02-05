@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CONSTANT } from "@/config/constants";
 import type { CartItem } from "@/store/cart";
 import { ImageType } from "@/types/image";
 import { Info } from "lucide-react";
@@ -16,16 +17,29 @@ interface OrderSummaryProps {
   items: CartItem[];
   total: number;
   deliveryTip: number;
+  isCashOnDelivery: boolean;
 }
 
-export function OrderSummary({ items, total, deliveryTip }: OrderSummaryProps) {
+export function OrderSummary({
+  items,
+  total,
+  deliveryTip,
+  isCashOnDelivery,
+}: OrderSummaryProps) {
   const subtotal = total;
   const discount = 0;
   const vat = subtotal * 0.15; // 15% VAT
   const serviceCharge = 10;
   const deliveryFee = 45;
+  const cashOnDeliveryFee = CONSTANT.cashOnDeliveryChangeAmount;
   const finalTotal =
-    subtotal + vat + serviceCharge + deliveryFee + deliveryTip - discount;
+    subtotal +
+    vat +
+    serviceCharge +
+    deliveryFee +
+    deliveryTip -
+    discount +
+    (isCashOnDelivery ? cashOnDeliveryFee : 0);
 
   return (
     <Card className="sticky top-4 overflow-hidden">
@@ -85,6 +99,12 @@ export function OrderSummary({ items, total, deliveryTip }: OrderSummaryProps) {
             <div className="flex justify-between text-green-500">
               <span>Delivery Tip</span>
               <span>${deliveryTip.toFixed(2)}</span>
+            </div>
+          )}
+          {isCashOnDelivery && (
+            <div className="flex justify-between text-red-500">
+              <span>Additional Amount (Cash on Delivery)</span>
+              <span>${cashOnDeliveryFee.toFixed(2)}</span>
             </div>
           )}
           <div className="flex justify-between items-center">

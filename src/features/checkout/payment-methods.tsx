@@ -1,38 +1,37 @@
-"use client"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { CONSTANT } from "@/config/constants";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { CreditCard, DollarSign } from "lucide-react";
+import { StripePaymentForm } from "./stripe-payment-form";
 
-import { CreditCard, Plus } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
+// Initialize Stripe with the publishable key
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 interface PaymentMethodsProps {
-  value: string
-  onChange: (value: string) => void
+  value: string;
+  onChange: (value: string) => void;
+  onStripePaymentSuccess: (paymentIntentId: string) => void;
+  onCashOnDeliverySubmit: () => void;
 }
 
-const paymentMethods = [
-  {
-    id: "card",
-    name: "Credit/Debit Card",
-    icon: "/placeholder.svg",
-    lastDigits: "•••• 4242",
-  },
-  {
-    id: "paypal",
-    name: "PayPal",
-    icon: "/placeholder.svg",
-    email: "john.doe@example.com",
-  },
-  {
-    id: "apple-pay",
-    name: "Apple Pay",
-    icon: "/placeholder.svg",
-  },
-]
+export function PaymentMethods({
+  value,
+  onChange,
+  onStripePaymentSuccess,
+  onCashOnDeliverySubmit,
+}: PaymentMethodsProps) {
+  const handlePaymentMethodChange = (newValue: string) => {
+    onChange(newValue);
+  };
 
-export function PaymentMethods({ value, onChange }: PaymentMethodsProps) {
+  const handleCashOnDeliverySubmit = () => {
+    onCashOnDeliverySubmit();
+  };
   return (
     <Card className="relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-primary" />
@@ -41,41 +40,67 @@ export function PaymentMethods({ value, onChange }: PaymentMethodsProps) {
           <CreditCard className="h-5 w-5 text-primary" />
           Payment Methods
         </CardTitle>
-        <Button variant="outline" size="sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Add New Card
-        </Button>
       </CardHeader>
       <CardContent>
-        <RadioGroup value={value} onValueChange={onChange} className="grid gap-4">
-          {paymentMethods.map((method) => (
-            <div
-              key={method.id}
-              className="relative flex items-center space-x-4 rounded-lg border p-4 cursor-pointer hover:bg-accent transition-colors"
-              onClick={() => onChange(method.id)}
+        <RadioGroup
+          value={value}
+          onValueChange={handlePaymentMethodChange}
+          className="grid gap-4"
+        >
+          <div className="flex items-center space-x-4 rounded-lg border p-4 cursor-pointer hover:bg-accent transition-colors">
+            <RadioGroupItem value="cash_on_delivery" id="cash_on_delivery" />
+            <Label
+              htmlFor="cash_on_delivery"
+              className="flex items-center gap-2 cursor-pointer"
             >
-              <RadioGroupItem value={method.id} id={method.id} className="absolute right-4" />
-              <div className="h-12 w-12 rounded-lg border bg-card p-2 flex items-center justify-center">
-                <Image
-                  src={method.icon || "/placeholder.svg"}
-                  alt={method.name}
-                  width={32}
-                  height={32}
-                  className="object-contain"
-                />
-              </div>
-              <div className="flex-1">
-                <Label htmlFor={method.id} className="text-base font-medium">
-                  {method.name}
-                </Label>
-                {method.lastDigits && <p className="text-sm text-muted-foreground">{method.lastDigits}</p>}
-                {method.email && <p className="text-sm text-muted-foreground">{method.email}</p>}
-              </div>
-            </div>
-          ))}
+              <DollarSign className="h-4 w-4" />
+              Cash on Delivery
+              <small className="text-muted-foreground">
+                An additional amount of {CONSTANT.cashOnDeliveryChangeAmount}{" "}
+                will be charged for Cash on Delivery.
+              </small>
+            </Label>
+          </div>
+          <div className="flex items-center space-x-4 rounded-lg border p-4 cursor-pointer hover:bg-accent transition-colors">
+            <RadioGroupItem value="stripe" id="stripe" />
+            <Label
+              htmlFor="stripe"
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <CreditCard className="h-4 w-4" />
+              Credit Card (Stripe)
+            </Label>
+          </div>
         </RadioGroup>
+
+        {value === "stripe" && (
+          <div className="mt-4">
+            <Elements stripe={stripePromise}>
+              <StripePaymentForm onPaymentSuccess={onStripePaymentSuccess} />
+            </Elements>
+          </div>
+        )}
+        {value === "cash_on_delivery" && (
+          <div className="mt-4 space-y-4">
+            {/* <div className="text-sm text-muted-foreground">
+              An additional amount of {CONSTANT.cashOnDeliveryChangeAmount} will
+              be charged for Cash on Delivery.
+            </div> */}
+            {/* <Input
+              type="number"
+              placeholder="Change amount (optional)"
+              value={changeAmount}
+              onChange={(e) => setChangeAmount(e.target.value)}
+            /> */}
+            <button
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded"
+              onClick={handleCashOnDeliverySubmit}
+            >
+              Confirm Cash on Delivery
+            </button>
+          </div>
+        )}
       </CardContent>
     </Card>
-  )
+  );
 }
-

@@ -20,11 +20,11 @@ export function HeroSlider() {
   const { addItem } = useCart();
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides?.length);
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % (slides?.length || 0));
     }, 5000); // Change slide every 5 seconds
 
     return () => clearInterval(timer);
-  }, []);
+  }, [slides]);
 
   return (
     <div className="relative overflow-hidden rounded-xl h-[400px] md:h-[500px] mb-10">

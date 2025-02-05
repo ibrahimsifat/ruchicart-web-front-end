@@ -8,13 +8,12 @@ import {
   Phone,
   Twitter,
 } from "lucide-react";
-import { unstable_noStore } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
-function getCopyrightYear() {
-  unstable_noStore(); // Opt out of static rendering
-  return new Date().getFullYear();
-}
+// function getCopyrightYear() {
+//   unstable_noStore(); // Opt out of static rendering
+//   return new Date().getFullYear();
+// }
 export function Footer() {
   return (
     <footer className="bg-[#1A1A1A] text-white py-12">
@@ -194,7 +193,8 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="text-center text-sm text-gray-400">
-          © {getCopyrightYear()} RuchiCart. All Rights Reserved
+          {/* © {getCopyrightYear()} RuchiCart. All Rights Reserved */}© 2025
+          RuchiCart. All Rights Reserved
         </div>
       </div>
     </footer>

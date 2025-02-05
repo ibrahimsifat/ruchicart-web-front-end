@@ -1,5 +1,5 @@
+import { CategorySkeleton } from "@/components/ui/skeletons";
 import { CategoryList } from "@/features/category/CategoryList";
-import { CategorySkeleton } from "@/features/category/CategorySkeleton";
 import { fetchData } from "@/lib/api/fetch-utils";
 import { getQueryClient, queryKeys } from "@/lib/api/queries";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
