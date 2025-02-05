@@ -28,7 +28,7 @@ export function BranchSelector({ isOpen, onClose }: BranchSelectorProps) {
     return {
       product_id: item.id,
       quantity: item.quantity,
-      variations: item.variations || [],
+      variations: item.variant || [],
     };
   });
 

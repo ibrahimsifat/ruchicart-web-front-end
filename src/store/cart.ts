@@ -7,7 +7,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   image: string;
-  variations?: {
+  variant?: {
     name: string;
     values: {
       label: string[];
@@ -37,13 +37,13 @@ export const useCart = create<CartStore>()(
           const existingItem = state.items.find(
             (i) =>
               i.id === item.id &&
-              JSON.stringify(i.variations) === JSON.stringify(item.variations)
+              JSON.stringify(i.variant) === JSON.stringify(item.variant)
           );
           if (existingItem) {
             return {
               items: state.items.map((i) =>
                 i.id === item.id &&
-                JSON.stringify(i.variations) === JSON.stringify(item.variations)
+                JSON.stringify(i.variant) === JSON.stringify(item.variant)
                   ? { ...i, quantity: i.quantity + 1 }
                   : i
               ),

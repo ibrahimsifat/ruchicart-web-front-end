@@ -118,7 +118,7 @@ export function ProductPreviewModal({
       image: product.image,
       price: calculateTotalPrice(),
       quantity: quantity,
-      variations: selectedVariations,
+      variant: selectedVariations,
     });
     onOpenChange(false);
   };
@@ -162,12 +162,11 @@ export function ProductPreviewModal({
               <span className="text-2xl font-bold text-primary">
                 ${calculateTotalPrice().toFixed(2)}
               </span>
-              {product.originalPrice &&
-                product.originalPrice > product.price && (
-                  <span className="text-sm text-muted-foreground line-through">
-                    ${product.originalPrice.toFixed(2)}
-                  </span>
-                )}
+              {product.discount && product.discount > 0 && (
+                <span className="text-sm text-muted-foreground line-through">
+                  ${product.price.toFixed(2)}
+                </span>
+              )}
             </div>
           </div>
 
@@ -300,9 +299,9 @@ export function ProductPreviewModal({
                 <span className="text-2xl font-bold text-primary">
                   ${calculateTotalPrice().toFixed(2)}
                 </span>
-                {product.originalPrice && (
+                {product.price && (
                   <span className="text-sm text-muted-foreground line-through">
-                    ${(product.originalPrice * quantity).toFixed(2)}
+                    ${(product.price * quantity).toFixed(2)}
                   </span>
                 )}
               </div>

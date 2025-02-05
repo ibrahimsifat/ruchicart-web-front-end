@@ -100,7 +100,7 @@ export default function ProductPage({ product }: ProductPageProps) {
       image: product.image,
       price: calculateTotalPrice(),
       quantity: 1,
-      variations: selectedVariations,
+      variant: selectedVariations,
     });
   };
 
