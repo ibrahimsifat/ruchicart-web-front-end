@@ -2,13 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import CustomImage from "@/components/ui/customImage";
 import {
@@ -220,6 +214,7 @@ export function CheckoutForm({
     setEditingAddressId(address.id);
     addressForm.reset(address);
   };
+
   const handleLocationSelect = (location: {
     address: string;
     lat: number;
@@ -228,13 +223,19 @@ export function CheckoutForm({
     addressForm.setValue("address", location.address);
     setShowMap(false);
   };
+
   const handleStripePaymentSuccess = (paymentIntentId: string) => {
-    // Update the form data with the payment intent ID
-    form.setValue("stripe_payment_intent_id", paymentIntentId);
-    console.log("Strapi payment success", paymentIntentId);
+    // console.log("Strapi payment success", paymentIntentId);
     // Submit the form
-    form.handleSubmit(handleFormSubmit)();
+    const orderData = {
+      ...form.getValues(),
+      payment_method: "stripe",
+      stripe_payment_intent_id: paymentIntentId,
+      guest_id: !token ? getGuestId() : undefined,
+    };
+    onSubmit(orderData);
   };
+
   const handleCashOnDeliverySubmit = () => {
     form.setValue("payment_method", "cash_on_delivery");
     form.setValue("is_partial", 0);
@@ -247,6 +248,17 @@ export function CheckoutForm({
     onSubmit(orderData);
   };
 
+  const handleTakeAwaySubmit = () => {
+    form.setValue("order_type", "take_away");
+    form.setValue("is_partial", 0);
+    form.setValue("payment_method", "cash_on_delivery");
+    const orderData = {
+      ...form.getValues(),
+      delivery_address_id: 0,
+      guest_id: !token ? getGuestId() : undefined,
+    };
+    onSubmit(orderData);
+  };
   const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
     const orderData = {
       ...values,
@@ -273,6 +285,7 @@ export function CheckoutForm({
     }
     onSubmit(orderData);
   };
+
   return (
     <Form {...form}>
       <form
@@ -298,7 +311,7 @@ export function CheckoutForm({
                   </FormLabel>
                   <FormControl>
                     <RadioGroup
-                      onValueChange={(value) => field.onChange(Number(value))}
+                      onValueChange={(value) => field.onChange(value)}
                       defaultValue={field.value}
                       className="grid grid-cols-2 gap-4"
                     >
@@ -657,6 +670,13 @@ export function CheckoutForm({
                   value={deliveryTip || 0}
                   onChange={(value) => setDeliveryTip(value)}
                 />
+
+                <PaymentMethods
+                  value={form.watch("payment_method")}
+                  onChange={(value) => form.setValue("payment_method", value)}
+                  onStripePaymentSuccess={handleStripePaymentSuccess}
+                  onCashOnDeliverySubmit={handleCashOnDeliverySubmit}
+                />
               </>
             )}
 
@@ -718,48 +738,40 @@ export function CheckoutForm({
                     </div>
                   </div>
                 </Card>
+                <div className="relative z-10 flex flex-col gap-4 bg-background/80 backdrop-blur-sm p-6 border-t">
+                  <div className="flex items-start gap-2">
+                    <Checkbox
+                      id="terms"
+                      checked={acceptTerms}
+                      onCheckedChange={(checked) =>
+                        setAcceptTerms(checked as boolean)
+                      }
+                    />
+                    <label htmlFor="terms" className="text-sm leading-none">
+                      I agree that placing the order places me under{" "}
+                      <Button variant="link" className="h-auto p-0">
+                        Terms and Conditions
+                      </Button>{" "}
+                      &{" "}
+                      <Button variant="link" className="h-auto p-0">
+                        Privacy Policy
+                      </Button>
+                    </label>
+                  </div>
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleTakeAwaySubmit();
+                    }}
+                    className="w-full"
+                    disabled={isLoading || !acceptTerms}
+                  >
+                    {isLoading ? t("processing") : t("confirmTakeAwayOrder")}
+                  </Button>
+                </div>
               </div>
             )}
-
-            <PaymentMethods
-              value={form.watch("payment_method")}
-              onChange={(value) => form.setValue("payment_method", value)}
-              onStripePaymentSuccess={handleStripePaymentSuccess}
-              onCashOnDeliverySubmit={handleCashOnDeliverySubmit}
-            />
           </CardContent>
-          <CardFooter className="relative z-10 flex flex-col gap-4 bg-background/80 backdrop-blur-sm p-6 border-t">
-            <div className="flex items-start gap-2">
-              <Checkbox
-                id="terms"
-                checked={acceptTerms}
-                onCheckedChange={(checked) =>
-                  setAcceptTerms(checked as boolean)
-                }
-              />
-              <label htmlFor="terms" className="text-sm leading-none">
-                I agree that placing the order places me under{" "}
-                <Button variant="link" className="h-auto p-0">
-                  Terms and Conditions
-                </Button>{" "}
-                &{" "}
-                <Button variant="link" className="h-auto p-0">
-                  Privacy Policy
-                </Button>
-              </label>
-            </div>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading || !acceptTerms}
-            >
-              {isLoading
-                ? t("processing")
-                : orderType === "delivery"
-                ? t("proceedToPayment")
-                : t("confirmTakeAwayOrder")}
-            </Button>
-          </CardFooter>
         </Card>
       </form>
       {showMap && (

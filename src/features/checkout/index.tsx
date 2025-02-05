@@ -71,7 +71,7 @@ export default function CheckoutPage() {
       }
 
       const data = response.data;
-
+      //TODO:: clearCart
       // clearCart();
       router.push(`/order-confirmation/${data.order_id}`);
 
@@ -97,6 +97,7 @@ export default function CheckoutPage() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
   if (itemCount === 0) {
     return null;
   }
