@@ -11,15 +11,19 @@ import {
 } from "@/components/ui/sheet";
 import { CartDrawer } from "@/features/cart/cart-drawer";
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { useAuthStore } from "@/store/authStore";
-import { useCart } from "@/store/cart";
-import { ImageType } from "@/types/image";
-import { ChevronDown, LogOut, MenuIcon, ShoppingBag, User } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useCart } from "@/store/cartStore";
+import {
+  ChevronDown,
+  LogIn,
+  LogOut,
+  MenuIcon,
+  ShoppingBag,
+  User,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import LocaleSwitcher from "../../components/LocaleSwitcher";
 import {
@@ -27,8 +31,6 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "../../components/ui/avatar";
-import { Card } from "../../components/ui/card";
-import CustomImage from "../../components/ui/customImage";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,9 +38,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
-import { getCategoryBGGradient } from "../../components/utils/getCategoryBGGradient";
 import { CONSTANT } from "../../config/constants";
-import { SearchBar } from "./search-bar";
+import MegaMenu from "./megaMenu";
+import { SearchBar } from "./searchBar";
 
 export const CartIconRef =
   React.createContext<React.RefObject<HTMLButtonElement | null> | null>(null);
@@ -49,11 +51,8 @@ export function Navbar() {
   const [showCartDrawer, setShowCartDrawer] = useState(false);
   const cartIconRef = useRef<HTMLButtonElement>(null);
   const { data: categories } = useCategories();
-  const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
   const { itemCount } = useCart();
-  const { token, user, getProfileInfo } = useAuthStore();
+  const { token, getProfileInfo } = useAuthStore();
 
   useEffect(() => {
     if (token) {
@@ -166,7 +165,10 @@ export function Navbar() {
               <UserMenu />
             ) : (
               <Link href="/auth/login">
-                <Button className="hidden md:inline-flex">Sign In</Button>{" "}
+                <Button className="hidden md:inline-flex">
+                  Sign In
+                  <LogIn className="ml-2" />
+                </Button>
               </Link>
             )}
           </div>
@@ -174,53 +176,7 @@ export function Navbar() {
       </nav>
       {/* Category Mega Menu */}
       {isMegaMenuOpen && (
-        <div className="absolute left-0 w-full bg-white shadow-lg z-40 py-4 border-t">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
-              {categories?.map((category) => (
-                <Link key={category.name} href={`/categories/${category.id}`}>
-                  <Card
-                    key={category.name}
-                    className={cn(
-                      "group transition-all duration-500 cursor-pointer overflow-hidden",
-
-                      getCategoryBGGradient(),
-                      isSticky ? "rounded-full scale-50" : "rounded-lg"
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "p-4 flex flex-col items-center justify-center aspect-square transition-all duration-500",
-                        isSticky && "scale-100 p-0"
-                      )}
-                    >
-                      <CustomImage
-                        src={category.image}
-                        type={ImageType.CATEGORY}
-                        width={200}
-                        height={200}
-                        className={cn(
-                          "w-full h-full object-cover transition-transform duration-300",
-                          isSticky ? "scale-100" : "mb-2"
-                        )}
-                        alt={`${category.name} category`}
-                      />
-                      {!isSticky && (
-                        <span
-                          className={cn(
-                            "font-medium md:text-md text-sm text-center group-hover:font-bold transition-all duration-300 h-9"
-                          )}
-                        >
-                          {category.name}
-                        </span>
-                      )}
-                    </div>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
+        <MegaMenu categories={categories || []} isSticky={isSticky} />
       )}
 
       <CartDrawer open={showCartDrawer} onOpenChange={setShowCartDrawer} />

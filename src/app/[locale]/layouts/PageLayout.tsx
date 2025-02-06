@@ -1,6 +1,6 @@
 import { Footer } from "@/features/layout/footer";
 import { Navbar } from "@/features/layout/navbar";
-import { TopBar } from "@/features/layout/top-bar";
+import { TopBar } from "@/features/layout/topBar";
 import { ReactNode, Suspense } from "react";
 
 type Props = {

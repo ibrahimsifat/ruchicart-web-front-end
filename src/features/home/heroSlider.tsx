@@ -1,8 +1,8 @@
 "use client";
 import { Card } from "@/components/ui/card";
 import { useBanners } from "@/lib/hooks/queries/banner/useBanners";
-import { cn } from "@/lib/utils";
-import { useCart } from "@/store/cart";
+import { cn } from "@/lib/utils/utils";
+import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";

@@ -9,7 +9,7 @@ import {
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { useState } from "react";
-import { LocationSelector } from "./LocationSelector";
+import { LocationSelector } from "./locationSelector";
 
 interface LocationModalProps {
   isOpen: boolean;

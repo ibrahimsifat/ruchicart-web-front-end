@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { CONSTANT } from "@/config/constants";
-import type { CartItem } from "@/store/cart";
+import type { CartItem } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { Info } from "lucide-react";
 

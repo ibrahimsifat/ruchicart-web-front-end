@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { api } from "@/lib/api/api";
 import { useBranchStore } from "@/store/branchStore";
-import { CartItem, useCart } from "@/store/cart";
+import { CartItem, useCart } from "@/store/cartStore";
 import { useLocationStore } from "@/store/locationStore";
 import { BaseBranch } from "@/types/branch";
 import { Clock, MapPin, Phone } from "lucide-react";

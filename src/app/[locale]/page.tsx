@@ -5,14 +5,14 @@ import {
   ProductCardSkeleton,
   PromoCardSkeleton,
 } from "@/components/ui/skeletons";
-import { AppDownload } from "@/features/home/app-download";
-import { DiscountBanner } from "@/features/home/discount-banner";
-import { ExploreCategories } from "@/features/home/explore-categories";
-import { FeaturedProducts } from "@/features/home/featured-products";
-import { HeroSlider } from "@/features/home/hero-slider";
-import { NearbyBranch } from "@/features/home/nearby-branch";
-import { TrendingDishes } from "@/features/home/trending-dishes";
-import { fetchData } from "@/lib/api/fetch-utils";
+import { AppDownload } from "@/features/home/appDownload";
+import { DiscountBanner } from "@/features/home/discountBanner";
+import { ExploreCategories } from "@/features/home/exploreCategories";
+import { FeaturedProducts } from "@/features/home/featuredProducts";
+import { HeroSlider } from "@/features/home/heroSlider";
+import { NearbyBranch } from "@/features/home/nearbyBranch";
+import { TrendingDishes } from "@/features/home/trendingDishes";
+import { fetchData } from "@/lib/api/fetchUtils";
 import { getQueryClient, queryKeys } from "@/lib/api/queries";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";

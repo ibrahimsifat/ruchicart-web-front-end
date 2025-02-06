@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CONSTANT } from "@/config/constants";
 import { GooglePhoneVerification } from "@/features/auth/google-phone-verification";
-import { auth } from "@/lib/firebase";
+import { auth } from "@/lib/utils/firebase";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";

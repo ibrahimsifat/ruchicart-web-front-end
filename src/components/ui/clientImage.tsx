@@ -1,7 +1,7 @@
 "use client";
 
-import { getImageUrl } from "@/lib/image";
-import { cn } from "@/lib/utils";
+import { getImageUrl } from "@/lib/utils/image";
+import { cn } from "@/lib/utils/utils";
 import { ImageProps, ImageType } from "@/types/image";
 import Image from "next/image";
 import React from "react";

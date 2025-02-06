@@ -45,11 +45,13 @@ export const useGetGeocode = (
 };
 
 export const useSetLocation = () => {
-  const setLocation = useLocationStore((state) => state.setLocation);
+  const setCurrentLocation = useLocationStore(
+    (state) => state.setCurrentLocation
+  );
 
   return {
     mutate: (location: { address: string; lat: number; lng: number }) => {
-      setLocation(location);
+      setCurrentLocation(location);
       return Promise.resolve(location);
     },
   };

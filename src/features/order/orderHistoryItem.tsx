@@ -7,7 +7,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useToast } from "@/components/ui/use-toast";
-import { useCart } from "@/store/cart";
+import { useCart } from "@/store/cartStore";
 import {
   ChevronDown,
   ChevronUp,
@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { OrderFeedback } from "./order-feedback";
+import { OrderFeedback } from "./orderFeedback";
 
 interface OrderHistoryItemProps {
   order: {

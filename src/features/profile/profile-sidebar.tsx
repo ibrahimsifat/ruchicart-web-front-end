@@ -1,9 +1,19 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { User, ShoppingBag, Ticket, Heart, Wallet2, Award, Users, Mail, Settings } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils/utils";
+import {
+  Award,
+  Heart,
+  Mail,
+  Settings,
+  ShoppingBag,
+  Ticket,
+  User,
+  Users,
+  Wallet2,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const sidebarItems = [
   {
@@ -51,16 +61,16 @@ const sidebarItems = [
     icon: Settings,
     href: "/profile/settings",
   },
-]
+];
 
 export function ProfileSidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <div className="w-64 space-y-1">
       {sidebarItems.map((item) => {
-        const isActive = pathname === item.href
-        const Icon = item.icon
+        const isActive = pathname === item.href;
+        const Icon = item.icon;
 
         return (
           <Link
@@ -68,15 +78,16 @@ export function ProfileSidebar() {
             href={item.href}
             className={cn(
               "flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg",
-              isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted",
+              isActive
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-muted"
             )}
           >
             <Icon className="h-4 w-4" />
             {item.title}
           </Link>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
-

@@ -5,7 +5,7 @@ import { CONSTANT } from "@/config/constants";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { CreditCard, DollarSign } from "lucide-react";
-import { StripePaymentForm } from "./stripe-payment-form";
+import { StripePaymentForm } from "./stripePaymentForm";
 
 // Initialize Stripe with the publishable key
 const stripePromise = loadStripe(

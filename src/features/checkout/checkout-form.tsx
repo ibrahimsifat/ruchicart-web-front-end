@@ -27,7 +27,7 @@ import {
 import { useAddressStore } from "@/store/addressStore";
 import { useAuthStore } from "@/store/authStore";
 import { useBranchStore } from "@/store/branchStore";
-import { useCart } from "@/store/cart";
+import { useCart } from "@/store/cartStore";
 import { useLocationStore } from "@/store/locationStore";
 import { BaseBranch } from "@/types/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,8 +36,8 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { LocationSelector } from "../location/LocationSelector";
-import { PaymentMethods } from "../order/payment-methods";
+import { LocationSelector } from "../location/locationSelector";
+import { PaymentMethods } from "../order/paymentMethods";
 import CheckoutAddress from "./checkoutAddresList";
 import CheckoutAddressForm from "./checkoutAddressForm";
 import { DeliveryTips } from "./delivery-tips";
@@ -262,7 +262,7 @@ export function CheckoutForm({
       cart: items.map((item) => ({
         product_id: item.id,
         quantity: item.quantity,
-        variations: item.variant,
+        variant: item.variant,
         add_on_ids: [], //  if have add-ons
         add_on_qtys: [], //  if have add-ons
       })),

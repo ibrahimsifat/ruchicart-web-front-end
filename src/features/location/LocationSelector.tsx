@@ -8,7 +8,7 @@ import { useLocationStore } from "@/store/locationStore";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { MapPin, Navigation, Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MapStatus } from "./map-status";
+import { MapStatus } from "./mapStatus";
 
 const libraries: ("places" | "geometry")[] = ["places", "geometry"];
 
@@ -68,7 +68,6 @@ export function LocationSelector({
   );
   const { setCurrentLocation } = useLocationStore();
   const { toast } = useToast();
-  const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
   const autocompleteService =
     useRef<google.maps.places.AutocompleteService | null>(null);
   const placesService = useRef<google.maps.places.PlacesService | null>(null);

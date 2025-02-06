@@ -6,7 +6,7 @@ import CustomImage from "@/components/ui/customImage";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { useCart } from "@/store/cart";
+import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { Clock, ShoppingCart, Star } from "lucide-react";
 import type { GetServerSideProps } from "next";

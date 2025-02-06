@@ -2,9 +2,9 @@
 
 import { useToast } from "@/components/ui/use-toast";
 import { CheckoutForm } from "@/features/checkout/checkout-form";
-import { OrderSummary } from "@/features/order/order-summary";
+import { OrderSummary } from "@/features/order/orderSummary";
 import { placeOrder } from "@/lib/api/order";
-import { useCart } from "@/store/cart";
+import { useCart } from "@/store/cartStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as z from "zod";

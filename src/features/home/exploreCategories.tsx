@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { CategorySkeleton } from "@/components/ui/skeletons";
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { Category } from "@/types";
 import { ImageType } from "@/types/image";
 import Link from "next/link";

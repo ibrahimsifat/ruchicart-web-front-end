@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { CartIconRef } from "@/features/layout/navbar";
-import { useCart } from "@/store/cart";
+import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { motion } from "framer-motion";
 import { Clock, Eye, Heart, Plus, ShoppingCart, Star } from "lucide-react";

@@ -1,4 +1,4 @@
-import { fetchData } from "@/lib/api/fetch-utils";
+import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
 import { useBranchStore } from "@/store/branchStore";
 import { BaseBranch } from "@/types/branch";

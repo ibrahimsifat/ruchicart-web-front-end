@@ -1,9 +1,9 @@
 import { Separator } from "@/components/ui/separator";
 import { Footer } from "@/features/layout/footer";
 import { Navbar } from "@/features/layout/navbar";
-import { TopBar } from "@/features/layout/top-bar";
-import { ProductDetails } from "@/features/product/product-details";
-import { RelatedProducts } from "@/features/product/related-products";
+import { TopBar } from "@/features/layout/topBar";
+import { ProductDetails } from "@/features/product/productDetails";
+import { RelatedProducts } from "@/features/product/relatedProducts";
 import { notFound } from "next/navigation";
 
 async function getProductDetails(slug: string) {

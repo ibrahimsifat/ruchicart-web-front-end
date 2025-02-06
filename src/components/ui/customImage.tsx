@@ -1,5 +1,5 @@
-import { getImageUrl } from "@/lib/image";
-import { cn } from "@/lib/utils";
+import { getImageUrl } from "@/lib/utils/image";
+import { cn } from "@/lib/utils/utils";
 import { ImageType } from "@/types/image";
 import Image, { ImageProps } from "next/image";
 import { memo } from "react";

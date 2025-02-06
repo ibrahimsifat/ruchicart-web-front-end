@@ -8,7 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useCart } from "@/store/cart";
+import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { ShoppingBag } from "lucide-react";
 import { useRouter } from "next/navigation";

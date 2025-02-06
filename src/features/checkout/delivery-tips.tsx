@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Coins } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils/utils";
+import { Coins } from "lucide-react";
+import { useState } from "react";
 
 interface DeliveryTipsProps {
-  value: number
-  onChange: (value: number) => void
+  value: number;
+  onChange: (value: number) => void;
 }
 
 const predefinedTips = [
@@ -17,18 +17,18 @@ const predefinedTips = [
   { value: 15, label: "15" },
   { value: 20, label: "20" },
   { value: 40, label: "40" },
-]
+];
 
 export function DeliveryTips({ value, onChange }: DeliveryTipsProps) {
-  const [customTip, setCustomTip] = useState("")
+  const [customTip, setCustomTip] = useState("");
 
   const handleCustomTipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value
+    const newValue = e.target.value;
     if (/^\d*$/.test(newValue)) {
-      setCustomTip(newValue)
-      onChange(Number(newValue))
+      setCustomTip(newValue);
+      onChange(Number(newValue));
     }
-  }
+  };
 
   return (
     <Card className="relative overflow-hidden">
@@ -55,11 +55,12 @@ export function DeliveryTips({ value, onChange }: DeliveryTipsProps) {
                 variant="outline"
                 className={cn(
                   "h-12 text-lg font-normal transition-all hover:scale-105",
-                  value === tip.value && "border-2 border-primary bg-primary/5 hover:bg-primary/10",
+                  value === tip.value &&
+                    "border-2 border-primary bg-primary/5 hover:bg-primary/10"
                 )}
                 onClick={() => {
-                  setCustomTip(tip.value.toString())
-                  onChange(tip.value)
+                  setCustomTip(tip.value.toString());
+                  onChange(tip.value);
                 }}
               >
                 {tip.label}
@@ -69,6 +70,5 @@ export function DeliveryTips({ value, onChange }: DeliveryTipsProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

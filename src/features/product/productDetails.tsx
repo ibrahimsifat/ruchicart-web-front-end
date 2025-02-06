@@ -1,51 +1,57 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { Heart, Minus, Plus, Star, Clock, Info } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils/utils";
+import { Heart, Minus, Plus, Star } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 
 interface ProductDetailsProps {
   product: {
-    id: string
-    name: string
-    description: string
-    image: string
-    rating: number
-    restaurant: string
-    price: number
-    originalPrice: number
-    options: Array<{ name: string; price: number }>
+    id: string;
+    name: string;
+    description: string;
+    image: string;
+    rating: number;
+    restaurant: string;
+    price: number;
+    originalPrice: number;
+    options: Array<{ name: string; price: number }>;
     nutritionInfo: {
-      calories: string
-      protein: string
-      carbs: string
-      fat: string
-    }
-    ingredients: string[]
-  }
+      calories: string;
+      protein: string;
+      carbs: string;
+      fat: string;
+    };
+    ingredients: string[];
+  };
 }
 
-const productImages = ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]
+const productImages = [
+  "/placeholder.svg",
+  "/placeholder.svg",
+  "/placeholder.svg",
+  "/placeholder.svg",
+];
 
 export function ProductDetails({ product }: ProductDetailsProps) {
-  const [selectedOption, setSelectedOption] = useState(product.options[0].name)
-  const [quantity, setQuantity] = useState(1)
-  const [isFavorite, setIsFavorite] = useState(false)
-  const [currentImage, setCurrentImage] = useState(0)
+  const [selectedOption, setSelectedOption] = useState(product.options[0].name);
+  const [quantity, setQuantity] = useState(1);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
 
-  const selectedPrice = product.options.find((opt) => opt.name === selectedOption)?.price || product.price
-  const totalPrice = selectedPrice * quantity
+  const selectedPrice =
+    product.options.find((opt) => opt.name === selectedOption)?.price ||
+    product.price;
+  const totalPrice = selectedPrice * quantity;
 
   const handleQuantityChange = (delta: number) => {
-    setQuantity((prev) => Math.max(1, prev + delta))
-  }
+    setQuantity((prev) => Math.max(1, prev + delta));
+  };
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
@@ -64,7 +70,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
             className="absolute top-4 right-4 bg-white/80 hover:bg-white rounded-full"
             onClick={() => setIsFavorite(!isFavorite)}
           >
-            <Heart className={cn("h-5 w-5", isFavorite ? "fill-red-500 text-red-500" : "")} />
+            <Heart
+              className={cn(
+                "h-5 w-5",
+                isFavorite ? "fill-red-500 text-red-500" : ""
+              )}
+            />
           </Button>
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/50 rounded-full">
             {productImages.map((_, index) => (
@@ -72,7 +83,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 key={index}
                 className={cn(
                   "w-2 h-2 rounded-full transition-colors",
-                  currentImage === index ? "bg-white" : "bg-white/50",
+                  currentImage === index ? "bg-white" : "bg-white/50"
                 )}
                 onClick={() => setCurrentImage(index)}
               />
@@ -85,7 +96,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               key={index}
               className={cn(
                 "relative aspect-square rounded-lg overflow-hidden cursor-pointer border-2",
-                currentImage === index ? "border-primary" : "border-transparent",
+                currentImage === index ? "border-primary" : "border-transparent"
               )}
               onClick={() => setCurrentImage(index)}
             >
@@ -115,26 +126,36 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
         <div className="space-y-4">
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold">${product.price.toFixed(2)}</span>
+            <span className="text-2xl font-bold">
+              ${product.price.toFixed(2)}
+            </span>
             {product.originalPrice > product.price && (
-              <span className="text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
+              <span className="text-muted-foreground line-through">
+                ${product.originalPrice.toFixed(2)}
+              </span>
             )}
           </div>
 
           <div className="space-y-2">
             <Label>Capacity</Label>
-            <RadioGroup value={selectedOption} onValueChange={setSelectedOption} className="grid grid-cols-3 gap-4">
+            <RadioGroup
+              value={selectedOption}
+              onValueChange={setSelectedOption}
+              className="grid grid-cols-3 gap-4"
+            >
               {product.options.map((option) => (
                 <Label
                   key={option.name}
                   className={cn(
                     "flex items-center justify-between rounded-lg border-2 p-4 cursor-pointer",
-                    selectedOption === option.name && "border-primary",
+                    selectedOption === option.name && "border-primary"
                   )}
                 >
                   <RadioGroupItem value={option.name} className="sr-only" />
                   <span className="font-medium">{option.name}</span>
-                  <span className="text-sm text-muted-foreground">+${option.price.toFixed(2)}</span>
+                  <span className="text-sm text-muted-foreground">
+                    +${option.price.toFixed(2)}
+                  </span>
                 </Label>
               ))}
             </RadioGroup>
@@ -142,11 +163,21 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
           <div className="flex items-center gap-4">
             <div className="flex items-center border rounded-lg">
-              <Button variant="ghost" size="icon" className="rounded-none" onClick={() => handleQuantityChange(-1)}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-none"
+                onClick={() => handleQuantityChange(-1)}
+              >
                 <Minus className="h-4 w-4" />
               </Button>
               <span className="w-12 text-center">{quantity}</span>
-              <Button variant="ghost" size="icon" className="rounded-none" onClick={() => handleQuantityChange(1)}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-none"
+                onClick={() => handleQuantityChange(1)}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
@@ -177,7 +208,10 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           <TabsContent value="nutrition" className="mt-4">
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(product.nutritionInfo).map(([key, value]) => (
-                <div key={key} className="flex items-center justify-between p-2 rounded-lg bg-secondary">
+                <div
+                  key={key}
+                  className="flex items-center justify-between p-2 rounded-lg bg-secondary"
+                >
                   <span className="capitalize">{key}</span>
                   <span className="font-medium">{value}</span>
                 </div>
@@ -187,6 +221,5 @@ export function ProductDetails({ product }: ProductDetailsProps) {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }
-

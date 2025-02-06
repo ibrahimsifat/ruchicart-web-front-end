@@ -1,6 +1,6 @@
 import { CategorySkeleton } from "@/components/ui/skeletons";
 import { CategoryList } from "@/features/category/CategoryList";
-import { fetchData } from "@/lib/api/fetch-utils";
+import { fetchData } from "@/lib/api/fetchUtils";
 import { getQueryClient, queryKeys } from "@/lib/api/queries";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Suspense } from "react";

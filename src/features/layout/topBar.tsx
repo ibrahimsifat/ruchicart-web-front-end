@@ -9,15 +9,20 @@ import { GitBranch, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function TopBar() {
+  const { currentLocation, setCurrentLocation } = useLocationStore();
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showBranchSelector, setShowBranchSelector] = useState(false);
-  const { currentLocation, setCurrentLocation } = useLocationStore();
   const { currentBranch } = useBranchStore();
 
   useEffect(() => {
-    if (!currentLocation) {
-      setShowLocationModal(true);
-    }
+    // need to wait here for 1 second to get the location
+    const timeout = setTimeout(() => {
+      if (!currentLocation?.lat) {
+        setShowLocationModal(true);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timeout);
   }, [currentLocation]);
 
   const handleOpenLocationModal = () => {

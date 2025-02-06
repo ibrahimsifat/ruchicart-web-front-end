@@ -1,6 +1,6 @@
 import { CONSTANT } from "@/config/constants";
 import { api } from "@/lib/api/api";
-import { auth, googleProvider } from "@/lib/firebase";
+import { auth, googleProvider } from "@/lib/utils/firebase";
 import { formatFirebaseAuthError } from "@/lib/utils/firebase-errors";
 import { getAxiosErrorMessage } from "@/lib/utils/getAxiosErrorMessage";
 import { SocialMediaData } from "@/types/auth";
