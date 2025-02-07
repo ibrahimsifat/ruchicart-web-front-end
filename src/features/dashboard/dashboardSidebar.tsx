@@ -114,6 +114,7 @@ export function DashboardSidebar() {
               <Button
                 key={item.path}
                 variant={
+                  // slicing the locale
                   pathname.slice(3) === item.path ? "secondary" : "ghost"
                 }
                 className="w-full justify-start"
