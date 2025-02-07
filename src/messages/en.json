@@ -74,7 +74,22 @@
     "registrationTitle": "Create an Account",
     "registrationDescription": "Sign up to get started with our service",
     "verifyOtpTitle": "Verify OTP",
-    "verifyOtpDescription": "Enter the 6-digit code sent to your phone"
+    "verifyOtpDescription": "Enter the 6-digit code sent to your phone",
+    "forgotPasswordTitle": "Reset Password",
+    "forgotPasswordDescription": "Enter your phone number to receive a password reset code",
+    "phoneNumberPlaceholder": "01XXXXXXXXX",
+    "sending": "Sending...",
+    "sendResetCode": "Send Reset Code",
+    "backToLogin": "Back to Login",
+    "phoneNumber": "Phone Number",
+    "enterPhoneNumber": "Enter phone number",
+    "cancel": "Cancel",
+    "saveAddress": "Save Address",
+    "selectLocation": "Select Location",
+    "selectedLocation": "Selected Location",
+    "gettingLocation": "Getting Location...",
+    "useCurrentLocation": "Use Current Location",
+    "confirmLocation": "Confirm Location"
   },
   "errors": {
     "invalidEmail": "Invalid email address",

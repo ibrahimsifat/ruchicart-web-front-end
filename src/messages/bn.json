@@ -74,7 +74,22 @@
     "registrationTitle": "একটি অ্যাকাউন্ট তৈরি করুন",
     "registrationDescription": "আমাদের সেবা শুরু করতে নিবন্ধন করুন",
     "verifyOtpTitle": "ওটিপি যাচাই করুন",
-    "verifyOtpDescription": "আপনার ফোনে পাঠানো ৬-সংখ্যার কোডটি প্রবেশ করান"
+    "verifyOtpDescription": "আপনার ফোনে পাঠানো ৬-সংখ্যার কোডটি প্রবেশ করান",
+    "forgotPasswordTitle": "পাসওয়ার্ড পুনরায় সেট করুন",
+    "forgotPasswordDescription": "আপনার ফোন নম্বর প্রবেশ করুন এবং পাসওয়ার্ড পুনরায় সেট করান",
+    "phoneNumberPlaceholder": "01XXXXXXXXX",
+    "sending": "পাঠানো হচ্ছে...",
+    "sendResetCode": "পুনরায় সেট করুন",
+    "backToLogin": "লগইনে ফিরে যান",
+    "phoneNumber": "ফোন নম্বর",
+    "enterPhoneNumber": "ফোন নম্বর লিখুন",
+    "cancel": "বাতিল করুন",
+    "saveAddress": "ঠিকানা সংরক্ষণ করুন",
+    "selectLocation": "অবস্থান নির্বাচন করুন",
+    "selectedLocation": "নির্বাচিত অবস্থান",
+    "gettingLocation": "অবস্থান নির্ধারণ করা হচ্ছে...",
+    "useCurrentLocation": "বর্তমান অবস্থান ব্যবহার করুন",
+    "confirmLocation": "অবস্থান নিশ্চিত করুন"
   },
   "errors": {
     "invalidEmail": "অবৈধ ইমেইল ঠিকানা",
