@@ -21,9 +21,13 @@ const isPrivatePage = () => {
 };
 interface User {
   id: string;
-  email: string;
   f_name: string;
   l_name: string;
+  email: string;
+  phone: string;
+  image: string;
+  orders_count: number;
+  wishlist_count: number;
 }
 interface LoginData {
   email_or_phone: string;
@@ -87,6 +91,7 @@ interface AuthState {
     confirmPassword: string
   ) => Promise<void>;
   getGuestId: () => string;
+  setUser: (user: User) => void;
 }
 
 interface RegistrationData {
@@ -497,7 +502,7 @@ export const useAuthStore = create<AuthState>()(
           window.location.href = loginPath;
         }
       },
-
+      setUser: (user: User) => set({ user }),
       clearError: () => {
         set({ error: null });
       },

@@ -1,11 +1,12 @@
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { AddressSection } from "@/features/dashboard/addressSection";
+import { ProfileSidebar } from "@/features/dashboard/dashboardSidebar";
+import { PersonalDetails } from "@/features/dashboard/personalDetails";
+import { StatsCard } from "@/features/dashboard/statsCard";
 import { OrderHistoryItem } from "@/features/order/orderHistoryItem";
-import { AddressSection } from "@/features/profile/address-section";
-import { PersonalDetails } from "@/features/profile/personal-details";
-import { ProfileSidebar } from "@/features/profile/profile-sidebar";
-import { StatsCard } from "@/features/profile/stats-card";
 import { useRouter } from "@/i18n/routing";
 import { useAuthStore } from "@/store/authStore";
 import { Award, Heart, ShoppingBag, Wallet } from "lucide-react";
@@ -24,7 +25,7 @@ const mockUser = {
   },
 };
 
-export default function ProfilePage() {
+export default function UserProfile() {
   const router = useRouter();
   const { toast } = useToast();
   const { token } = useAuthStore();

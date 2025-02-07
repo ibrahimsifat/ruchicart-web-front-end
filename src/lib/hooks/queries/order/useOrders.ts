@@ -31,3 +31,14 @@ export const useOrderTrack = (options: orderTrackOptions) => {
     queryFn: () => orderTrack(options),
   });
 };
+
+export const getOrders = async () => {
+  return fetchData<OrderDetailsItem[]>("/customer/order/list");
+};
+
+export const useOrders = () => {
+  return useQuery<OrderDetailsItem[]>({
+    queryKey: queryKeys.orders.list,
+    queryFn: () => getOrders(),
+  });
+};

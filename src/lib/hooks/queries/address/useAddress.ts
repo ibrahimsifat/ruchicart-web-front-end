@@ -78,3 +78,25 @@ export const useDeleteAddress = () => {
     },
   });
 };
+
+export const getAddresses = async () => {
+  const response = await api.get("/customer/address/list");
+  return response.data;
+};
+
+export const addAddress = async (data: any) => {
+  const response = await api.post("/customer/address/add", data);
+  return response.data;
+};
+
+export const updateAddress = async (id: string, data: any) => {
+  const response = await api.put(`/customer/address/update/${id}`, data);
+  return response.data;
+};
+
+export const deleteAddress = async (addressId: string) => {
+  const response = await api.delete("/customer/address/delete", {
+    data: { address_id: addressId },
+  });
+  return response.data;
+};

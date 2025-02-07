@@ -116,8 +116,8 @@ export interface Category {
 }
 export interface User {
   id?: number;
-  fName?: string;
-  lName?: string;
+  f_name?: string;
+  l_name?: string;
   email?: string;
   image?: string;
   isPhoneVerified?: number;
@@ -131,8 +131,9 @@ export interface User {
   loginMedium?: string;
   referCode?: string;
   walletBalance?: number;
-  ordersCount?: number;
-  wishListCount?: number;
+  orders_count?: number;
+  wishlist_count?: number;
+  created_at?: string;
 }
 export interface Branches {
   id: string;

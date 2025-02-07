@@ -1,6 +1,9 @@
 import { QueryClient } from "@tanstack/react-query";
 
 export const queryKeys = {
+  user: {
+    info: ["user"] as const,
+  },
   categories: {
     all: ["categories"] as const,
     byId: (id: string) => ["categories", id] as const,
@@ -25,7 +28,7 @@ export const queryKeys = {
   orders: {
     details: (order_id: string) => ["orders", order_id] as const,
     track: (order_id: string) => ["orders", order_id, "track"] as const,
-    all: ["orders"] as const,
+    list: ["orders"] as const,
   },
 } as const;
 
