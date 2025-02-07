@@ -1,4 +1,4 @@
-"use Client";
+"use client";
 import { ComingSoon } from "@/components/ui/coming-soon";
 import { useRouter } from "next/navigation";
 

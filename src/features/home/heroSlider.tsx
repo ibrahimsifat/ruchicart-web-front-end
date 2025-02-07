@@ -1,5 +1,6 @@
 "use client";
 import { Card } from "@/components/ui/card";
+import { HeroSkeleton } from "@/components/ui/skeletons";
 import { useBanners } from "@/lib/hooks/queries/banner/useBanners";
 import { cn } from "@/lib/utils/utils";
 import { useCart } from "@/store/cartStore";
@@ -26,6 +27,13 @@ export function HeroSlider() {
     return () => clearInterval(timer);
   }, [slides]);
 
+  if (isLoading) {
+    return <HeroSkeleton />;
+  }
+  if (error) {
+    console.error(error);
+    return <div>Error loading hero slider</div>;
+  }
   return (
     <div className="relative overflow-hidden rounded-xl h-[400px] md:h-[500px] mb-10">
       {slides?.map((slide, index) => {

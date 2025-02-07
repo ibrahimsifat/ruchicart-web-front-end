@@ -19,6 +19,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
+import CheckoutAddress from "@/features/checkout/checkoutAddresList";
+import CheckoutAddressForm from "@/features/checkout/checkoutAddressForm";
+import { DeliveryTips } from "@/features/checkout/delivery-tips";
+import TakeAwayOrderSection from "@/features/checkout/takeAwayOrderSection";
+import { LocationSelector } from "@/features/location/locationSelector";
+import { PaymentMethods } from "@/features/order/paymentMethods";
 import {
   useAddAddress,
   useDeleteAddress,
@@ -36,12 +42,6 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { LocationSelector } from "../location/locationSelector";
-import { PaymentMethods } from "../order/paymentMethods";
-import CheckoutAddress from "./checkoutAddresList";
-import CheckoutAddressForm from "./checkoutAddressForm";
-import { DeliveryTips } from "./delivery-tips";
-import TakeAwayOrderSection from "./takeAwayOrderSection";
 
 const formSchema = z.object({
   order_amount: z.number(),
