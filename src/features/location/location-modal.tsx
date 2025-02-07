@@ -6,10 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { LocationSelector } from "@/features/location/locationSelector";
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { useState } from "react";
-import { LocationSelector } from "./locationSelector";
 
 interface LocationModalProps {
   isOpen: boolean;
