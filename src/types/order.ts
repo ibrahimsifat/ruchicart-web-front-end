@@ -17,40 +17,6 @@ interface DeliveryAddress {
   address: string;
 }
 
-interface Order {
-  id: number;
-  user_id: number;
-  is_guest: string;
-  order_amount: number;
-  coupon_discount_amount: number;
-  coupon_discount_title: string | null;
-  created_at: string;
-  delivery_address: DeliveryAddress;
-  delivery_address_id: number;
-  delivery_charge: number;
-  delivery_date: string;
-  delivery_man: any;
-  delivery_man_id: any;
-  delivery_time: string;
-  deliveryman_review: any;
-  extra_discount: string;
-  is_cutlery_required: number;
-  number_of_people: any;
-  offline_payment: any;
-  order_note: string | null;
-  order_partial_payments: any[];
-  order_status: string;
-  order_type: string;
-  payment_method: string;
-  payment_status: string;
-  preparation_time: string;
-  table_id: any;
-  table_order_id: any;
-  total_tax_amount: number;
-  transaction_reference: string | null;
-  updated_at: string;
-}
-
 interface CategoryId {
   id: string;
   position: number;
@@ -165,7 +131,7 @@ interface DeliveryAddress {
   address: string;
 }
 
-interface Order {
+export interface Order {
   id: number;
   user_id: number;
   is_guest: string;

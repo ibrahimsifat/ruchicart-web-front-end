@@ -7,18 +7,6 @@ import { useAuthStore } from "@/store/authStore";
 import { User } from "@/types";
 import { Award, Heart, ShoppingBag, Wallet } from "lucide-react";
 
-const mockUser = {
-  name: "Mohammad Ibrahim Sifat",
-  phone: "+966558845503",
-  email: "ibsifat900@gmail.com",
-  joinedDate: "Jan 26th 25",
-  stats: {
-    orders: 0,
-    wallet: 0.0,
-    loyaltyPoints: 0,
-    wishlist: 0,
-  },
-};
 export default function ProfilePage() {
   const { user } = useAuthStore();
   return (
@@ -38,7 +26,7 @@ export default function ProfilePage() {
         />
         <StatsCard
           icon={<Award className="h-6 w-6 text-primary" />}
-          value={mockUser.stats.loyaltyPoints}
+          value={user?.point}
           label="Loyalty Points"
         />
         <StatsCard

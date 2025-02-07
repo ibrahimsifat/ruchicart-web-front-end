@@ -76,7 +76,7 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
-
+  console.log(pathname.slice(3));
   const handleLogout = () => {
     logout();
     router.push("/");
@@ -113,7 +113,9 @@ export function DashboardSidebar() {
             return (
               <Button
                 key={item.path}
-                variant={pathname === item.path ? "secondary" : "ghost"}
+                variant={
+                  pathname.slice(3) === item.path ? "secondary" : "ghost"
+                }
                 className="w-full justify-start"
                 onClick={() => router.push(item.path)}
               >

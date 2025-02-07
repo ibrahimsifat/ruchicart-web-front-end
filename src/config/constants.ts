@@ -11,5 +11,6 @@ export const CONSTANT = {
     googleSignin: "/images/google_signin.svg",
     bdFlag: "/images/bd.png",
     usFlag: "/images/us.png",
+    comingSoon: "/images/coming-soon.svg",
   },
 };
