@@ -10,17 +10,18 @@ import { CartIconRef } from "@/features/layout/navbar";
 import { useBranch } from "@/lib/hooks/queries/Branch/useBranch";
 import { ImageType } from "@/types/image";
 import { ChevronDown, Clock, Mail, MapPin, Phone } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 export function NearbyBranch() {
   const { data: branches, isLoading, error } = useBranch();
-
+  const t = useTranslations("home");
   return (
     <CartIconRef.Provider value={null}>
       <section className="py-12">
         <SectionHeader
-          title="Restaurants Near You"
-          description="Discover great places to eat around you"
+          title={t("restaurantsNearYou")}
+          description={t("discoverGreatPlacesToEatAroundYou")}
         />
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="p-6 bg-gradient-to-br from-primary/10 to-primary/5">
@@ -32,13 +33,13 @@ export function NearbyBranch() {
                 className="object-cover"
               />
             </div>
-            <h3 className="text-xl font-semibold mb-2">Find Nearby</h3>
+            <h3 className="text-xl font-semibold mb-2">{t("findNearby")}</h3>
             <p className="text-muted-foreground mb-4">
-              Explore restaurants and cafes near your location
+              {t("exploreRestaurantsAndCafesNearYourLocation")}
             </p>
             <Button className="w-full">
               <MapPin className="mr-2 h-4 w-4" />
-              Set Location
+              {t("setLocation")}
             </Button>
           </Card>
 
@@ -113,7 +114,7 @@ export function NearbyBranch() {
                           size="sm"
                           className="w-full sm:w-auto"
                         >
-                          Switch to This Branch
+                          {t("switchToThisBranch")}
                         </Button>
                       </div>
                     </div>
@@ -123,7 +124,7 @@ export function NearbyBranch() {
             </div>
             <div className="flex justify-center">
               <Button variant="default" className="w-full sm:w-auto">
-                All Braches
+                {t("allBranches")}
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </div>

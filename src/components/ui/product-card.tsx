@@ -15,6 +15,7 @@ import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { motion } from "framer-motion";
 import { Clock, Eye, Heart, Plus, ShoppingCart, Star } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useContext, useRef, useState } from "react";
 import CustomImage from "./customImage";
@@ -54,6 +55,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const { addItem } = useCart();
   const cartIconRef = useContext(CartIconRef);
+  const t = useTranslations("home");
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -187,9 +189,10 @@ export function ProductCard({ product }: ProductCardProps) {
               className="w-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors duration-300"
             >
               <Eye className="mr-2 h-4 w-4" />
-              View Details
+              {t("viewDetails")}
             </Button>
           </Link>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

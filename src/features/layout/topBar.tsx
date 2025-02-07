@@ -6,6 +6,7 @@ import { LocationModal } from "@/features/location/location-modal";
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { GitBranch, MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 export function TopBar() {
@@ -13,7 +14,7 @@ export function TopBar() {
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showBranchSelector, setShowBranchSelector] = useState(false);
   const { currentBranch } = useBranchStore();
-
+  const t = useTranslations("home");
   useEffect(() => {
     // need to wait here for 1 second to get the location
     const timeout = setTimeout(() => {
@@ -34,7 +35,7 @@ export function TopBar() {
       <div className="container mx-auto px-4 py-2 flex items-center justify-between text-sm">
         <div className="flex items-center gap-2">
           <MapPin className="h-4 w-4 text-primary" />
-          <span>Deliver to: </span>
+          <span>{t("deliverTo")}: </span>
           <Button
             variant="link"
             className="p-0 h-auto font-medium max-w-[200px] truncate"
@@ -45,10 +46,10 @@ export function TopBar() {
         </div>
         <div className="hidden md:flex items-center gap-4">
           <Button variant="ghost" size="sm">
-            Become a Partner
+            {t("becomeAPartner")}
           </Button>
           <Button variant="ghost" size="sm">
-            Download App
+            {t("downloadApp")}
           </Button>
           <Button
             variant="link"

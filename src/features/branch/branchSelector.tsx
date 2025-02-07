@@ -12,6 +12,7 @@ import { CartItem, useCart } from "@/store/cartStore";
 import { useLocationStore } from "@/store/locationStore";
 import { BaseBranch } from "@/types/branch";
 import { Clock, MapPin, Phone } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 interface BranchSelectorProps {
@@ -23,6 +24,7 @@ export function BranchSelector({ isOpen, onClose }: BranchSelectorProps) {
   const [branches, setBranches] = useState([]);
   const { currentLocation } = useLocationStore();
   const { currentBranch, setCurrentBranch } = useBranchStore();
+  const t = useTranslations("branch");
   const { items } = useCart();
   const branchProducts = items.map((item: CartItem) => {
     return {
@@ -73,7 +75,7 @@ export function BranchSelector({ isOpen, onClose }: BranchSelectorProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Select a Branch</DialogTitle>
+          <DialogTitle>{t("selectBranch")}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           {branches.map((branch: BaseBranch) => (
@@ -91,11 +93,11 @@ export function BranchSelector({ isOpen, onClose }: BranchSelectorProps) {
                   </p>
                   <p className="text-sm text-muted-foreground flex items-center mt-1">
                     <Clock className="h-4 w-4 mr-1" />
-                    {branch.preparation_time} mins prep time
+                    {branch.preparation_time} {t("minsPrepTime")}
                   </p>
                 </div>
                 <Button onClick={() => handleBranchSelect(branch)}>
-                  Select
+                  {t("select")}
                 </Button>
               </div>
             </Card>

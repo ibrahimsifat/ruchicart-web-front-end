@@ -9,6 +9,7 @@ import {
 import { LocationSelector } from "@/features/location/locationSelector";
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface LocationModalProps {
@@ -29,7 +30,7 @@ export function LocationModal({
   const { currentLocation } = useLocationStore();
   const { currentBranch } = useBranchStore();
   const [showBranchSelector, setShowBranchSelector] = useState(false);
-
+  const t = useTranslations("location");
   const handleLocationSelect = (location: {
     address: string;
     lat: number;
@@ -48,7 +49,7 @@ export function LocationModal({
       <DialogContent className="sm:max-w-[700px] p-0">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle>
-            {currentLocation ? "Change Location" : "Select Your Location"}
+            {currentLocation ? t("changeLocation") : t("selectYourLocation")}
           </DialogTitle>
         </DialogHeader>
         <LocationSelector

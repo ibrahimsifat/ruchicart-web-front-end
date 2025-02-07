@@ -16,14 +16,15 @@ import { useOrders } from "@/lib/hooks/queries/order/useOrders";
 import { ImageType } from "@/types/image";
 import { format } from "date-fns";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 export function OrderHistory() {
   const [expandedOrder, setExpandedOrder] = useState(null);
   const { data, isLoading, error } = useOrders({ limit: 10, page: 1 });
   const { orders } = data || {};
-  console.log(orders);
-  if (orders?.length === 0) return <div>No orders found.</div>;
+  const t = useTranslations("dashboard");
+  if (orders?.length === 0) return <div>{t("noOrdersFound")}</div>;
   const toggleOrderDetails = (orderId: any) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
   };
@@ -43,26 +44,26 @@ export function OrderHistory() {
     }
   };
 
-  if (isLoading) return <div>Loading orders...</div>;
-  if (error) return <div>Error loading orders</div>;
+  if (isLoading) return <div>{t("loadingOrders")}</div>;
+  if (error) return <div>{t("errorLoadingOrders")}</div>;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Order History</CardTitle>
+        <CardTitle>{t("orderHistory")}</CardTitle>
       </CardHeader>
       <CardContent>
         {orders?.length === 0 ? (
-          <p>No orders found.</p>
+          <p>{t("noOrdersFound")}</p>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Order ID</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{t("orderId")}</TableHead>
+                <TableHead>{t("date")}</TableHead>
+                <TableHead>{t("total")}</TableHead>
+                <TableHead>{t("status")}</TableHead>
+                <TableHead>{t("actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -96,32 +97,34 @@ export function OrderHistory() {
                     <TableRow>
                       <TableCell colSpan={5}>
                         <div className="p-4 bg-gray-50">
-                          <h4 className="font-semibold mb-2">Order Details</h4>
+                          <h4 className="font-semibold mb-2">
+                            {t("orderDetails")}
+                          </h4>
                           <ul className="space-y-2">
                             <div className="space-y-4">
                               <div className="mt-4">
                                 <div className="grid grid-cols-2 gap-4 mb-4">
                                   <div>
                                     <h4 className="font-semibold">
-                                      Order Type
+                                      {t("orderType")}
                                     </h4>
                                     <p>{order.order_type}</p>
                                   </div>
                                   <div>
                                     <h4 className="font-semibold">
-                                      Payment Status
+                                      {t("paymentStatus")}
                                     </h4>
                                     <p>{order.payment_status}</p>
                                   </div>
                                   <div>
                                     <h4 className="font-semibold">
-                                      Delivery Address ID
+                                      {t("deliveryAddressId")}
                                     </h4>
                                     <p>{order.delivery_address_id}</p>
                                   </div>
                                 </div>
                                 <h4 className="font-semibold mb-2">
-                                  Product Images
+                                  {t("productImages")}
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
                                   {order.product_images.map((image, index) => (

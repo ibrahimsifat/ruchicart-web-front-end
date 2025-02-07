@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useTranslations } from "next-intl";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ export function DeleteConfirmationModal({
   title,
   description,
 }: DeleteConfirmationModalProps) {
+  const t = useTranslations("dashboard");
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -32,10 +34,10 @@ export function DeleteConfirmationModal({
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="destructive" onClick={onConfirm}>
-            Delete
+            {t("delete")}
           </Button>
         </DialogFooter>
       </DialogContent>

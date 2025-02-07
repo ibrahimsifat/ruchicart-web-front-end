@@ -8,6 +8,7 @@ import {
   Phone,
   Twitter,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 // function getCopyrightYear() {
@@ -15,6 +16,7 @@ import Link from "next/link";
 //   return new Date().getFullYear();
 // }
 export function Footer() {
+  const t = useTranslations("footer");
   return (
     <footer className="bg-[#1A1A1A] text-white py-12">
       {/* Social Media Icons */}
@@ -36,20 +38,17 @@ export function Footer() {
 
         {/* Main Navigation Links */}
         <div className="flex justify-center gap-8 mb-12 text-sm">
+          <span className="text-gray-500">|</span>
           <Link href="#" className="hover:text-primary transition-colors">
-            Open Restaurant
+            {t("becomeADeliveryMan")}
           </Link>
           <span className="text-gray-500">|</span>
           <Link href="#" className="hover:text-primary transition-colors">
-            Become A Delivery Man
+            {t("dashboard")}
           </Link>
           <span className="text-gray-500">|</span>
           <Link href="#" className="hover:text-primary transition-colors">
-            Profile
-          </Link>
-          <span className="text-gray-500">|</span>
-          <Link href="#" className="hover:text-primary transition-colors">
-            Help & Support
+            {t("helpAndSupport")}
           </Link>
         </div>
 
@@ -65,12 +64,12 @@ export function Footer() {
               className="mb-4"
             />
             <p className="text-gray-400 text-sm">
-              is Best Delivery Service Near You
+              {t("bestDeliveryServiceNearYou")}
             </p>
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <MapPin className="h-4 w-4" />
-                <span>House: 00, Road: 00, City-0000, Country</span>
+                <span>{t("address")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <Mail className="h-4 w-4" />
@@ -111,26 +110,26 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-semibold mb-4">{t("quickLinks")}</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  About Us
+                  {t("aboutUs")}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  My Wallet
+                  {t("myWallet")}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Loyalty Points
+                  {t("loyaltyPoints")}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Cuisines
+                  {t("cuisines")}
                 </Link>
               </li>
             </ul>
@@ -138,26 +137,26 @@ export function Footer() {
 
           {/* Quick Links 2 */}
           <div>
-            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-semibold mb-4">{t("quickLinks")}</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  New Restaurants
+                  {t("newRestaurants")}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Popular Restaurants
+                  {t("popularRestaurants")}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Best Reviewed Foods
+                  {t("bestReviewedFoods")}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Track Order
+                  {t("trackOrder")}
                 </Link>
               </li>
             </ul>
@@ -165,26 +164,26 @@ export function Footer() {
 
           {/* Other Links */}
           <div>
-            <h3 className="font-semibold mb-4">Other</h3>
+            <h3 className="font-semibold mb-4">{t("other")}</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Privacy Policy
+                  {t("privacyPolicy")}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Terms & Conditions
+                  {t("termsAndConditions")}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Refund Policy
+                  {t("refundPolicy")}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-primary transition-colors">
-                  Cancellation Policy
+                  {t("cancellationPolicy")}
                 </Link>
               </li>
             </ul>
@@ -193,8 +192,8 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="text-center text-sm text-gray-400">
-          {/* © {getCopyrightYear()} RuchiCart. All Rights Reserved */}© 2025
-          RuchiCart. All Rights Reserved
+          {/* © {getCopyrightYear()} RuchiCart. All Rights Reserved */}
+          {t("copyright")}
         </div>
       </div>
     </footer>

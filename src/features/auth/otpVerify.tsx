@@ -22,12 +22,12 @@ import { Input } from "@/components/ui/input";
 import { CONSTANT } from "@/config/constants";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 const otpSchema = z.object({
   otp: z.string().length(6, "OTP must be 6 digits"),
 });
@@ -35,6 +35,7 @@ const otpSchema = z.object({
 export default function VerifyOtpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("auth");
   const {
     verifyOtp,
     sendOTP,
@@ -114,10 +115,10 @@ export default function VerifyOtpForm() {
             />
           </div>
           <CardTitle className="text-2xl font-bold text-center">
-            Verify OTP
+            {t("verifyOtp")}
           </CardTitle>
           <CardDescription className="text-center">
-            Enter the 6-digit code sent to {phone}
+            {t("enter6DigitCodeSentTo", { phone })}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -131,7 +132,7 @@ export default function VerifyOtpForm() {
                     <FormLabel>OTP</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter 6-digit OTP"
+                        placeholder={t("enter6DigitCode")}
                         {...field}
                         maxLength={6}
                         className="text-center text-2xl tracking-[1em] font-mono"
@@ -147,7 +148,7 @@ export default function VerifyOtpForm() {
                 </Alert>
               )}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Verifying..." : "Verify OTP"}
+                {isLoading ? t("verifying") : t("verifyOtp")}
               </Button>
 
               <div className="text-center mt-4">
@@ -158,7 +159,9 @@ export default function VerifyOtpForm() {
                   disabled={countdown > 0 || isLoading}
                   className="text-sm text-primary hover:text-primary/80"
                 >
-                  {countdown > 0 ? `Resend OTP in ${countdown}s` : "Resend OTP"}
+                  {countdown > 0
+                    ? `${t("resendOtpIn", { countdown })}`
+                    : t("resendOtp")}
                 </Button>
               </div>
             </form>
@@ -166,10 +169,11 @@ export default function VerifyOtpForm() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <Button variant="link" onClick={() => router.push("/auth/login")}>
-            Back to Login
+            {t("backToLogin")}
           </Button>
         </CardFooter>
       </Card>
+
       {/* Add a hidden container for reCAPTCHA */}
       <div id="recaptcha-container" style={{ display: "none" }}></div>
     </div>

@@ -31,6 +31,7 @@ import {
 } from "@/lib/hooks/queries/address/useAddress";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -56,7 +57,7 @@ export function AddressModal({
   const queryClient = useQueryClient();
   const isEditing = !!address;
   const [showMap, setShowMap] = useState(false);
-
+  const t = useTranslations("address");
   const form = useForm({
     resolver: zodResolver(addressSchema),
     defaultValues: {
@@ -84,16 +85,16 @@ export function AddressModal({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
       toast({
-        title: "Address added",
-
-        description: "Your address has been successfully added.",
+        title: t("addressAdded"),
+        description: t("yourAddressHasBeenSuccessfullyAdded"),
       });
+
       onClose();
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to add address. Please try again.",
+        title: t("error"),
+        description: t("failedToAddAddressPleaseTryAgain"),
         variant: "destructive",
       });
     },
@@ -105,15 +106,15 @@ export function AddressModal({
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
 
       toast({
-        title: "Address updated",
-        description: "Your address has been successfully updated.",
+        title: t("addressUpdated"),
+        description: t("yourAddressHasBeenSuccessfullyUpdated"),
       });
       onClose();
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to update address. Please try again.",
+        title: t("error"),
+        description: t("failedToUpdateAddressPleaseTryAgain"),
         variant: "destructive",
       });
     },
@@ -139,9 +140,10 @@ export function AddressModal({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? "Edit Address" : "Add New Address"}
+            {isEditing ? t("editAddress") : t("addNewAddress")}
           </DialogTitle>
         </DialogHeader>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -149,7 +151,7 @@ export function AddressModal({
               name="contact_person_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contact Person Name</FormLabel>
+                  <FormLabel>{t("contactPersonName")}</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -162,20 +164,21 @@ export function AddressModal({
               name="address_type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address Type</FormLabel>
+                  <FormLabel>{t("addressType")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select address type" />
+                        <SelectValue placeholder={t("selectAddressType")} />
                       </SelectTrigger>
                     </FormControl>
+
                     <SelectContent>
-                      <SelectItem value="home">Home</SelectItem>
-                      <SelectItem value="work">Work</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="home">{t("home")}</SelectItem>
+                      <SelectItem value="work">{t("work")}</SelectItem>
+                      <SelectItem value="other">{t("other")}</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -187,7 +190,7 @@ export function AddressModal({
               name="contact_person_number"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contact Person Number</FormLabel>
+                  <FormLabel>{t("contactPersonNumber")}</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -200,12 +203,12 @@ export function AddressModal({
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>{t("address")}</FormLabel>
                   <FormControl>
                     <div className="flex items-center space-x-2">
                       <Input {...field} />
                       <Button type="button" onClick={() => setShowMap(true)}>
-                        Map
+                        {t("map")}
                       </Button>
                     </div>
                   </FormControl>
@@ -228,7 +231,7 @@ export function AddressModal({
               />
             )}
             <Button type="submit">
-              {isEditing ? "Update Address" : "Add Address"}
+              {isEditing ? t("updateAddress") : t("addAddress")}
             </Button>
           </form>
         </Form>

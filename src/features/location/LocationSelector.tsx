@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useLocationStore } from "@/store/locationStore";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { MapPin, Navigation, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MapStatus } from "./mapStatus";
 
@@ -52,7 +53,7 @@ export function LocationSelector({
     googleMapsApiKey: apiKey || "",
     libraries,
   });
-
+  const t = useTranslations("location");
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [searchQuery, setSearchQuery] = useState(
     initialLocation?.address || ""
@@ -379,7 +380,7 @@ export function LocationSelector({
             <div className="flex items-start gap-3">
               <Navigation className="h-5 w-5 text-primary mt-1" />
               <div className="flex-1">
-                <h3 className="font-medium mb-1">Selected Location</h3>
+                <h3 className="font-medium mb-1">{t("selectedLocation")}</h3>
                 <p className="text-sm text-muted-foreground">
                   {selectedAddress}
                 </p>
@@ -398,14 +399,14 @@ export function LocationSelector({
           disabled={isGettingLocation}
         >
           <MapPin className="mr-2 h-4 w-4" />
-          {isGettingLocation ? "Getting Location..." : "Use Current Location"}
+          {isGettingLocation ? t("gettingLocation") : t("useCurrentLocation")}
         </Button>
         <Button
           onClick={handleConfirmLocation}
           className="flex-1"
           disabled={!selectedLocation || !selectedAddress || isGettingLocation}
         >
-          Confirm Location
+          {t("confirmLocation")}
         </Button>
       </div>
     </div>

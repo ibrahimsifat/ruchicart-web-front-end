@@ -22,51 +22,52 @@ import {
   Users,
   Wallet2,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
 const menuItems = [
   {
-    name: "My Profile",
+    name: "myProfile",
     icon: User,
     path: "/dashboard",
   },
   {
-    name: "Orders",
+    name: "orders",
     icon: ShoppingBag,
     path: "/dashboard/orders",
   },
   {
-    name: "Coupons",
+    name: "coupons",
     icon: Ticket,
     path: "/dashboard/coupons",
   },
   {
-    name: "Wish List",
+    name: "wishlist",
     icon: Heart,
     path: "/dashboard/wishlist",
   },
   {
-    name: "Wallets",
+    name: "wallets",
     icon: Wallet2,
     path: "/dashboard/wallets",
   },
   {
-    name: "Loyalty Points",
+    name: "loyaltyPoints",
     icon: Award,
     path: "/dashboard/loyalty-points",
   },
   {
-    name: "Referral Code",
+    name: "referralCode",
     icon: Users,
     path: "/dashboard/referral",
   },
   {
-    name: "Inbox",
+    name: "inbox",
     icon: Mail,
     path: "/dashboard/inbox",
   },
   {
-    name: "Settings",
+    name: "settings",
     icon: Settings,
     path: "/dashboard/settings",
   },
@@ -76,7 +77,7 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
-  console.log(pathname.slice(3));
+  const t = useTranslations("dashboard");
   const handleLogout = () => {
     logout();
     router.push("/");
@@ -121,7 +122,7 @@ export function DashboardSidebar() {
                 onClick={() => router.push(item.path)}
               >
                 <Icon className="mr-2 h-4 w-4" />
-                {item.name}
+                {t(item.name)}
               </Button>
             );
           })}
@@ -130,7 +131,7 @@ export function DashboardSidebar() {
       <CardFooter className="p-4">
         <Button variant="outline" className="w-full" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
-          Logout
+          {t("logout")}
         </Button>
       </CardFooter>
     </Card>

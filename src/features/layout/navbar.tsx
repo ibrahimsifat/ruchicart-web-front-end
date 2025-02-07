@@ -22,6 +22,7 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
@@ -53,6 +54,7 @@ export function Navbar() {
   const { data: categories } = useCategories();
   const { itemCount } = useCart();
   const { token, getProfileInfo } = useAuthStore();
+  const t = useTranslations("home");
 
   useEffect(() => {
     if (token) {
@@ -120,7 +122,7 @@ export function Navbar() {
                 className={`group ${isMegaMenuOpen && "bg-primary text-white"}`}
                 onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
               >
-                Categories{" "}
+                {t("categories")}
                 <ChevronDown
                   className={cn(
                     "ml-1 h-4 w-4 transition-transform",
@@ -131,7 +133,7 @@ export function Navbar() {
             </div>
 
             <Link href="/deals" className="text-sm font-medium">
-              Offers
+              {t("deals")}
             </Link>
           </div>
 
@@ -166,7 +168,7 @@ export function Navbar() {
             ) : (
               <Link href="/auth/login">
                 <Button className="hidden md:inline-flex">
-                  Sign In
+                  {t("signIn")}
                   <LogIn className="ml-2" />
                 </Button>
               </Link>
@@ -186,7 +188,7 @@ export function Navbar() {
 const UserMenu = () => {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
-
+  const t = useTranslations("home");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -202,7 +204,9 @@ const UserMenu = () => {
             <span className="text-sm font-medium leading-none">
               {user?.f_name}
             </span>
-            <span className="text-xs text-muted-foreground">Personal</span>
+            <span className="text-xs text-muted-foreground">
+              {t("personal")}
+            </span>
           </div>
           <ChevronDown className="h-4 w-4 ml-2 text-muted-foreground" />
         </Button>
@@ -210,11 +214,11 @@ const UserMenu = () => {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuItem>
           <User className="mr-2 h-4 w-4" />
-          <Link href="/profile">{"profile"}</Link>
+          <Link href="/dashboard">{t("profile")}</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <ShoppingBag className="mr-2 h-4 w-4" />
-          <Link href="/orders">Orders</Link>
+          <Link href="/dashboard/orders">{t("orders")}</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -222,7 +226,7 @@ const UserMenu = () => {
           className="text-destructive cursor-pointer"
         >
           <LogOut className="mr-2 h-4 w-4" />
-          {"logout"}
+          {t("logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

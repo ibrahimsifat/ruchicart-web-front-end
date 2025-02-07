@@ -23,6 +23,7 @@ import { CONSTANT } from "@/config/constants";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Eye, EyeOff, Key } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -50,7 +51,7 @@ export default function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-
+  const t = useTranslations("auth");
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -97,10 +98,10 @@ export default function ResetPasswordForm() {
             />
           </div>
           <CardTitle className="text-2xl font-bold text-center">
-            Reset Password
+            {t("resetPassword")}
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your new password
+            {t("enterNewPassword")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -111,14 +112,14 @@ export default function ResetPasswordForm() {
                 name="token"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Reset Token</FormLabel>
+                    <FormLabel>{t("resetToken")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                           <Key className="h-5 w-5 text-muted-foreground" />
                         </div>
                         <Input
-                          placeholder="Enter reset token"
+                          placeholder={t("enterResetToken")}
                           {...field}
                           className="pl-10"
                         />
@@ -133,12 +134,12 @@ export default function ResetPasswordForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>New Password</FormLabel>
+                    <FormLabel>{t("newPassword")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
-                          placeholder="Enter new password"
+                          placeholder={t("enterNewPassword")}
                           {...field}
                           className="pr-10"
                         />
@@ -166,12 +167,12 @@ export default function ResetPasswordForm() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm New Password</FormLabel>
+                    <FormLabel>{t("confirmNewPassword")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showConfirmPassword ? "text" : "password"}
-                          placeholder="Confirm new password"
+                          placeholder={t("confirmNewPassword")}
                           {...field}
                           className="pr-10"
                         />
@@ -210,7 +211,7 @@ export default function ResetPasswordForm() {
                 {isLoading ? "Resetting..." : "Reset Password"}
               </Button> */}
               <Button className="w-full" disabled={true} type="button">
-                {"Features is not available"}
+                {t("featuresNotAvailable")}
               </Button>
             </form>
           </Form>
@@ -219,7 +220,7 @@ export default function ResetPasswordForm() {
           <Link href="/auth/login">
             <Button variant="link" className="gap-2">
               <ArrowLeft className="h-4 w-4" />
-              Back to Login
+              {t("backToLogin")}
             </Button>
           </Link>
         </CardFooter>

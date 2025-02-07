@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { History, Search, TrendingUp, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 <style jsx global>{`
   body.search-focused {
@@ -35,7 +36,7 @@ export function SearchBar() {
   const [isOpen, setIsOpen] = useState(false);
   // const [activeTab, setActiveTab] = useState("all");
   const searchRef = useRef<HTMLDivElement>(null);
-
+  const t = useTranslations("home");
   const handleFocus = () => {
     setIsOpen(true);
     document.body.classList.add("search-focused");
@@ -64,7 +65,7 @@ export function SearchBar() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-50" />
         <Input
           type="search"
-          placeholder="Search for restaurant, cuisine or a dish"
+          placeholder={t("searchForRestaurantCuisineOrDish")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={handleFocus}
@@ -115,7 +116,7 @@ export function SearchBar() {
                     {/* Recent Searches */}
                     <div className="space-y-2">
                       <h3 className="text-sm font-medium text-muted-foreground px-2">
-                        Recent Searches
+                        {t("recentSearches")}
                       </h3>
                       <div className="space-y-1">
                         {recentSearches.map((search, index) => (
@@ -134,7 +135,7 @@ export function SearchBar() {
                     {/* Trending Searches */}
                     <div className="space-y-2">
                       <h3 className="text-sm font-medium text-muted-foreground px-2">
-                        Trending Now
+                        {t("trendingNow")}
                       </h3>
                       <div className="space-y-1">
                         {trending.map((item, index) => (
@@ -156,7 +157,7 @@ export function SearchBar() {
                     {/* Categories */}
                     <div className="space-y-2">
                       <h3 className="text-sm font-medium text-muted-foreground px-2">
-                        Popular Categories
+                        {t("popularCategories")}
                       </h3>
                       <div className="grid grid-cols-2 gap-2">
                         {categories.map((category, index) => (
@@ -179,7 +180,7 @@ export function SearchBar() {
                 {query && (
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground px-2">
-                      Showing results for "{query}"
+                      {t("showingResultsFor", { query })}
                     </p>
                     {/* Add search results here */}
                   </div>

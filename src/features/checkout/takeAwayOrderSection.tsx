@@ -8,7 +8,7 @@ import CustomImage from "@/components/ui/customImage";
 import { Label } from "@/components/ui/label";
 import { BaseBranch } from "@/types/branch";
 import { ImageType } from "@/types/image";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Mail, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -65,12 +65,13 @@ const TakeAwayOrderSection = ({
               <div className="flex items-center">
                 <Clock className="h-5 w-5 mr-3 text-primary" />
                 <span className="text-sm">
-                  {branch?.preparation_time} mins prep time
+                  {branch?.preparation_time} {t("minsPrepTime")}
                 </span>
               </div>
               <div className="flex items-center">
-                <MapPin className="h-5 w-5 mr-3 text-primary" />
-                <span className="text-sm">{branch?.coverage} km coverage</span>
+                <span className="text-sm">
+                  {branch?.coverage} {t("kmCoverage")}
+                </span>
               </div>
             </div>
           </div>
@@ -84,13 +85,13 @@ const TakeAwayOrderSection = ({
             onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
           />
           <label htmlFor="terms" className="text-sm leading-none">
-            I agree that placing the order places me under{" "}
+            {t("iAgreeThatPlacingTheOrderPlacesMeUnder")}{" "}
             <Button variant="link" className="h-auto p-0">
-              Terms and Conditions
+              {t("termsAndConditions")}
             </Button>{" "}
             &{" "}
             <Button variant="link" className="h-auto p-0">
-              Privacy Policy
+              {t("privacyPolicy")}
             </Button>
           </label>
         </div>

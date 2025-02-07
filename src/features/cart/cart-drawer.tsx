@@ -11,6 +11,7 @@ import {
 import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { ShoppingBag } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 interface CartDrawerProps {
@@ -21,7 +22,7 @@ interface CartDrawerProps {
 export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const router = useRouter();
   const { items, removeItem, updateQuantity, total, itemCount } = useCart();
-
+  const t = useTranslations("cart");
   const handleCheckout = () => {
     onOpenChange(false);
     router.push(`/checkout`);
@@ -33,8 +34,10 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
         <SheetHeader className="space-y-2.5 pb-6">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />
-            <span>{itemCount} Items</span>
-            <span className="text-muted-foreground">in your cart</span>
+            <span>
+              {itemCount} {t("items")}
+            </span>
+            <span className="text-muted-foreground">{t("inYourCart")}</span>
           </SheetTitle>
         </SheetHeader>
 
@@ -82,11 +85,11 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
 
             <div className="pt-6 space-y-4">
               <div className="flex items-center justify-between text-lg font-semibold">
-                <span>Total Price</span>
+                <span>{t("totalPrice")}</span>
                 <span>${total.toFixed(2)}</span>
               </div>
               <Button className="w-full" size="lg" onClick={handleCheckout}>
-                Proceed To Checkout
+                {t("proceedToCheckout")}
               </Button>
             </div>
           </>
@@ -96,13 +99,13 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               <ShoppingBag className="h-full w-full stroke-1" />
             </div>
             <div className="space-y-1">
-              <h3 className="font-medium text-lg">Your cart is empty</h3>
+              <h3 className="font-medium text-lg">{t("yourCartIsEmpty")}</h3>
               <p className="text-muted-foreground">
-                Add items to your cart to proceed with checkout
+                {t("addItemsToYourCartToProceedWithCheckout")}
               </p>
             </div>
             <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Continue Shopping
+              {t("continueShopping")}
             </Button>
           </div>
         )}

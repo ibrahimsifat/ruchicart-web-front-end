@@ -24,6 +24,7 @@ import { updateUserProfile } from "@/lib/hooks/queries/user/useUsers";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Mail, MapPin, Phone, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -40,7 +41,7 @@ export function PersonalDetails({ user }: { user: any }) {
   const [isEditing, setIsEditing] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const queryClient = useQueryClient();
-
+  const t = useTranslations("dashboard");
   const form = useForm({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -57,15 +58,15 @@ export function PersonalDetails({ user }: { user: any }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userInfo"] });
       toast({
-        title: "Profile updated",
-        description: "Your profile has been successfully updated.",
+        title: t("profileUpdated"),
+        description: t("profileUpdatedDescription"),
       });
       setIsEditing(false);
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
+        title: t("error"),
+        description: t("failedToUpdateProfile"),
         variant: "destructive",
       });
     },
@@ -110,7 +111,7 @@ export function PersonalDetails({ user }: { user: any }) {
             onClick={() => setIsEditing(!isEditing)}
             className="bg-white text-primary hover:bg-primary-light hover:text-white"
           >
-            {isEditing ? "Cancel" : "Edit Profile"}
+            {isEditing ? t("cancel") : t("editProfile")}
           </Button>
         </div>
       </CardHeader>
@@ -123,7 +124,7 @@ export function PersonalDetails({ user }: { user: any }) {
                 name="f_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>{t("firstName")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -143,7 +144,7 @@ export function PersonalDetails({ user }: { user: any }) {
                 name="l_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>{t("lastName")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -163,7 +164,7 @@ export function PersonalDetails({ user }: { user: any }) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("email")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -183,7 +184,7 @@ export function PersonalDetails({ user }: { user: any }) {
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone</FormLabel>
+                    <FormLabel>{t("phone")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -205,7 +206,7 @@ export function PersonalDetails({ user }: { user: any }) {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel>{t("address")}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -221,7 +222,7 @@ export function PersonalDetails({ user }: { user: any }) {
                           className="absolute right-2 top-1/2 transform -translate-y-1/2"
                           onClick={() => setShowLocationModal(true)}
                         >
-                          Select on Map
+                          {t("selectOnMap")}
                         </Button>
                       )}
                     </div>
@@ -237,8 +238,8 @@ export function PersonalDetails({ user }: { user: any }) {
                 disabled={updateProfileMutation.isPending}
               >
                 {updateProfileMutation.isPending
-                  ? "Updating..."
-                  : "Update Profile"}
+                  ? t("updating")
+                  : t("updateProfile")}
               </Button>
             )}
           </form>
@@ -248,7 +249,7 @@ export function PersonalDetails({ user }: { user: any }) {
       <Dialog open={showLocationModal} onOpenChange={setShowLocationModal}>
         <DialogContent className="sm:max-w-[700px] p-0">
           <DialogHeader className="p-6 pb-2">
-            <DialogTitle>Select Your Address</DialogTitle>
+            <DialogTitle>{t("selectYourAddress")}</DialogTitle>
           </DialogHeader>
           <LocationSelector
             onSelectLocation={handleLocationSelect}

@@ -2,7 +2,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { ReactNode } from "react";
 import Providers from "../query-provider";
-import PageLayout from "./PageLayout";
 
 // Types
 interface LayoutProps {
@@ -17,7 +16,7 @@ async function LocalizedContent({ children, locale }: LayoutProps) {
   return (
     <Providers>
       <NextIntlClientProvider messages={messages} locale={locale}>
-        <PageLayout>{children}</PageLayout>
+        {children}
       </NextIntlClientProvider>
     </Providers>
   );

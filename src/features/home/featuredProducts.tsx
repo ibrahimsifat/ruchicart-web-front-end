@@ -13,17 +13,19 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { CartIconRef } from "@/features/layout/navbar";
 import { useLatestProducts } from "@/lib/hooks/queries/product/useProducts";
 import { Product } from "@/types/product";
+import { useTranslations } from "next-intl";
 
 export function FeaturedProducts() {
   const { data: productsData, isLoading, error } = useLatestProducts();
   const products = productsData?.products;
+  const t = useTranslations("home");
   return (
     <CartIconRef.Provider value={null}>
       <section className="py-12">
         <SectionHeader
-          title="Featured Products"
-          description="Discover our most popular dishes"
-          action={<Button variant="link">View All</Button>}
+          title={t("featuredProducts")}
+          description={t("discoverPopular")}
+          action={<Button variant="link">{t("viewAll")}</Button>}
         />
         <Carousel
           opts={{

@@ -182,7 +182,7 @@ export default function LoginForm() {
             className="flex items-center gap-2 text-white hover:text-white/90 transition-colors"
           >
             <User className="h-5 w-5" />
-            <span className="font-medium">Continue as Guest</span>
+            <span className="font-medium"> {t("auth.continueAsGuest")}</span>
           </Link>
         </motion.div>
         <CardHeader className="space-y-1">
@@ -330,7 +330,7 @@ export default function LoginForm() {
               href="/auth/forgot-password"
               className="text-sm text-primary hover:underline"
             >
-              Forgot Password?
+              {t("auth.forgotPassword")}
             </Link>
           </div>
         </CardContent>

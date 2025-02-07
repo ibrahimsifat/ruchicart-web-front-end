@@ -29,3 +29,18 @@ export const registrationFormSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+
+export const registrationSchema = z.object({
+  f_name: z.string().min(2, "First name must be at least 2 characters"),
+  l_name: z.string().min(2, "Last name must be at least 2 characters"),
+  email: z
+    .string()
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email address"),
+  phone: z
+    .string()
+    .regex(
+      /^(\+8801|8801|01)[3-9]{1}[0-9]{8}$/,
+      "Invalid Bangladeshi phone number"
+    ),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});

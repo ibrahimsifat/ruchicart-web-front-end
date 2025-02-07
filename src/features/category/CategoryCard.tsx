@@ -1,6 +1,7 @@
 import CustomImage from "@/components/ui/customImage";
 import { Category } from "@/types";
 import { ImageType } from "@/types/image";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 interface CategoryCardProps {
@@ -8,6 +9,7 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
+  const t = useTranslations("category");
   return (
     <div className="p-6 rounded-lg border border-gray-200 shadow-sm">
       <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
@@ -34,7 +36,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
           href={`/categories/${category.id}`}
           className="text-blue-600 hover:text-blue-800"
         >
-          View Details
+          {t("viewDetails")}
         </Link>
       </div>
     </div>

@@ -18,6 +18,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import PageLayout from "./layouts/PageLayout";
 
 // Separate metadata generation
 export async function generateMetadata({
@@ -118,12 +119,12 @@ function StaticContent() {
 // Main page component
 export default function Home() {
   return (
-    <>
+    <PageLayout>
       {/* Static content renders immediately */}
       <Suspense fallback={<CategorySkeleton />}>
         <DynamicContent />
       </Suspense>
       <StaticContent />
-    </>
+    </PageLayout>
   );
 }

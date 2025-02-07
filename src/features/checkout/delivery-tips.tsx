@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils/utils";
 import { Coins } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface DeliveryTipsProps {
@@ -21,7 +22,7 @@ const predefinedTips = [
 
 export function DeliveryTips({ value, onChange }: DeliveryTipsProps) {
   const [customTip, setCustomTip] = useState("");
-
+  const t = useTranslations("checkout");
   const handleCustomTipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     if (/^\d*$/.test(newValue)) {
@@ -36,14 +37,14 @@ export function DeliveryTips({ value, onChange }: DeliveryTipsProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Coins className="h-5 w-5 text-primary" />
-          Delivery Man Tips
+          {t("deliveryManTips")}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <Input
             type="number"
-            placeholder="Enter custom amount"
+            placeholder={t("enterCustomAmount")}
             value={customTip}
             onChange={handleCustomTipChange}
             className="text-lg"

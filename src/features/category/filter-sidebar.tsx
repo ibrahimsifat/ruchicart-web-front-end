@@ -1,30 +1,41 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Slider } from "@/components/ui/slider"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
-const cuisines = ["Italian", "American", "Japanese", "Mexican", "Indian"]
+const cuisines = ["Italian", "American", "Japanese", "Mexican", "Indian"];
 
 export function FilterSidebar() {
-  const [priceRange, setPriceRange] = useState([0, 50])
-  const [selectedCuisines, setSelectedCuisines] = useState<string[]>([])
-
+  const [priceRange, setPriceRange] = useState([0, 50]);
+  const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
+  const t = useTranslations("category");
   const handleCuisineChange = (cuisine: string) => {
-    setSelectedCuisines((prev) => (prev.includes(cuisine) ? prev.filter((c) => c !== cuisine) : [...prev, cuisine]))
-  }
+    setSelectedCuisines((prev) =>
+      prev.includes(cuisine)
+        ? prev.filter((c) => c !== cuisine)
+        : [...prev, cuisine]
+    );
+  };
 
   const handleFilter = () => {
     // Implement filtering logic here
-    console.log("Filtering with:", { priceRange, selectedCuisines })
-  }
+    console.log("Filtering with:", { priceRange, selectedCuisines });
+  };
 
   return (
     <div className="w-full md:w-64 space-y-6">
       <div>
-        <h3 className="font-semibold mb-4">Price Range</h3>
-        <Slider min={0} max={50} step={1} value={priceRange} onValueChange={setPriceRange} />
+        <h3 className="font-semibold mb-4">{t("priceRange")}</h3>
+        <Slider
+          min={0}
+          max={50}
+          step={1}
+          value={priceRange}
+          onValueChange={setPriceRange}
+        />
         <div className="flex justify-between mt-2">
           <span>${priceRange[0]}</span>
           <span>${priceRange[1]}</span>
@@ -32,7 +43,7 @@ export function FilterSidebar() {
       </div>
 
       <div>
-        <h3 className="font-semibold mb-4">Cuisine</h3>
+        <h3 className="font-semibold mb-4">{t("cuisine")}</h3>
         {cuisines.map((cuisine) => (
           <div key={cuisine} className="flex items-center space-x-2 mb-2">
             <Checkbox
@@ -51,9 +62,8 @@ export function FilterSidebar() {
       </div>
 
       <Button onClick={handleFilter} className="w-full">
-        Apply Filters
+        {t("applyFilters")}
       </Button>
     </div>
-  )
+  );
 }
-

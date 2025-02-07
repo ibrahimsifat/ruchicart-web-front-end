@@ -8,6 +8,7 @@ import type { Coupon } from "@/lib/api/coupon";
 import { formatDateRange, isCouponValid } from "@/lib/utils/date";
 import { motion } from "framer-motion";
 import { Check, Copy, Tag, Truck } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface CouponCardProps {
@@ -19,20 +20,20 @@ export function CouponCard({ coupon, onApply }: CouponCardProps) {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   const isValid = isCouponValid(coupon.start_date, coupon.expire_date);
-
+  const t = useTranslations("coupon");
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(coupon.code);
       setCopied(true);
       toast({
-        title: "Coupon code copied!",
-        description: `${coupon.code} has been copied to your clipboard.`,
+        title: t("couponCodeCopied"),
+        description: `${coupon.code} ${t("hasBeenCopiedToYourClipboard")}`,
       });
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       toast({
-        title: "Failed to copy",
-        description: "Please try copying the code manually.",
+        title: t("failedToCopy"),
+        description: t("pleaseTryCopyingTheCodeManually"),
         variant: "destructive",
       });
     }
@@ -62,7 +63,7 @@ export function CouponCard({ coupon, onApply }: CouponCardProps) {
         {!isValid && (
           <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-10">
             <Badge variant="destructive" className="text-lg">
-              Expired
+              {t("expired")}
             </Badge>
           </div>
         )}
@@ -138,7 +139,7 @@ export function CouponCard({ coupon, onApply }: CouponCardProps) {
                   disabled={!isValid}
                   className="ml-4"
                 >
-                  Apply
+                  {t("apply")}
                 </Button>
               )}
             </div>

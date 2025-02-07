@@ -21,9 +21,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { CONSTANT } from "@/config/constants";
 import { GooglePhoneVerification } from "@/features/auth/google-phone-verification";
+import { registrationSchema } from "@/lib/validations/auth";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,27 +33,13 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-const registrationSchema = z.object({
-  f_name: z.string().min(2, "First name must be at least 2 characters"),
-  l_name: z.string().min(2, "Last name must be at least 2 characters"),
-  email: z
-    .string()
-    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email address"),
-  phone: z
-    .string()
-    .regex(
-      /^(\+8801|8801|01)[3-9]{1}[0-9]{8}$/,
-      "Invalid Bangladeshi phone number"
-    ),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
 export default function RegistrationForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showGooglePhoneVerification, setShowGooglePhoneVerification] =
     useState(false);
   const [googleUserData, setGoogleUserData] = useState<any>(null);
   const router = useRouter();
+  const t = useTranslations("auth");
   const {
     registration,
     error,
@@ -133,10 +121,10 @@ export default function RegistrationForm() {
             />
           </div>
           <CardTitle className="text-2xl font-bold text-center">
-            Create an Account
+            {t("registrationTitle")}
           </CardTitle>
           <CardDescription className="text-center">
-            Sign up to get started with our service
+            {t("registrationDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -148,7 +136,7 @@ export default function RegistrationForm() {
                   name="f_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>{t("firstName")}</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="John"
@@ -165,7 +153,7 @@ export default function RegistrationForm() {
                   name="l_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>{t("lastName")}</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Doe"
@@ -183,7 +171,7 @@ export default function RegistrationForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("email")}</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="johndoe@example.com"
@@ -200,7 +188,7 @@ export default function RegistrationForm() {
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone</FormLabel>
+                    <FormLabel>{t("phone")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -228,12 +216,12 @@ export default function RegistrationForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("password")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
-                          placeholder="Enter your password"
+                          placeholder={t("passwordPlaceholder")}
                           {...field}
                           className="bg-background pr-10"
                         />
@@ -263,7 +251,7 @@ export default function RegistrationForm() {
                 </Alert>
               )}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing up..." : "Sign Up"}
+                {isLoading ? t("signingUp") : t("signUp")}
               </Button>
             </form>
           </Form>
@@ -275,7 +263,7 @@ export default function RegistrationForm() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
+                {t("orContinueWith")}
               </span>
             </div>
           </div>
@@ -296,12 +284,12 @@ export default function RegistrationForm() {
             </Button>
           </div>
           <div className="text-center text-sm">
-            Already have an account?{" "}
+            {t("alreadyHaveAccount")}
             <Link
               href="/auth/login"
               className="font-semibold text-primary hover:underline"
             >
-              Log in
+              {t("login")}
             </Link>
           </div>
         </CardFooter>

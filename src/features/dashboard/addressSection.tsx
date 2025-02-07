@@ -9,6 +9,7 @@ import {
 } from "@/lib/hooks/queries/address/useAddress";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Briefcase, Building2, Home, MapPin, Phone } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { AddressModal } from "./addressModal";
 import { DeleteConfirmationModal } from "./deleteConfirmationModal";
@@ -21,7 +22,7 @@ export function AddressSection() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
-
+  const t = useTranslations("dashboard");
   const {
     data: addresses,
     isLoading,
@@ -36,14 +37,14 @@ export function AddressSection() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
       toast({
-        title: "Address deleted",
-        description: "The address has been successfully deleted.",
+        title: t("addressDeleted"),
+        description: t("addressDeletedDescription"),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to delete address. Please try again.",
+        title: t("error"),
+        description: t("failedToDeleteAddress"),
         variant: "destructive",
       });
     },
@@ -83,18 +84,18 @@ export function AddressSection() {
     }
   };
 
-  if (isLoading) return <div>Loading addresses...</div>;
-  if (error) return <div>Error loading addresses</div>;
+  if (isLoading) return <div>{t("loadingAddresses")}</div>;
+  if (error) return <div>{t("errorLoadingAddresses")}</div>;
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>My Addresses</CardTitle>
-        <Button onClick={handleAddAddress}>Add New Address</Button>
+        <CardTitle>{t("myAddresses")}</CardTitle>
+        <Button onClick={handleAddAddress}>{t("addNewAddress")}</Button>
       </CardHeader>
       <CardContent>
         {addresses.length === 0 ? (
-          <p>No addresses found. Add a new address to get started.</p>
+          <p>{t("noAddressesFound")}</p>
         ) : (
           <div className="space-y-4">
             {addresses.map((address: any) => (
@@ -124,13 +125,13 @@ export function AddressSection() {
                       className="mr-2"
                       onClick={() => handleEditAddress(address)}
                     >
-                      Edit
+                      {t("edit")}
                     </Button>
                     <Button
                       variant="destructive"
                       onClick={() => handleDeleteAddress(address.id)}
                     >
-                      Delete
+                      {t("delete")}
                     </Button>
                   </div>
                 </CardContent>
@@ -148,8 +149,8 @@ export function AddressSection() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDeleteAddress}
-        title="Delete Address"
-        description="Are you sure you want to delete this address? This action cannot be undone."
+        title={t("deleteAddress")}
+        description={t("deleteAddressDescription")}
       />
     </Card>
   );

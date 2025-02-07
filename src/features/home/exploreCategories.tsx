@@ -7,6 +7,7 @@ import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import { cn } from "@/lib/utils/utils";
 import { Category } from "@/types";
 import { ImageType } from "@/types/image";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import CustomImage from "../../components/ui/customImage";
@@ -17,7 +18,7 @@ export function ExploreCategories() {
   const gridRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
-
+  const t = useTranslations("home");
   useEffect(() => {
     const handleScroll = () => {
       if (gridRef.current && containerRef.current) {
@@ -46,8 +47,8 @@ export function ExploreCategories() {
     <div ref={containerRef} className="relative">
       <section className="">
         <SectionHeader
-          title="Explore Categories"
-          description="What are you craving today?"
+          title={t("exploreCategories")}
+          description={t("whatAreYouCravingToday")}
         />
         <div
           ref={gridRef}
