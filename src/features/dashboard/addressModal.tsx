@@ -24,13 +24,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
+import { LocationSelector } from "@/features/location/locationSelector";
 import {
   addAddress,
   updateAddress,
 } from "@/lib/hooks/queries/address/useAddress";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -39,11 +40,22 @@ const addressSchema = z.object({
   address_type: z.enum(["home", "work", "other"]),
   contact_person_number: z.string().min(1, "Contact person number is required"),
   address: z.string().min(1, "Address is required"),
+  latitude: z.number(),
+  longitude: z.number(),
 });
 
-export function AddressModal({ isOpen, onClose, address }: any) {
+export function AddressModal({
+  isOpen,
+  onClose,
+  address,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  address: any;
+}) {
   const queryClient = useQueryClient();
   const isEditing = !!address;
+  const [showMap, setShowMap] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(addressSchema),
@@ -52,12 +64,18 @@ export function AddressModal({ isOpen, onClose, address }: any) {
       address_type: "home",
       contact_person_number: "",
       address: "",
+      latitude: 0,
+      longitude: 0,
     },
   });
 
   useEffect(() => {
     if (address) {
-      form.reset(address);
+      form.reset({
+        ...address,
+        latitude: address.latitude || 0,
+        longitude: address.longitude || 0,
+      });
     }
   }, [address, form]);
 
@@ -67,6 +85,7 @@ export function AddressModal({ isOpen, onClose, address }: any) {
       queryClient.invalidateQueries({ queryKey: ["addresses"] });
       toast({
         title: "Address added",
+
         description: "Your address has been successfully added.",
       });
       onClose();
@@ -108,9 +127,16 @@ export function AddressModal({ isOpen, onClose, address }: any) {
     }
   };
 
+  const handleLocationSelect = (location: any) => {
+    form.setValue("address", location.address);
+    form.setValue("latitude", location.lat);
+    form.setValue("longitude", location.lng);
+    setShowMap(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Edit Address" : "Add New Address"}
@@ -176,12 +202,31 @@ export function AddressModal({ isOpen, onClose, address }: any) {
                 <FormItem>
                   <FormLabel>Address</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <div className="flex items-center space-x-2">
+                      <Input {...field} />
+                      <Button type="button" onClick={() => setShowMap(true)}>
+                        Map
+                      </Button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            {showMap && (
+              <LocationSelector
+                onSelectLocation={handleLocationSelect}
+                initialLocation={
+                  address
+                    ? {
+                        address: address.address,
+                        lat: address.latitude,
+                        lng: address.longitude,
+                      }
+                    : null
+                }
+              />
+            )}
             <Button type="submit">
               {isEditing ? "Update Address" : "Add Address"}
             </Button>

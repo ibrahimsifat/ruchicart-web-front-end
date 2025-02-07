@@ -2,19 +2,27 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { useAuthStore } from "@/store/authStore";
-import { LogOut, ShoppingBag, User } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-
 import {
   Award,
   Heart,
+  LogOut,
   Mail,
   Settings,
+  ShoppingBag,
   Ticket,
+  User,
   Users,
   Wallet2,
 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 const menuItems = [
   {
@@ -75,50 +83,53 @@ export function DashboardSidebar() {
   };
 
   return (
-    <div className="w-64 bg-white shadow-md rounded-lg p-6 space-y-6">
-      <div className="flex flex-col items-center space-y-4">
-        <Avatar className="w-20 h-20">
-          <AvatarImage
-            src={user?.image}
-            alt={`${user?.f_name} ${user?.l_name}`}
-          />
-          <AvatarFallback>
-            {user?.f_name?.[0]}
-            {user?.l_name?.[0]}
-          </AvatarFallback>
-        </Avatar>
-        <div className="text-center">
-          <h2 className="text-xl font-semibold">
-            {user?.f_name} {user?.l_name}
-          </h2>
-          <p className="text-sm text-gray-500">{user?.email}</p>
-          <p className="text-sm text-muted-foreground">{user?.phone}</p>
-
-          <p className="text-xs text-muted-foreground">
-            Joined {user?.created_at}
-          </p>
+    <Card className="w-64">
+      <CardHeader className="pb-4">
+        <div className="flex flex-col items-center space-y-2">
+          <Avatar className="w-20 h-20">
+            <AvatarImage
+              src={user?.image}
+              alt={`${user?.f_name} ${user?.l_name}`}
+            />
+            <AvatarFallback>
+              {user?.f_name?.[0]}
+              {user?.l_name?.[0]}
+            </AvatarFallback>
+          </Avatar>
+          <div className="text-center">
+            <h2 className="text-xl font-semibold">
+              {user?.f_name} {user?.l_name}
+            </h2>
+            <p className="text-sm text-muted-foreground">{user?.email}</p>
+            <p className="text-sm text-muted-foreground">{user?.phone}</p>
+          </div>
         </div>
-      </div>
-      <nav className="space-y-2">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Button
-              key={item.path}
-              variant={pathname === item.path ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => router.push(item.path)}
-            >
-              <Icon className="mr-2 h-4 w-4" />
-              {item.name}
-            </Button>
-          );
-        })}
-      </nav>
-      <Button variant="outline" className="w-full" onClick={handleLogout}>
-        <LogOut className="mr-2 h-4 w-4" />
-        Logout
-      </Button>
-    </div>
+      </CardHeader>
+      <CardContent className="p-4">
+        <Separator className="mb-4" />
+        <nav className="space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Button
+                key={item.path}
+                variant={pathname === item.path ? "secondary" : "ghost"}
+                className="w-full justify-start"
+                onClick={() => router.push(item.path)}
+              >
+                <Icon className="mr-2 h-4 w-4" />
+                {item.name}
+              </Button>
+            );
+          })}
+        </nav>
+      </CardContent>
+      <CardFooter className="p-4">
+        <Button variant="outline" className="w-full" onClick={handleLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          Logout
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

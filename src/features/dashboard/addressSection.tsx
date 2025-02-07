@@ -11,11 +11,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Briefcase, Building2, Home, MapPin, Phone } from "lucide-react";
 import { useState } from "react";
 import { AddressModal } from "./addressModal";
+import { DeleteConfirmationModal } from "./deleteConfirmationModal";
 
 export function AddressSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
   const queryClient = useQueryClient();
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState(null);
 
   const {
     data: addresses,
@@ -45,17 +50,26 @@ export function AddressSection() {
   });
 
   const handleAddAddress = () => {
-    setEditingAddress(null);
-    setIsModalOpen(true);
+    setSelectedAddress(null);
+    setIsAddressModalOpen(true);
   };
 
   const handleEditAddress = (address: any) => {
-    setEditingAddress(address);
-    setIsModalOpen(true);
+    setSelectedAddress(address);
+    setIsAddressModalOpen(true);
   };
 
-  const handleDeleteAddress = (addressId: any) => {
-    deleteAddressMutation.mutate(addressId);
+  const handleDeleteAddress = (address: any) => {
+    setAddressToDelete(address);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteAddress = () => {
+    if (addressToDelete) {
+      deleteAddressMutation.mutate(addressToDelete.id);
+      setIsDeleteModalOpen(false);
+      setAddressToDelete(null);
+    }
   };
 
   const getAddressIcon = (type: any) => {
@@ -126,9 +140,16 @@ export function AddressSection() {
         )}
       </CardContent>
       <AddressModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        address={editingAddress}
+        isOpen={isAddressModalOpen}
+        onClose={() => setIsAddressModalOpen(false)}
+        address={selectedAddress}
+      />
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteAddress}
+        title="Delete Address"
+        description="Are you sure you want to delete this address? This action cannot be undone."
       />
     </Card>
   );

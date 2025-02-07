@@ -3,6 +3,7 @@ import { api } from "@/lib/api/api";
 import { auth, googleProvider } from "@/lib/utils/firebase";
 import { formatFirebaseAuthError } from "@/lib/utils/firebase-errors";
 import { getAxiosErrorMessage } from "@/lib/utils/getAxiosErrorMessage";
+import { User } from "@/types";
 import { SocialMediaData } from "@/types/auth";
 import {
   ConfirmationResult,
@@ -19,16 +20,7 @@ const isPrivatePage = () => {
   const currentPath = window.location.pathname;
   return privatePages.some((page) => currentPath.includes(page));
 };
-interface User {
-  id: string;
-  f_name: string;
-  l_name: string;
-  email: string;
-  phone: string;
-  image: string;
-  orders_count: number;
-  wishlist_count: number;
-}
+
 interface LoginData {
   email_or_phone: string;
   password: string;
