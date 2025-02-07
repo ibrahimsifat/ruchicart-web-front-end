@@ -30,6 +30,9 @@ export const queryKeys = {
     track: (order_id: string) => ["orders", order_id, "track"] as const,
     list: ["orders"] as const,
   },
+  coupons: {
+    all: ["coupons"] as const,
+  },
 } as const;
 
 const createQueryClient = () => {

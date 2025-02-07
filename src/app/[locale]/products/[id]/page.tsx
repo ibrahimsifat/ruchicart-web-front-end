@@ -1,3 +1,4 @@
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -228,7 +229,7 @@ export default function ProductPage({ product }: ProductPageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params as { id: string };
   // Fetch product data from your API
   const res = await fetch(`${process.env.API_URL}/product/${id}`);

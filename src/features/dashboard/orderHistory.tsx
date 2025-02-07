@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import CustomImage from "@/components/ui/customImage";
 import {
   Table,
   TableBody,
@@ -11,22 +12,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getOrders } from "@/lib/hooks/queries/order/useOrders";
-import { useQuery } from "@tanstack/react-query";
+import { useOrders } from "@/lib/hooks/queries/order/useOrders";
+import { ImageType } from "@/types/image";
+import { format } from "date-fns";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 
 export function OrderHistory() {
   const [expandedOrder, setExpandedOrder] = useState(null);
-  const {
-    data: orders,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["orders"],
-    queryFn: getOrders,
-  });
-
+  const { data, isLoading, error } = useOrders({ limit: 10, page: 1 });
+  const { orders } = data || {};
+  console.log(orders);
+  if (orders?.length === 0) return <div>No orders found.</div>;
   const toggleOrderDetails = (orderId: any) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
   };
@@ -35,7 +32,8 @@ export function OrderHistory() {
     switch (status.toLowerCase()) {
       case "delivered":
         return "bg-green-500";
-
+      case "confirmed":
+        return "bg-blue-500";
       case "processing":
         return "bg-blue-500";
       case "cancelled":
@@ -73,7 +71,7 @@ export function OrderHistory() {
                   <TableRow key={order.id}>
                     <TableCell>{order.id}</TableCell>
                     <TableCell>
-                      {new Date(order.created_at).toLocaleDateString()}
+                      {format(new Date(order.created_at), "PPP")}
                     </TableCell>
                     <TableCell>${order.order_amount.toFixed(2)}</TableCell>
                     <TableCell>
@@ -100,17 +98,46 @@ export function OrderHistory() {
                         <div className="p-4 bg-gray-50">
                           <h4 className="font-semibold mb-2">Order Details</h4>
                           <ul className="space-y-2">
-                            {order.details.map((item: any) => (
-                              <li
-                                key={item.id}
-                                className="flex justify-between"
-                              >
-                                <span>
-                                  {item.product_name} x {item.quantity}
-                                </span>
-                                <span>${item.price.toFixed(2)}</span>
-                              </li>
-                            ))}
+                            <div className="space-y-4">
+                              <div className="mt-4">
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                  <div>
+                                    <h4 className="font-semibold">
+                                      Order Type
+                                    </h4>
+                                    <p>{order.order_type}</p>
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold">
+                                      Payment Status
+                                    </h4>
+                                    <p>{order.payment_status}</p>
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold">
+                                      Delivery Address ID
+                                    </h4>
+                                    <p>{order.delivery_address_id}</p>
+                                  </div>
+                                </div>
+                                <h4 className="font-semibold mb-2">
+                                  Product Images
+                                </h4>
+                                <div className="flex flex-wrap gap-2">
+                                  {order.product_images.map((image, index) => (
+                                    <CustomImage
+                                      key={index}
+                                      src={image}
+                                      type={ImageType.PRODUCT}
+                                      alt={`Product ${index + 1}`}
+                                      width={100}
+                                      height={100}
+                                      className="rounded-md"
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
                           </ul>
                         </div>
                       </TableCell>

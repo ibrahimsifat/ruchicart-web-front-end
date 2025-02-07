@@ -268,3 +268,10 @@ export interface OrderDetailsItem {
   product_details: ProductDetails;
   order: Order;
 }
+
+export interface OrderListResponse {
+  limit: number;
+  offset: number;
+  total_size: number;
+  orders: Order[];
+}

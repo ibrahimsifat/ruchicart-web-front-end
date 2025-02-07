@@ -1,6 +1,10 @@
 import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
-import { OrderDetailsItem, TrackOrderItem } from "@/types/order";
+import {
+  OrderDetailsItem,
+  OrderListResponse,
+  TrackOrderItem,
+} from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
 interface orderTrackOptions {
   order_id: string;
@@ -32,13 +36,21 @@ export const useOrderTrack = (options: orderTrackOptions) => {
   });
 };
 
-export const getOrders = async () => {
-  return fetchData<OrderDetailsItem[]>("/customer/order/list");
+export const getOrders = async ({
+  limit,
+  page,
+}: {
+  limit: number;
+  page: number;
+}) => {
+  return fetchData<OrderListResponse>("/customer/order/list", {
+    params: { limit, page },
+  });
 };
 
-export const useOrders = () => {
-  return useQuery<OrderDetailsItem[]>({
+export const useOrders = ({ limit, page }: { limit: number; page: number }) => {
+  return useQuery<OrderListResponse>({
     queryKey: queryKeys.orders.list,
-    queryFn: () => getOrders(),
+    queryFn: () => getOrders({ limit, page }),
   });
 };

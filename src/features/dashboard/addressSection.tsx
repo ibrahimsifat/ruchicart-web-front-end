@@ -59,14 +59,14 @@ export function AddressSection() {
     setIsAddressModalOpen(true);
   };
 
-  const handleDeleteAddress = (address: any) => {
-    setAddressToDelete(address);
+  const handleDeleteAddress = (id: any) => {
+    setAddressToDelete(id);
     setIsDeleteModalOpen(true);
   };
 
   const confirmDeleteAddress = () => {
     if (addressToDelete) {
-      deleteAddressMutation.mutate(addressToDelete.id);
+      deleteAddressMutation.mutate(addressToDelete);
       setIsDeleteModalOpen(false);
       setAddressToDelete(null);
     }

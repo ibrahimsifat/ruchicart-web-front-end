@@ -120,20 +120,20 @@ export interface User {
   l_name?: string;
   email?: string;
   image?: string;
-  isPhoneVerified?: number;
-  emailVerifiedAt?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  emailVerificationToken?: string;
+  is_phone_verified?: number;
+  email_verified_at?: string;
+  created_at?: string;
+  updated_at?: string;
+  email_verification_token?: string;
   phone?: string;
-  cmFirebaseToken?: string;
+  cm_firebase_token?: string;
   point?: number;
-  loginMedium?: string;
-  referCode?: string;
-  walletBalance?: number;
+  login_medium?: string;
+  refer_code?: string;
+  refer_by?: string;
+  wallet_balance?: number;
   orders_count?: number;
   wishlist_count?: number;
-  created_at?: string;
 }
 export interface Branches {
   id: string;
