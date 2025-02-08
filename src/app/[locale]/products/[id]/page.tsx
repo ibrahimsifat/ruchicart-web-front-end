@@ -1,243 +1,51 @@
-"use client";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import CustomImage from "@/components/ui/customImage";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
-import { useCart } from "@/store/cartStore";
-import { ImageType } from "@/types/image";
-import { Clock, ShoppingCart, Star } from "lucide-react";
-import type { GetServerSideProps } from "next";
-import { useState } from "react";
+import { ProductActions } from "@/features/product-details/ProductActions";
+import { getProductDetails } from "@/lib/hooks/queries/product/useProducts";
 
-interface ProductPageProps {
-  product: {
-    id: number;
-    name: string;
-    description: string;
-    image: string;
-    price: number;
-    variations: Array<{
-      name: string;
-      type: string;
-      min: string;
-      max: string;
-      required: string;
-      values: Array<{
-        label: string;
-        optionPrice: string;
-      }>;
-    }>;
-    discount: number;
-    discount_type: string;
-    available_time_starts: string;
-    available_time_ends: string;
-    product_type: string;
-    is_recommended: number;
-    rating: any[];
-  };
-}
+import Image from "next/image";
+import { FC } from "react";
 
-export default function ProductPage({ product }: ProductPageProps) {
-  const [selectedVariations, setSelectedVariations] = useState<
-    Record<string, string[]>
-  >({});
-  const { addItem } = useCart();
+type ProductDetailsPageProps = {
+  params: Promise<{ id: string }>;
+};
 
-  const handleVariationChange = (
-    variationName: string,
-    value: string,
-    type: string
-  ) => {
-    if (type === "single") {
-      setSelectedVariations((prev) => ({ ...prev, [variationName]: [value] }));
-    } else if (type === "multi") {
-      setSelectedVariations((prev) => {
-        const currentValues = prev[variationName] || [];
-        if (currentValues.includes(value)) {
-          return {
-            ...prev,
-            [variationName]: currentValues.filter((v) => v !== value),
-          };
-        } else {
-          return { ...prev, [variationName]: [...currentValues, value] };
-        }
-      });
-    }
-  };
+const ProductDetailsPage: FC<ProductDetailsPageProps> = async ({ params }) => {
+  const { id } = await params;
 
-  const calculateTotalPrice = () => {
-    let total = product.price;
-    Object.entries(selectedVariations).forEach(
-      ([variationName, selectedValues]) => {
-        const variation = product.variations.find(
-          (v) => v.name === variationName
-        );
-        if (variation) {
-          selectedValues.forEach((value) => {
-            const option = variation.values.find((v) => v.label === value);
-            if (option) {
-              total += Number.parseFloat(option.optionPrice);
-            }
-          });
-        }
-      }
-    );
-    if (product.discount_type === "percent") {
-      total -= total * (product.discount / 100);
-    } else {
-      total -= product.discount;
-    }
-    return total;
-  };
-
-  const handleAddToCart = () => {
-    addItem({
-      id: product.id.toString(),
-      name: product.name,
-      image: product.image,
-      price: calculateTotalPrice(),
-      quantity: 1,
-      variant: selectedVariations,
-    });
-  };
+  const product = await getProductDetails(id);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="overflow-hidden">
-        <div className="md:flex">
-          <div className="md:w-1/2">
-            <div className="relative aspect-square">
-              <CustomImage
-                type={ImageType.PRODUCT}
-                src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/${product.image}`}
-                alt={product.name}
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-          <div className="md:w-1/2 p-6">
-            <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-            <div className="flex items-center gap-2 mb-4">
-              <Badge
-                variant={product.product_type === "veg" ? "success" : "default"}
-              >
-                {product.product_type}
-              </Badge>
-              {product.is_recommended === 1 && (
-                <Badge variant="secondary">Recommended</Badge>
-              )}
-              <div className="flex items-center">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                <span className="text-sm font-medium">
-                  {product.rating.length > 0
-                    ? (
-                        product.rating.reduce((acc, curr) => acc + curr, 0) /
-                        product.rating.length
-                      ).toFixed(1)
-                    : "N/A"}
-                </span>
-              </div>
-            </div>
-            <p className="text-gray-600 mb-4">{product.description}</p>
-            <div className="flex items-center gap-2 mb-4">
-              <Clock className="h-5 w-5 text-gray-500" />
-              <span className="text-sm text-gray-500">
-                Available: {product.available_time_starts} -{" "}
-                {product.available_time_ends}
-              </span>
-            </div>
-            <div className="mb-6">
-              <span className="text-3xl font-bold">
-                ${calculateTotalPrice().toFixed(2)}
-              </span>
-              {product.discount > 0 && (
-                <span className="text-xl text-gray-500 line-through ml-2">
-                  ${product.price.toFixed(2)}
-                </span>
-              )}
-            </div>
-            <Separator className="my-6" />
-            {product.variations.map((variation) => (
-              <div key={variation.name} className="mb-6">
-                <h3 className="text-lg font-semibold mb-2">{variation.name}</h3>
-                {variation.type === "single" ? (
-                  <RadioGroup
-                    onValueChange={(value) =>
-                      handleVariationChange(variation.name, value, "single")
-                    }
-                    value={selectedVariations[variation.name]?.[0] || ""}
-                  >
-                    {variation.values.map((option) => (
-                      <div
-                        key={option.label}
-                        className="flex items-center space-x-2"
-                      >
-                        <RadioGroupItem
-                          value={option.label}
-                          id={`${variation.name}-${option.label}`}
-                        />
-                        <Label htmlFor={`${variation.name}-${option.label}`}>
-                          {option.label} (+${option.optionPrice})
-                        </Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                ) : (
-                  <div className="space-y-2">
-                    {variation.values.map((option) => (
-                      <div
-                        key={option.label}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={`${variation.name}-${option.label}`}
-                          checked={
-                            selectedVariations[variation.name]?.includes(
-                              option.label
-                            ) || false
-                          }
-                          onCheckedChange={(checked) =>
-                            handleVariationChange(
-                              variation.name,
-                              option.label,
-                              "multi"
-                            )
-                          }
-                        />
-                        <Label htmlFor={`${variation.name}-${option.label}`}>
-                          {option.label} (+${option.optionPrice})
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-            <Button className="w-full" size="lg" onClick={handleAddToCart}>
-              <ShoppingCart className="mr-2 h-5 w-5" />
-              Add to Cart
-            </Button>
-          </div>
+    <div className="container mx-auto py-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Image Section */}
+        <div className="relative aspect-square">
+          <Image
+            src={product?.image}
+            alt={product?.name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-contain"
+            priority
+          />
         </div>
-      </Card>
+
+        {/* Details Section */}
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold">{product?.name}</h1>
+          </div>
+
+          <p className="text-2xl font-bold">${product?.price}</p>
+
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold">Description</h2>
+            <p className="text-gray-600">{product?.description}</p>
+          </div>
+
+          <ProductActions product={product} />
+        </div>
+      </div>
     </div>
   );
-}
-
-const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params as { id: string };
-  // Fetch product data from your API
-  const res = await fetch(`${process.env.API_URL}/product/${id}`);
-  const product = await res.json();
-
-  return {
-    props: {
-      product,
-    },
-  };
 };
+
+export default ProductDetailsPage;

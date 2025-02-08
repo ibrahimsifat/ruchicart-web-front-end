@@ -48,10 +48,6 @@ export function CategoryBannerSlider({ categories }: CategoryBannerProps) {
         >
           <CardContent className="p-0 h-full">
             <CustomImage
-              // src={
-              //   ImageType.CATEGORY + category.banner_image ||
-              //   "/placeholder.svg"
-              // }
               src={category.banner_image}
               alt={category.name}
               fill

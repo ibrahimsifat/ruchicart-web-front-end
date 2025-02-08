@@ -31,6 +31,7 @@ export type Product = {
 export type ProductResponse = {
   total_size: number;
   limit: number | null;
+  product_max_price: number;
   offset: number;
   products: Product[];
 };

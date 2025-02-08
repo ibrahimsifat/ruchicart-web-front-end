@@ -1,6 +1,6 @@
 import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
-import { ProductResponse } from "@/types/product";
+import { Product, ProductResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 
 interface GetPopularOptions {
@@ -9,7 +9,7 @@ interface GetPopularOptions {
   search?: string;
 }
 // https://ruchicart.com/api/v1/products/popular
-async function getPopularProducts(options: GetPopularOptions = {}) {
+export async function getPopularProducts(options: GetPopularOptions = {}) {
   return fetchData<ProductResponse>("/products/popular", { params: options });
 }
 export function usePopularProducts(options: GetPopularOptions = {}) {
@@ -18,6 +18,17 @@ export function usePopularProducts(options: GetPopularOptions = {}) {
     queryFn: () => getPopularProducts(options),
   });
 }
+export async function getProductDetails(id: string) {
+  return fetchData<Product>(`/products/details/${id}`);
+}
+
+export function useProductDetails(id: string) {
+  return useQuery<Product>({
+    queryKey: queryKeys.products.detail(id),
+    queryFn: () => getProductDetails(id),
+  });
+}
+
 async function getLatestProducts(options: GetPopularOptions = {}) {
   return fetchData<ProductResponse>("/products/popular", { params: options });
 }
