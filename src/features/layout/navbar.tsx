@@ -10,6 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { CartDrawer } from "@/features/cart/cart-drawer";
+import { SearchBar } from "@/features/search/searchBar";
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import { cn } from "@/lib/utils/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -41,7 +42,6 @@ import {
 } from "../../components/ui/dropdown-menu";
 import { CONSTANT } from "../../config/constants";
 import MegaMenu from "./megaMenu";
-import { SearchBar } from "./searchBar";
 
 export const CartIconRef =
   React.createContext<React.RefObject<HTMLButtonElement | null> | null>(null);
