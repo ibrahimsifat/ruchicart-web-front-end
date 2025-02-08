@@ -10,6 +10,7 @@ export enum ImageType {
   CHAT = "chat",
   BRANCH = "branch",
   GATEWAY = "gateway",
+  CATEGORY_BANNER = "category/banner",
 }
 export interface ImageProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string | null;

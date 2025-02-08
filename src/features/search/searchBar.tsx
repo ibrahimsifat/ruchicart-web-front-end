@@ -78,7 +78,7 @@ export function SearchBar() {
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
           onFocus={() => setIsOpen(true)}
-          className="pl-12 pr-12 py-6 text-lg border-2 hover:border-primary/50 focus:border-primary transition-all duration-300 rounded-full shadow-md focus:shadow-lg focus:ring-4 focus:ring-primary/20"
+          className="pl-12 pr-12 py-6 text-lg border-2 hover:border-primary/50 focus:border-primary transition-all duration-300 rounded-full focus:ring-4 focus:ring-primary/20"
         />
         {searchTerm && (
           <Button
@@ -96,7 +96,7 @@ export function SearchBar() {
           size="icon"
           className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full"
         >
-          <Search className="h-5 w-5" />
+          <Search className="h-5 w-5 font-bold" />
         </Button>
       </form>
 
@@ -108,7 +108,7 @@ export function SearchBar() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
-            <Card className="absolute top-full left-0 w-full mt-2 p-4 shadow-lg z-50 max-h-[70vh] overflow-y-auto">
+            <Card className="absolute top-full left-0 w-full mt-2 p-4 z-50 max-h-[70vh] overflow-y-auto">
               {searchTerm ? (
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Suggestions</h3>

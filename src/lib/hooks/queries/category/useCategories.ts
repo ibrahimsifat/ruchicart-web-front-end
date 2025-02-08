@@ -19,6 +19,18 @@ export function useCategories(options: GetCategoriesOptions = {}) {
     queryFn: () => getCategories(options),
   });
 }
+
+async function getCuisines(options: GetCategoriesOptions = {}) {
+  return fetchData<Category[]>("/cuisine/list", { params: options });
+}
+
+export function useCuisines(options: GetCategoriesOptions = {}) {
+  return useQuery({
+    queryKey: queryKeys.cuisines.all,
+    queryFn: () => getCuisines(options),
+  });
+}
+
 export async function getCategoryProducts(id: string | number) {
   return fetchData<ProductResponse>(`/categories/products/${id}`);
 }

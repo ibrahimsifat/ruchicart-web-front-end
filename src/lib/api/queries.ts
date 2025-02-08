@@ -33,6 +33,9 @@ export const queryKeys = {
   coupons: {
     all: ["coupons"] as const,
   },
+  cuisines: {
+    all: ["cuisines"] as const,
+  },
 } as const;
 
 const createQueryClient = () => {
