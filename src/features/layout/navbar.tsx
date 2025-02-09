@@ -17,6 +17,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cartStore";
 import {
   ChevronDown,
+  Loader2,
   LogIn,
   LogOut,
   MenuIcon,
@@ -26,7 +27,7 @@ import {
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import LocaleSwitcher from "../../components/LocaleSwitcher";
 import {
   Avatar,
@@ -138,7 +139,9 @@ export function Navbar() {
           </div>
 
           {/* Search with Live Results */}
-          <SearchBar />
+          <Suspense fallback={<Loader2 className="h-5 w-5" />}>
+            <SearchBar />
+          </Suspense>
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
@@ -164,7 +167,9 @@ export function Navbar() {
             </Button>
             {/* Sign In */}
             {token ? (
-              <UserMenu />
+              <Suspense fallback={<Loader2 className="h-5 w-5" />}>
+                <UserMenu />
+              </Suspense>
             ) : (
               <Link href="/auth/login">
                 <Button className="hidden md:inline-flex">
@@ -177,9 +182,7 @@ export function Navbar() {
         </div>
       </nav>
       {/* Category Mega Menu */}
-      {isMegaMenuOpen && (
-        <MegaMenu categories={categories || []} isSticky={isSticky} />
-      )}
+      {isMegaMenuOpen && <MegaMenu categories={categories || []} />}
 
       <CartDrawer open={showCartDrawer} onOpenChange={setShowCartDrawer} />
     </CartIconRef.Provider>
@@ -198,7 +201,7 @@ const UserMenu = () => {
         >
           <Avatar className="h-8 w-8">
             <AvatarImage src="/placeholder.svg" alt={user?.f_name} />
-            <AvatarFallback>{user?.f_name.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{user?.f_name?.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col items-start">
             <span className="text-sm font-medium leading-none">

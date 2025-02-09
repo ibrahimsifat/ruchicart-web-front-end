@@ -9,7 +9,7 @@ interface GetPopularOptions {
   limit?: number;
   search?: string;
 }
-async function getBranch() {
+export async function getBranch() {
   return fetchData<BaseBranch[]>("/branch/list");
 }
 export function useBranch() {

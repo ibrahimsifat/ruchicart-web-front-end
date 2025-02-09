@@ -3,7 +3,7 @@ import { api } from "@/lib/api/api";
 import { useSearchStore } from "@/store/searchStore";
 import { Product } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
-import { useTransition } from "react";
+import { Suspense, useTransition } from "react";
 
 interface SearchResultsProps {
   searchQuery: string;
@@ -48,7 +48,9 @@ export function SearchResults({ searchQuery }: SearchResultsProps) {
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedProducts?.map((product: Product) => (
-          <ProductCard key={product.id} product={product} />
+          <Suspense fallback={<p>card loading...</p>}>
+            <ProductCard key={product.id} product={product} />
+          </Suspense>
         ))}
       </div>
 

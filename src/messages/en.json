@@ -370,6 +370,21 @@
     "updateProfile": "Update Profile",
     "becomeADeliveryMan": "Become a Delivery Man"
   },
+  "category": {
+    "all": "All",
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "dessert": "Dessert",
+    "drinks": "Drinks",
+    "priceRange": "Price Range",
+    "applyFilters": "Apply Filters",
+    "viewDetails": "View Details",
+    "proceedToCheckout": "Proceed to Checkout",
+    "apply": "Apply",
+    "applyCoupon": "Apply Coupon",
+    "cuisine": "Cuisine"
+  },
   "Error": {
     "description": "<p>We've unfortunately encountered an error</p><p>You can try to <retry>reload the page</retry> you were visiting</p>",
     "title": "Something went wrong!"

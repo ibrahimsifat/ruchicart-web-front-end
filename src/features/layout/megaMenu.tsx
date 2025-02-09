@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@/lib/utils/utils";
 import { Category } from "@/types";
 import { ImageType } from "@/types/image";
@@ -8,13 +6,7 @@ import { Card } from "../../components/ui/card";
 import CustomImage from "../../components/ui/customImage";
 import { getCategoryBGGradient } from "../../components/utils/getCategoryBGGradient";
 
-const MegaMenu = ({
-  categories,
-  isSticky,
-}: {
-  categories: Category[];
-  isSticky: boolean;
-}) => {
+const MegaMenu = ({ categories }: { categories: Category[] }) => {
   return (
     <div className="absolute left-0 w-full bg-white shadow-lg z-40 py-4 border-t">
       <div className="container mx-auto px-4">
@@ -27,13 +19,12 @@ const MegaMenu = ({
                   "group transition-all duration-500 cursor-pointer overflow-hidden",
 
                   getCategoryBGGradient(),
-                  isSticky ? "rounded-full scale-50" : "rounded-lg"
+                  "rounded-lg"
                 )}
               >
                 <div
                   className={cn(
-                    "p-4 flex flex-col items-center justify-center aspect-square transition-all duration-500",
-                    isSticky && "scale-100 p-0"
+                    "p-4 flex flex-col items-center justify-center aspect-square transition-all duration-500"
                   )}
                 >
                   <CustomImage
@@ -42,20 +33,18 @@ const MegaMenu = ({
                     width={200}
                     height={200}
                     className={cn(
-                      "w-full h-full object-cover transition-transform duration-300",
-                      isSticky ? "scale-100" : "mb-2"
+                      "w-full h-full object-cover transition-transform duration-300"
                     )}
                     alt={`${category.name} category`}
                   />
-                  {!isSticky && (
-                    <span
-                      className={cn(
-                        "font-medium md:text-md text-sm text-center group-hover:font-bold transition-all duration-300 h-9"
-                      )}
-                    >
-                      {category.name}
-                    </span>
-                  )}
+
+                  <span
+                    className={cn(
+                      "font-medium md:text-md text-sm text-center group-hover:font-bold transition-all duration-300 h-9"
+                    )}
+                  >
+                    {category.name}
+                  </span>
                 </div>
               </Card>
             </Link>

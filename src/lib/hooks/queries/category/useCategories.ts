@@ -10,7 +10,7 @@ interface GetCategoriesOptions {
   search?: string;
 }
 
-async function getCategories(options: GetCategoriesOptions = {}) {
+export async function getCategories(options: GetCategoriesOptions = {}) {
   return fetchData<Category[]>("/categories", { params: options });
 }
 export function useCategories(options: GetCategoriesOptions = {}) {

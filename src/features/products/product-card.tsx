@@ -1,48 +1,24 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
 import { ImageType } from "@/types/image";
 import type { Product } from "@/types/product";
-import { Clock, Star } from "lucide-react";
+import { Clock } from "lucide-react";
 import Link from "next/link";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useCart } from "@/store/cartStore";
-import { Eye, Plus } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Suspense } from "react";
+import ProductCardAction from "./product-card/product-card-action";
+import ProductCardRating from "./product-card/product-card-rating";
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { addItem } = useCart();
-  const t = useTranslations("home");
   const discountedPrice =
     product.discount_type === "percent"
       ? product.price - (product.price * product.discount) / 100
       : product.price - product.discount;
 
-  const rating =
-    product.rating.length > 0
-      ? product.rating.reduce((acc, curr) => acc + curr.rating, 0) /
-        product.rating.length
-      : 0;
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    addItem({
-      id: product.id.toString(),
-      name: product.name,
-      image: product.image,
-      price: product.price,
-      quantity: 1,
-    });
-  };
   return (
     <Card className="group overflow-hidden">
       <Link href={`/products/${product.id}`}>
@@ -78,17 +54,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <div className="p-4 space-y-2">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-lg truncate">{product.name}</h3>
-          <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-full">
-            <Star className="h-4 w-4 fill-primary text-primary" />
-            <span className="text-sm font-medium text-primary">
-              {product.rating.length > 0
-                ? (
-                    product.rating.reduce((acc, curr) => acc + curr, 0) /
-                    product.rating.length
-                  ).toFixed(1)
-                : "N/A"}
-            </span>
-          </div>
+          <ProductCardRating product={product} />
         </div>
 
         <p className="text-sm text-muted-foreground truncate">
@@ -114,35 +80,9 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <div className="pt-2 flex justify-between items-center gap-2">
-          <Link href={`/products/${product.id}`} className="flex-grow">
-            <Button
-              variant="outline"
-              className="w-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors duration-300"
-            >
-              <Eye className="mr-2 h-4 w-4" />
-              {t("viewDetails")}
-            </Button>
-          </Link>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="default"
-                  className="h-10 w-10 bg-primary text-white hover:bg-primary/90 transition-colors duration-300"
-                  onClick={handleAddToCart}
-                >
-                  <Plus className="h-5 w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Add to cart</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <Suspense fallback={<p>Action loading...</p>}>
+          <ProductCardAction product={product} />
+        </Suspense>
       </div>
     </Card>
   );

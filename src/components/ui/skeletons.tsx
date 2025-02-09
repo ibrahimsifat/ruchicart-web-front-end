@@ -1,6 +1,5 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SectionHeader } from "./section-header";
 
 export function HeroSkeleton() {
   return (
@@ -13,10 +12,6 @@ export function HeroSkeleton() {
 export function CategorySkeleton() {
   return (
     <div>
-      <SectionHeader
-        title="Explore Categories"
-        description="What are you craving today?"
-      />
       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
         {Array(6)
           .fill(null)

@@ -24,6 +24,28 @@
     "verifying": "যাচাই করা হচ্ছে...",
     "backToLogin": "লগইনে ফিরে যান"
   },
+  "category": {
+    "all": "সব",
+    "breakfast": "শুরুর খাবার",
+    "lunch": "দুপুরির খাবার",
+    "dinner": "রাতের খাবার",
+    "dessert": "ডেসার্ট",
+    "drinks": "পানি",
+    "beverage": "পানি",
+    "alcohol": "পানি",
+    "softDrinks": "পানি",
+    "hotDrinks": "পানি",
+    "coldDrinks": "পানি",
+    "tea": "পানি",
+    "coffee": "পানি",
+    "priceRange": "দামের পরিসীমা",
+    "applyFilters": "পরিসীমা প্রয়োগ করুন",
+    "viewDetails": "বিস্তারিত দেখুন",
+    "proceedToCheckout": "চেকআউট প্রস্তুত করুন",
+    "apply": "প্রয়োগ করুন",
+    "applyCoupon": "কুপন প্রয়োগ করুন",
+    "cuisine": "খাবার"
+  },
   "checkout": {
     "addNewAddress": "নতুন ঠিকানা যোগ করুন",
     "orderDetails": "অর্ডারের বিবরণ",

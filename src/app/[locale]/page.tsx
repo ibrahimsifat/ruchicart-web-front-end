@@ -6,15 +6,14 @@ import {
   PromoCardSkeleton,
 } from "@/components/ui/skeletons";
 import { AppDownload } from "@/features/home/appDownload";
+import ExploreCategoriesSection from "@/features/home/categories/exploreCategoriesSecetion";
 import { DiscountBanner } from "@/features/home/discountBanner";
-import { ExploreCategories } from "@/features/home/exploreCategories";
 import { FeaturedProducts } from "@/features/home/featuredProducts";
-import { HeroSlider } from "@/features/home/heroSlider";
+import HeroSlider from "@/features/home/heroSlider/heroSlider";
 import { NearbyBranch } from "@/features/home/nearbyBranch";
 import { TrendingDishes } from "@/features/home/trendingDishes";
 import { fetchData } from "@/lib/api/fetchUtils";
 import { getQueryClient, queryKeys } from "@/lib/api/queries";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -86,12 +85,12 @@ async function DynamicContent() {
   ]);
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       <Suspense fallback={<HeroSkeleton />}>
         <HeroSlider />
       </Suspense>
       <Suspense fallback={<CategorySkeleton />}>
-        <ExploreCategories />
+        <ExploreCategoriesSection />
       </Suspense>
       <Suspense fallback={<ProductCardSkeleton />}>
         <FeaturedProducts />
@@ -102,7 +101,7 @@ async function DynamicContent() {
       <Suspense fallback={<BranchCardSkeleton />}>
         <NearbyBranch />
       </Suspense>
-    </HydrationBoundary>
+    </>
   );
 }
 
@@ -120,7 +119,21 @@ function StaticContent() {
 export default function Home() {
   return (
     <PageLayout>
-      <DynamicContent />
+      <Suspense fallback={<HeroSkeleton />}>
+        <HeroSlider />
+      </Suspense>
+      <Suspense fallback={<CategorySkeleton />}>
+        <ExploreCategoriesSection />
+      </Suspense>
+      <Suspense fallback={<ProductCardSkeleton />}>
+        <FeaturedProducts />
+      </Suspense>
+      <Suspense fallback={<PromoCardSkeleton />}>
+        <TrendingDishes />
+      </Suspense>
+      <Suspense fallback={<BranchCardSkeleton />}>
+        <NearbyBranch />
+      </Suspense>
       {/* Static content renders immediately */}
       <StaticContent />
     </PageLayout>

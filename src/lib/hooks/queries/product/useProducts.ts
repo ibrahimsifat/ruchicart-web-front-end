@@ -29,7 +29,7 @@ export function useProductDetails(id: string) {
   });
 }
 
-async function getLatestProducts(options: GetPopularOptions = {}) {
+export async function getLatestProducts(options: GetPopularOptions = {}) {
   return fetchData<ProductResponse>("/products/popular", { params: options });
 }
 export function useLatestProducts(options: GetPopularOptions = {}) {

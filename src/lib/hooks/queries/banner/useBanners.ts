@@ -9,7 +9,7 @@ interface GetBannersOptions {
   search?: string;
 }
 
-async function getBanners(options: GetBannersOptions = {}) {
+export async function getBanners(options: GetBannersOptions = {}) {
   return fetchData<BannerItem[]>("/banners", { params: options });
 }
 export function useBanners(options: GetBannersOptions = {}) {
