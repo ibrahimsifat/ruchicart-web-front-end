@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { LocationSelector } from "@/features/location/locationSelector";
+import { LocationSelector } from "@/features/location/location-selector";
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { useTranslations } from "next-intl";

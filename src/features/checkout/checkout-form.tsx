@@ -23,7 +23,7 @@ import CheckoutAddress from "@/features/checkout/checkoutAddresList";
 import CheckoutAddressForm from "@/features/checkout/checkoutAddressForm";
 import { DeliveryTips } from "@/features/checkout/delivery-tips";
 import TakeAwayOrderSection from "@/features/checkout/takeAwayOrderSection";
-import { LocationSelector } from "@/features/location/locationSelector";
+import { LocationSelector } from "@/features/location/location-selector";
 import { PaymentMethods } from "@/features/order/paymentMethods";
 import {
   useAddAddress,

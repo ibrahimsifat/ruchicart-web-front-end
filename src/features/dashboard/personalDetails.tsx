@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { LocationSelector } from "@/features/location/locationSelector";
+import { LocationSelector } from "@/features/location/location-selector";
 import { getQueryClient } from "@/lib/api/queries";
 import { updateUserProfile } from "@/lib/hooks/queries/user/useUsers";
 import { zodResolver } from "@hookform/resolvers/zod";

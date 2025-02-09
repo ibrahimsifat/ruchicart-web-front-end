@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
-import { LocationSelector } from "@/features/location/locationSelector";
+import { LocationSelector } from "@/features/location/location-selector";
 import { getQueryClient } from "@/lib/api/queries";
 import {
   addAddress,
