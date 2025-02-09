@@ -11,6 +11,18 @@ export default async function ProductsPage({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductsPageWrapper searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+const ProductsPageWrapper = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) => {
   const params = await searchParams;
   const recommendedData = await getRecommendedData();
   const initialProducts = await searchProducts({
@@ -21,7 +33,7 @@ export default async function ProductsPage({
 
   return (
     <PageLayout>
-      <Suspense fallback={<div>Loading banners...</div>}>
+      <Suspense fallback={<div>Loading...</div>}>
         <CategoryBanners categories={recommendedData.categories.slice(1, 4)} />
       </Suspense>
 
@@ -40,4 +52,4 @@ export default async function ProductsPage({
       </div>
     </PageLayout>
   );
-}
+};

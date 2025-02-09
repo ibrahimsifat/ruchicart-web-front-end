@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import BaseLayout from "./layouts/BaseLayout";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -56,7 +56,11 @@ export default async function RootLayout({ children, params }: Props) {
 
   // Enable static rendering
   setRequestLocale(locale);
-  return <BaseLayout locale={locale}>{children}</BaseLayout>;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BaseLayout locale={locale}>{children}</BaseLayout>
+    </Suspense>
+  );
 }
 function isValidLocale(locale: string): locale is SupportedLocale {
   return routing.locales.includes(locale as SupportedLocale);

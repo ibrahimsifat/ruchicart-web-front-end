@@ -13,34 +13,36 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
+import { getProductDetails } from "@/lib/hooks/queries/product/useProducts";
 import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
-import type { Product } from "@/types/product";
+import { Product } from "@/types/product";
 import { Heart, Minus, Plus, ShoppingCart, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FC, useState } from "react";
+import { Suspense, useState } from "react";
 
-type ProductPreviewModalProps = {
-  product: Product | null;
-};
-/**
+// Separate the modal content into its own component
+export default async function ProductQuickView({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const product = await getProductDetails(id);
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <ProductQuickViewContent product={product} />
+    </Suspense>
+  );
+}
 
- * Product quick view component
- * Responsibility - Display product information in a dialog format with actions like add to cart, view product details etc.
- *
- * @param product - Product object
- * @returns Product quick view component
- */
-
-export const ProductPreviewModal: FC<ProductPreviewModalProps> = ({
-  product,
-}) => {
+const ProductQuickViewContent = ({ product }: { product: Product }) => {
   const router = useRouter();
-  if (!product) return null;
   const [quantity, setQuantity] = useState(1);
   const [selectedVariation, setSelectedVariation] = useState<string | null>(
     null
   );
+
   const { addItem } = useCart();
   const { toast } = useToast();
 
@@ -71,12 +73,12 @@ export const ProductPreviewModal: FC<ProductPreviewModalProps> = ({
   };
 
   const handleAddToWishlist = () => {
-    // Implement add to wishlist logic here
     toast({
       title: "Added to wishlist",
       description: `${product.name} has been added to your wishlist.`,
     });
   };
+
   const handleClose = () => {
     router.back();
   };
@@ -84,6 +86,7 @@ export const ProductPreviewModal: FC<ProductPreviewModalProps> = ({
   const handleDetails = () => {
     window.location.reload();
   };
+
   return (
     <Dialog open={true} defaultOpen={true} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl">
@@ -98,7 +101,6 @@ export const ProductPreviewModal: FC<ProductPreviewModalProps> = ({
                 fill
                 className="object-cover"
               />
-
               {product.discount > 0 && (
                 <Badge variant="destructive" className="absolute right-2 top-2">
                   {product.discount_type === "percent"
@@ -228,16 +230,8 @@ export const ProductPreviewModal: FC<ProductPreviewModalProps> = ({
               </div>
             </div>
           </div>
-
-          {/* <Separator className="my-8" />
-
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold">Related Products</h3>
-            <RelatedProducts products={relatedProducts} />
-          </div> */}
         </div>
       </DialogContent>
     </Dialog>
   );
 };
-ProductPreviewModal.displayName = "ProductPreviewModal";

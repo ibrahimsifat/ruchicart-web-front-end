@@ -6,6 +6,7 @@ import ProductActions from "@/features/product-details/ProductActions";
 import { getProductDetails } from "@/lib/hooks/queries/product/useProducts";
 import { ImageType } from "@/types/image";
 import { Star } from "lucide-react";
+import { Suspense } from "react";
 
 type ProductDetailsPageProps = {
   params: { id: string };
@@ -14,6 +15,14 @@ type ProductDetailsPageProps = {
 export default async function ProductDetailsPage({
   params,
 }: ProductDetailsPageProps) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductDetails params={params} />
+    </Suspense>
+  );
+}
+
+async function ProductDetails({ params }: { params: { id: string } }) {
   const { id } = await params;
   const product = await getProductDetails(id);
   const averageRating =
