@@ -7,6 +7,11 @@ export const routing = defineRouting({
   defaultLocale: CONSTANT.defaultLocale,
   pathnames: {
     "/": "/",
+    "/products": "/products",
+    "/products/:id": "/products/:id",
+    "/categories": "/categories",
+    "/categories/:id": "/categories/:id",
+    "/deals": "/deals",
     "/pathnames": {
       en: "/pathnames",
       bn: "/pfadnamen",

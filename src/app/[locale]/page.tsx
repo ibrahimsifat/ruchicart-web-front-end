@@ -21,7 +21,7 @@ import { Suspense } from "react";
 import PageLayout from "./layouts/PageLayout";
 
 // Separate metadata generation
-export async function generateMetadata({
+async function generateMetadata({
   params,
 }: {
   params: { locale: string };
@@ -120,10 +120,8 @@ function StaticContent() {
 export default function Home() {
   return (
     <PageLayout>
+      <DynamicContent />
       {/* Static content renders immediately */}
-      <Suspense fallback={<CategorySkeleton />}>
-        <DynamicContent />
-      </Suspense>
       <StaticContent />
     </PageLayout>
   );

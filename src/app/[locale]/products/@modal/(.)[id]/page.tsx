@@ -1,4 +1,4 @@
-import { ProductQuickView } from "@/features/product/ProductQuickView";
+import { ProductPreviewModal } from "@/features/products/product-preview-modal";
 import { getProductDetails } from "@/lib/hooks/queries/product/useProducts";
 
 import { FC } from "react";
@@ -11,7 +11,7 @@ const ProductDetailsModal: FC<ProductDetailsPageProps> = async ({ params }) => {
   const { id } = await params;
   const product = await getProductDetails(id);
 
-  return <ProductQuickView product={product} />;
+  return <ProductPreviewModal product={product} />;
 };
 
 export default ProductDetailsModal;

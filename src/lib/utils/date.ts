@@ -8,6 +8,6 @@ export const formatDateRange = (startDate: string, endDate: string) => {
 };
 
 export const isCouponValid = (startDate: string, endDate: string) => {
-  const now = new Date();
+  const now = performance.now();
   return isAfter(now, new Date(startDate)) && isBefore(now, new Date(endDate));
 };

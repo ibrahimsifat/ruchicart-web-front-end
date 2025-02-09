@@ -20,9 +20,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { LocationSelector } from "@/features/location/locationSelector";
+import { getQueryClient } from "@/lib/api/queries";
 import { updateUserProfile } from "@/lib/hooks/queries/user/useUsers";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Mail, MapPin, Phone, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -40,7 +41,7 @@ const profileSchema = z.object({
 export function PersonalDetails({ user }: { user: any }) {
   const [isEditing, setIsEditing] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const t = useTranslations("dashboard");
   const form = useForm({
     resolver: zodResolver(profileSchema),

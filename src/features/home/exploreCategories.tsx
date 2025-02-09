@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { CategorySkeleton } from "@/components/ui/skeletons";
+
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import { cn } from "@/lib/utils/utils";
 import { Category } from "@/types";
@@ -49,6 +50,14 @@ export function ExploreCategories() {
         <SectionHeader
           title={t("exploreCategories")}
           description={t("whatAreYouCravingToday")}
+          action={
+            <Link
+              href="/categories"
+              className="text-primary hover:text-primary/80 font-bold md:text-lg text-xl mb-2"
+            >
+              {t("viewAll")}
+            </Link>
+          }
         />
         <div
           ref={gridRef}

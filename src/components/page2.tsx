@@ -10,7 +10,6 @@ import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { Clock, ShoppingCart, Star } from "lucide-react";
-import type { GetServerSideProps } from "next";
 import { useState } from "react";
 
 interface ProductPageProps {
@@ -228,16 +227,3 @@ export default function ProductPage({ product }: ProductPageProps) {
     </div>
   );
 }
-
-const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params as { id: string };
-  // Fetch product data from your API
-  const res = await fetch(`${process.env.API_URL}/product/${id}`);
-  const product = await res.json();
-
-  return {
-    props: {
-      product,
-    },
-  };
-};

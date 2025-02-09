@@ -117,7 +117,7 @@ export function CheckoutForm({
       order_type: "delivery",
       branch_id: branch.id,
       delivery_time: "now",
-      delivery_date: new Date().toISOString().split("T")[0],
+      delivery_date: performance.now(),
       distance: 0,
       is_partial: 0,
       delivery_tip: deliveryTip,

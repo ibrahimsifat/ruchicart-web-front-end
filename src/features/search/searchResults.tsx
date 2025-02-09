@@ -1,4 +1,4 @@
-import { ProductCard } from "@/components/ui/product-card";
+import { ProductCard } from "@/features/products/product-card";
 import { api } from "@/lib/api/api";
 import { useSearchStore } from "@/store/searchStore";
 import { Product } from "@/types/product";

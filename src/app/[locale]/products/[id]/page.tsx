@@ -1,51 +1,67 @@
-import { ProductActions } from "@/features/product-details/ProductActions";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import CustomImage from "@/components/ui/customImage";
+import { Separator } from "@/components/ui/separator";
+import ProductActions from "@/features/product-details/ProductActions";
 import { getProductDetails } from "@/lib/hooks/queries/product/useProducts";
-
-import Image from "next/image";
-import { FC } from "react";
+import { ImageType } from "@/types/image";
+import { Star } from "lucide-react";
 
 type ProductDetailsPageProps = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
-const ProductDetailsPage: FC<ProductDetailsPageProps> = async ({ params }) => {
+export default async function ProductDetailsPage({
+  params,
+}: ProductDetailsPageProps) {
   const { id } = await params;
-
   const product = await getProductDetails(id);
+  const averageRating =
+    product.rating.length > 0
+      ? (
+          product.rating.reduce((acc, curr) => acc + curr, 0) /
+          product.rating.length
+        ).toFixed(1)
+      : "N/A";
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Image Section */}
-        <div className="relative aspect-square">
-          <Image
-            src={product?.image}
-            alt={product?.name}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-contain"
-            priority
-          />
-        </div>
-
-        {/* Details Section */}
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold">{product?.name}</h1>
+    <div className="container mx-auto px-4 py-8">
+      <Card className="overflow-hidden">
+        <div className="md:flex">
+          <div className="md:w-1/2">
+            <div className="relative aspect-square">
+              <CustomImage
+                type={ImageType.PRODUCT}
+                src={product.image}
+                alt={product.name}
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
+          <div className="md:w-1/2 p-6">
+            <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+            <div className="flex items-center gap-2 mb-4">
+              <Badge
+                variant={product.product_type === "veg" ? "success" : "default"}
+              >
+                {product.product_type}
+              </Badge>
+              {product.is_recommended === 1 && (
+                <Badge variant="secondary">Recommended</Badge>
+              )}
+              <div className="flex items-center">
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                <span className="text-sm font-medium">{averageRating}</span>
+              </div>
+            </div>
+            <p className="text-gray-600 mb-4">{product.description}</p>
+            <Separator className="my-6" />
 
-          <p className="text-2xl font-bold">${product?.price}</p>
-
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Description</h2>
-            <p className="text-gray-600">{product?.description}</p>
+            <ProductActions product={product} />
           </div>
-
-          <ProductActions product={product} />
         </div>
-      </div>
+      </Card>
     </div>
   );
-};
-
-export default ProductDetailsPage;
+}

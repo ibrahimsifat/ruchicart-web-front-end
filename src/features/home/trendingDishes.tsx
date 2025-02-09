@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -8,12 +7,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { ProductCard } from "@/components/ui/product-card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { CartIconRef } from "@/features/layout/navbar";
+import { Link } from "@/i18n/routing";
 import { usePopularProducts } from "@/lib/hooks/queries/product/useProducts";
 import { Product } from "@/types/product";
 import { useTranslations } from "next-intl";
+import { ProductCard } from "../products/product-card";
 
 export function TrendingDishes() {
   const { data: productsData, isLoading, error } = usePopularProducts();
@@ -25,7 +25,14 @@ export function TrendingDishes() {
         <SectionHeader
           title={t("trendingNow")}
           description={t("mostOrderedDishesNearYou")}
-          action={<Button variant="link">{t("viewAll")}</Button>}
+          action={
+            <Link
+              href="/products"
+              className="text-primary hover:text-primary/80 font-bold md:text-lg text-xl mb-2"
+            >
+              {t("viewAll")}
+            </Link>
+          }
         />
         <Carousel
           opts={{

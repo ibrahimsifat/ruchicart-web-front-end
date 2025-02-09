@@ -123,7 +123,8 @@
     "enter6DigitCodeSentTo": "Enter the 6-digit code sent to {phone}",
     "enter6DigitCode": "Enter 6-digit OTP",
     "resendOtpIn": "Resend OTP in {countdown}s",
-    "verifyOtp": "Verify OTP"
+    "verifyOtp": "Verify OTP",
+    "login": "Login"
   },
   "branch": {
     "selectBranch": "Select a Branch",

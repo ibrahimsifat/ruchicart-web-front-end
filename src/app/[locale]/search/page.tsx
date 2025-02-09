@@ -5,6 +5,7 @@ import { SearchFilters } from "@/features/search/searchFilters";
 import { SearchResults } from "@/features/search/searchResults";
 import { ArrowUpDown } from "lucide-react";
 
+import { CategorySkeleton } from "@/components/ui/skeletons";
 import { Footer } from "@/features/layout/footer";
 import { Navbar } from "@/features/layout/navbar";
 import { TopBar } from "@/features/layout/topBar";
@@ -15,10 +16,9 @@ import {
 } from "@/lib/hooks/queries/category/useCategories";
 import { useSearchStore } from "@/store/searchStore";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function SearchPage() {
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("q") || "";
+function Search({ searchQuery }: { searchQuery: string }) {
   const { filters, setFilters } = useSearchStore();
   //   const [isLoading, setIsLoading] = useState(true);
   const { data: categories } = useCategories();
@@ -69,5 +69,15 @@ export default function SearchPage() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function SearchPage() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
+  return (
+    <Suspense fallback={<CategorySkeleton />}>
+      <Search searchQuery={searchQuery} />
+    </Suspense>
   );
 }

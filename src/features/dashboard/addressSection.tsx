@@ -3,11 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
+import { getQueryClient } from "@/lib/api/queries";
 import {
   deleteAddress,
   getAddresses,
 } from "@/lib/hooks/queries/address/useAddress";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Briefcase, Building2, Home, MapPin, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -15,9 +16,7 @@ import { AddressModal } from "./addressModal";
 import { DeleteConfirmationModal } from "./deleteConfirmationModal";
 
 export function AddressSection() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingAddress, setEditingAddress] = useState(null);
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

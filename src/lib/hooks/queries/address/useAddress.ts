@@ -1,7 +1,8 @@
 import { api } from "@/lib/api/api";
+import { getQueryClient } from "@/lib/api/queries";
 import { useAuthStore } from "@/store/authStore";
 import type { Address } from "@/types/address";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useAddressList = () => {
   const { getGuestId, token } = useAuthStore();
@@ -22,7 +23,7 @@ export const useAddressList = () => {
 };
 
 export const useAddAddress = () => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const { getGuestId, token } = useAuthStore();
   const userId = token ? useAuthStore.getState().user?.id : getGuestId();
 
@@ -42,7 +43,7 @@ export const useAddAddress = () => {
 };
 
 export const useUpdateAddress = () => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const { getGuestId, token } = useAuthStore();
   const userId = token ? useAuthStore.getState().user?.id : getGuestId();
 
@@ -61,7 +62,7 @@ export const useUpdateAddress = () => {
 };
 
 export const useDeleteAddress = () => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const { getGuestId, token } = useAuthStore();
   const userId = token ? useAuthStore.getState().user?.id : getGuestId();
 

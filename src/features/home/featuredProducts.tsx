@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -8,9 +7,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { ProductCard } from "@/components/ui/product-card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { CartIconRef } from "@/features/layout/navbar";
+import { ProductCard } from "@/features/products/product-card";
+import { Link } from "@/i18n/routing";
 import { useLatestProducts } from "@/lib/hooks/queries/product/useProducts";
 import { Product } from "@/types/product";
 import { useTranslations } from "next-intl";
@@ -25,7 +25,14 @@ export function FeaturedProducts() {
         <SectionHeader
           title={t("featuredProducts")}
           description={t("discoverPopular")}
-          action={<Button variant="link">{t("viewAll")}</Button>}
+          action={
+            <Link
+              href="/products"
+              className="text-primary hover:text-primary/80 font-bold md:text-lg text-xl mb-2"
+            >
+              {t("viewAll")}
+            </Link>
+          }
         />
         <Carousel
           opts={{

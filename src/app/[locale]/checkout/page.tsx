@@ -5,10 +5,10 @@ import PageLayout from "../layouts/PageLayout";
 
 export default function CheckoutPage() {
   return (
-    <PageLayout>
-      <Suspense fallback={<CheckoutSkeleton />}>
+    <Suspense fallback={<CheckoutSkeleton />}>
+      <PageLayout>
         <Checkout />
-      </Suspense>
-    </PageLayout>
+      </PageLayout>
+    </Suspense>
   );
 }

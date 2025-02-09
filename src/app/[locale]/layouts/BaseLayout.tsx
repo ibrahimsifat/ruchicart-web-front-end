@@ -1,6 +1,6 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import Providers from "../query-provider";
 
 // Types
@@ -14,11 +14,13 @@ async function LocalizedContent({ children, locale }: LayoutProps) {
   const messages = await getMessages();
 
   return (
-    <Providers>
-      <NextIntlClientProvider messages={messages} locale={locale}>
-        {children}
-      </NextIntlClientProvider>
-    </Providers>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Providers>
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          {children}
+        </NextIntlClientProvider>
+      </Providers>
+    </Suspense>
   );
 }
 

@@ -25,12 +25,13 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import { LocationSelector } from "@/features/location/locationSelector";
+import { getQueryClient } from "@/lib/api/queries";
 import {
   addAddress,
   updateAddress,
 } from "@/lib/hooks/queries/address/useAddress";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -54,7 +55,7 @@ export function AddressModal({
   onClose: () => void;
   address: any;
 }) {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const isEditing = !!address;
   const [showMap, setShowMap] = useState(false);
   const t = useTranslations("address");

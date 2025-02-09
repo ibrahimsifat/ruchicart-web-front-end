@@ -1,28 +1,43 @@
-import { FilterSidebar } from "@/features/product/FilterSidebar";
-import { ProductsList } from "@/features/product/ProductsList";
-import { ProductsSkeleton } from "@/features/product/ProductsSkeleton";
+import { CategoryBanners } from "@/features/products/category-banners";
+import { ProductFilters } from "@/features/products/product-filters";
+import { ProductGrid } from "@/features/products/product-grid";
+import { ProductsLoading } from "@/features/products/products-loading";
+import { getRecommendedData, searchProducts } from "@/lib/api/products";
 import { Suspense } from "react";
+import PageLayout from "../layouts/PageLayout";
 
-type PageProps = {
-  searchParams: Promise<{ [key: string]: string | string[] }>;
-};
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const params = await searchParams;
+  const recommendedData = await getRecommendedData();
+  const initialProducts = await searchProducts({
+    limit: 12,
+    offset: 0,
+    ...params,
+  });
 
-export default function ProductsPage({ searchParams }: PageProps) {
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex gap-8">
-        <aside className="w-64 flex-shrink-0">
-          <Suspense>
-            <FilterSidebar />
-          </Suspense>
-        </aside>
+    <PageLayout>
+      <Suspense fallback={<div>Loading banners...</div>}>
+        <CategoryBanners categories={recommendedData.categories.slice(1, 4)} />
+      </Suspense>
 
-        <div className="flex-1">
-          <Suspense fallback={<ProductsSkeleton />}>
-            <ProductsList searchParams={searchParams} />
-          </Suspense>
-        </div>
+      <div className="mt-8 lg:grid lg:grid-cols-[280px_1fr] lg:gap-8">
+        <Suspense fallback={<div>Loading filters...</div>}>
+          <ProductFilters
+            categories={recommendedData.categories}
+            cuisines={recommendedData.cuisines}
+            maxPrice={initialProducts.product_max_price}
+          />
+        </Suspense>
+
+        <Suspense fallback={<ProductsLoading />}>
+          <ProductGrid initialData={initialProducts} />
+        </Suspense>
       </div>
-    </div>
+    </PageLayout>
   );
 }
