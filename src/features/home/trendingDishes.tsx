@@ -7,11 +7,20 @@ import {
 } from "@/components/ui/carousel";
 import { SectionHeader } from "@/components/ui/section-header";
 import { Link } from "@/i18n/routing";
-import { getPopularProducts } from "@/lib/hooks/queries/product/useProducts";
-import { Product } from "@/types/product";
+import { fetchData } from "@/lib/api/fetchUtils";
+import { Product, ProductResponse } from "@/types/product";
 import { getTranslations } from "next-intl/server";
 import { ProductCard } from "../products/product-card";
 
+interface GetPopularOptions {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+export async function getPopularProducts(options: GetPopularOptions = {}) {
+  "use cache";
+  return fetchData<ProductResponse>("/products/popular", { params: options });
+}
 export async function TrendingDishes() {
   const productsData = await getPopularProducts();
   const products = productsData?.products;

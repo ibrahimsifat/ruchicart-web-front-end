@@ -95,7 +95,7 @@ export default function ProductPage({ product }: ProductPageProps) {
 
   const handleAddToCart = () => {
     addItem({
-      id: product.id.toString(),
+      id: product.id,
       name: product.name,
       image: product.image,
       price: calculateTotalPrice(),

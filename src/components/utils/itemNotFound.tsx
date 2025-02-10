@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { CONSTANT } from "@/config/constants";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +10,7 @@ export default function ItemNotFound() {
       <div className=" w-full px-6 py-8 bg-white text-center">
         <div className="mb-8">
           <Image
-            src="/no_food.png"
+            src={CONSTANT.images.notFound}
             alt="Product not found"
             width={300}
             height={300}

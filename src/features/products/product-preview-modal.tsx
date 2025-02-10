@@ -60,7 +60,7 @@ const ProductQuickViewContent = ({ product }: { product: Product }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     addItem({
-      id: product.id.toString(),
+      id: product.id,
       name: product.name,
       image: product.image,
       price: product.price,

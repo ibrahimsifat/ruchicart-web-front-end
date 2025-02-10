@@ -68,7 +68,7 @@ export default function ProductActions({ product }: ProductActionsProps) {
 
   const handleAddToCart = () => {
     addItem({
-      id: product.id.toString(),
+      id: product.id,
       name: product.name,
       image: product.image,
       price: calculateTotalPrice(),

@@ -12,7 +12,10 @@ const MegaMenu = ({ categories }: { categories: Category[] }) => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
           {categories?.map((category) => (
-            <Link key={category.name} href={`/categories/${category.id}`}>
+            <Link
+              key={category.name}
+              href={`/products?category_id=${category.id}`}
+            >
               <Card
                 key={category.name}
                 className={cn(

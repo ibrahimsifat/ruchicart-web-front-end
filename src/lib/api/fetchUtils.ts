@@ -1,4 +1,5 @@
 // lib/api/fetch-utils.ts
+import axios from "axios";
 import { api } from "./api";
 import { getQueryClient } from "./queries";
 
@@ -12,10 +13,18 @@ export async function fetchData<T>(
   url: string,
   options: FetchOptions = {}
 ): Promise<T> {
-  const { data } = await api.get(url, {
-    params: options.params,
-  });
-  return data;
+  try {
+    const { data } = await api.get(url, {
+      params: options.params,
+      withCredentials: true, // Ensure this is set
+    });
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("Request error:", error.response?.data);
+    }
+    throw error;
+  }
 }
 
 export async function prefetchQuery(

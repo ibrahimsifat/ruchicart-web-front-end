@@ -12,6 +12,7 @@ interface GetPopularOptions {
 export async function getPopularProducts(options: GetPopularOptions = {}) {
   return fetchData<ProductResponse>("/products/popular", { params: options });
 }
+
 export function usePopularProducts(options: GetPopularOptions = {}) {
   return useQuery<ProductResponse>({
     queryKey: queryKeys.products.popular,
@@ -32,6 +33,7 @@ export function useProductDetails(id: string) {
 export async function getLatestProducts(options: GetPopularOptions = {}) {
   return fetchData<ProductResponse>("/products/popular", { params: options });
 }
+
 export function useLatestProducts(options: GetPopularOptions = {}) {
   return useQuery<ProductResponse>({
     queryKey: queryKeys.products.latest,
@@ -43,6 +45,7 @@ async function getBranchProducts(options: GetPopularOptions = {}) {
     params: options,
   });
 }
+
 export function useBranchProducts(options: GetPopularOptions = {}) {
   return useQuery<ProductResponse>({
     queryKey: queryKeys.products.branch,

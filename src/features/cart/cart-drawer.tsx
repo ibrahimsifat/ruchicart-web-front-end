@@ -1,4 +1,5 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import CustomImage from "@/components/ui/customImage";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,7 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
-import { ShoppingBag } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -47,35 +48,64 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               <div className="space-y-4">
                 {items.map((item) => (
                   <div
-                    key={`${item.id}-${JSON.stringify(item.variations)}`}
-                    className="flex gap-4"
+                    key={item.id}
+                    className="flex items-center gap-4 pb-4 border-b"
                   >
-                    <div className="relative h-20 w-20 rounded-lg overflow-hidden flex-shrink-0">
+                    <div className="relative h-20 w-20 rounded-lg overflow-hidden bg-muted">
                       <CustomImage
                         type={ImageType.PRODUCT}
-                        src={item.image}
+                        src={item.image || "/placeholder.svg"}
                         alt={item.name}
                         fill
                         className="object-cover"
                       />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium">{item.name}</h4>
-                      {item.variations &&
-                        Object.entries(item.variations).map(([key, values]) => (
-                          <p
-                            key={key}
-                            className="text-sm text-muted-foreground"
-                          >
-                            {key}:{" "}
-                            {Array.isArray(values) ? values.join(", ") : values}
-                          </p>
-                        ))}
-                      <div className="flex items-center justify-between mt-1">
-                        <p className="text-sm">Qty: {item.quantity}</p>
-                        <p className="font-medium">
-                          ${(item.price * item.quantity).toFixed(2)}
+                    <div className="flex-1 space-y-1">
+                      <h4 className="font-medium leading-none">{item.name}</h4>
+                      {item.variant && (
+                        <p className="text-sm text-muted-foreground">
+                          Variation: {item.variant[0].name}
                         </p>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="font-medium">
+                          ${item.price.toFixed(2)}
+                        </Badge>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => {
+                              if (item.quantity > 1) {
+                                updateQuantity(item.id, item.quantity - 1);
+                              }
+                            }}
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <span className="w-8 text-center">
+                            {item.quantity}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive"
+                          onClick={() => removeItem(item.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                   </div>

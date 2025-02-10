@@ -4,7 +4,6 @@ import SectionHeaderSkeleton from "@/components/skeleton/SectionHeaderSkeleton";
 import { Card } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
 import { SectionHeader } from "@/components/ui/section-header";
-import { CategorySkeleton } from "@/components/ui/skeletons";
 import { getCategoryBGGradient } from "@/components/utils/getCategoryBGGradient";
 import { cn } from "@/lib/utils/utils";
 import { Category } from "@/types";
@@ -13,17 +12,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 
-interface ExploreCategoriesProps {
-  categories: Category[];
-}
-
-export function ExploreCategories({
-  categories: initialCategories,
-}: ExploreCategoriesProps) {
-  const [categories, setCategories] = useState(initialCategories);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
+export function ExploreCategories({ categories }) {
   const gridRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
@@ -61,11 +50,7 @@ export function ExploreCategories({
             }
           />
         </Suspense>
-        {isLoading ? (
-          <CategorySkeleton />
-        ) : error ? (
-          <div>Error loading categories</div>
-        ) : (
+        {
           <div
             ref={gridRef}
             className={cn(
@@ -75,7 +60,11 @@ export function ExploreCategories({
             )}
           >
             {categories?.map((category: Category) => (
-              <Link key={category.name} href={`/categories/${category.id}`}>
+              <Link
+                key={category.id}
+                href={`/products?category_id=${category.id}`}
+                prefetch
+              >
                 <Card
                   key={category.name}
                   className={cn(
@@ -115,7 +104,7 @@ export function ExploreCategories({
               </Link>
             ))}
           </div>
-        )}
+        }
       </section>
     </div>
   );

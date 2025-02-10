@@ -53,7 +53,6 @@ export function GooglePhoneVerification({
   });
 
   const onSubmit = async (values: z.infer<typeof phoneSchema>) => {
-    console.log(googleUserData);
     try {
       // Register with complete data
       await registerWithSocialMedia({

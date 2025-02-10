@@ -8,9 +8,19 @@ import {
 import { SectionHeader } from "@/components/ui/section-header";
 import { ProductCard } from "@/features/products/product-card";
 import { Link } from "@/i18n/routing";
-import { getLatestProducts } from "@/lib/hooks/queries/product/useProducts";
-import { Product } from "@/types/product";
+import { fetchData } from "@/lib/api/fetchUtils";
+import { Product, ProductResponse } from "@/types/product";
 import { getTranslations } from "next-intl/server";
+
+interface GetPopularOptions {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+export async function getLatestProducts(options: GetPopularOptions = {}) {
+  "use cache";
+  return fetchData<ProductResponse>("/products/popular", { params: options });
+}
 
 export async function FeaturedProducts() {
   const productsData = await getLatestProducts();

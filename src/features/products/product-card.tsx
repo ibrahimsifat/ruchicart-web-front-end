@@ -3,12 +3,12 @@ import { Card } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
 import { ImageType } from "@/types/image";
 import type { Product } from "@/types/product";
-import { Clock } from "lucide-react";
 import Link from "next/link";
 
 import { Suspense } from "react";
 import ProductCardAction from "./product-card/product-card-action";
 import ProductCardRating from "./product-card/product-card-rating";
+import ProductCardTimestamp from "./product-card/product-card-timestamp";
 interface ProductCardProps {
   product: Product;
 }
@@ -62,12 +62,12 @@ export function ProductCard({ product }: ProductCardProps) {
         </p>
 
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Clock className="h-4 w-4" />
-            <span>
-              {product.available_time_starts} - {product.available_time_ends}
-            </span>
-          </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProductCardTimestamp
+              productStartTime={product.available_time_starts}
+              productEndTime={product.available_time_ends}
+            />
+          </Suspense>
           <div className="flex items-baseline gap-2">
             <span className="text-lg font-bold">
               ${discountedPrice.toFixed(2)}
@@ -80,9 +80,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <Suspense fallback={<p>Action loading...</p>}>
-          <ProductCardAction product={product} />
-        </Suspense>
+        <ProductCardAction product={product} />
       </div>
     </Card>
   );

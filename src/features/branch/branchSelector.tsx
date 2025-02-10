@@ -46,7 +46,7 @@ export function BranchSelector({ isOpen, onClose }: BranchSelectorProps) {
         `/branch/list?lat=${currentLocation?.lat}&lng=${currentLocation?.lng}`
       );
       const data = await response.data;
-      console.log(data);
+      // console.log(data);
       setBranches(data);
     } catch (error) {
       console.error("Error fetching branches:", error);
@@ -63,7 +63,7 @@ export function BranchSelector({ isOpen, onClose }: BranchSelectorProps) {
       });
       const data = await response.data;
 
-      // Handle the response data as needed
+      // Handle the response data
       setCurrentBranch(branch);
       onClose();
     } catch (error) {

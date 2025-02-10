@@ -15,6 +15,7 @@ import { useInView } from "react-intersection-observer";
 import { ProductCard } from "./product-card";
 
 import { Button } from "@/components/ui/button";
+import ItemNotFound from "@/components/utils/itemNotFound";
 import { AnimatePresence, motion } from "framer-motion";
 import { Grid, List } from "lucide-react";
 import { ProductListItem } from "./product-list-item";
@@ -144,38 +145,41 @@ export function ProductGrid({ initialData }: ProductGridProps) {
           </SelectContent>
         </Select>
       </div>
-
-      <AnimatePresence mode="wait">
-        {viewMode === "grid" ? (
-          <motion.div
-            key="grid"
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-          >
-            {products.map((product) => (
-              <motion.div key={product.id} variants={item}>
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </motion.div>
-        ) : (
-          <motion.div
-            key="list"
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="space-y-4"
-          >
-            {products.map((product) => (
-              <motion.div key={product.id} variants={item}>
-                <ProductListItem product={product} isAvailable={true} />
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {products.length > 0 ? (
+        <AnimatePresence mode="wait">
+          {viewMode === "grid" ? (
+            <motion.div
+              key="grid"
+              variants={container}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            >
+              {products.map((product) => (
+                <motion.div key={product.id} variants={item}>
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="list"
+              variants={container}
+              initial="hidden"
+              animate="show"
+              className="space-y-4"
+            >
+              {products.map((product) => (
+                <motion.div key={product.id} variants={item}>
+                  <ProductListItem product={product} isAvailable={true} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      ) : (
+        <ItemNotFound />
+      )}
 
       {hasMore && (
         <div ref={ref} className="flex justify-center py-8">

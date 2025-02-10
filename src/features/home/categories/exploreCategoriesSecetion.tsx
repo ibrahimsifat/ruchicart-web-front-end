@@ -1,13 +1,20 @@
-// app/explore-categories/page.tsx
 import { ExploreCategories } from "@/features/home/categories/exploreCategories";
-import { getCategories } from "@/lib/hooks/queries/category/useCategories";
+import { fetchData } from "@/lib/api/fetchUtils";
+import { Category } from "@/types";
+import { Suspense } from "react";
 
+export async function getCategories() {
+  "use cache";
+  return fetchData<Category[]>("/categories");
+}
 export default async function ExploreCategoriesSection() {
   const categories = await getCategories();
-
+  console.log(categories, "categories");
   return (
     <div>
-      <ExploreCategories categories={categories} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ExploreCategories categories={categories} />
+      </Suspense>
     </div>
   );
 }

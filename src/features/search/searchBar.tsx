@@ -49,14 +49,14 @@ export function SearchBar() {
     e.preventDefault();
     if (searchTerm.trim()) {
       performSearch();
-      router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
+      router.push(`/products?name=${encodeURIComponent(searchTerm)}`);
     }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchTerm(suggestion);
     performSearch();
-    router.push(`/search?q=${encodeURIComponent(suggestion)}`);
+    router.push(`/products?name=${encodeURIComponent(suggestion)}`);
   };
 
   const handleClearSearch = () => {

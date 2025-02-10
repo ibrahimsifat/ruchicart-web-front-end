@@ -1,10 +1,9 @@
 import type { ProductResponse } from "@/types/product";
 import { api } from "./api";
-
 export async function searchProducts(params: {
   name?: string;
   rating?: number;
-  category_id?: string | string[];
+  category_id?: string | string[] | number | number[];
   cuisine_id?: string | string[];
   product_type?: string;
   sort_by?: string;
@@ -13,8 +12,38 @@ export async function searchProducts(params: {
   min_price?: number;
   max_price?: number;
 }): Promise<ProductResponse> {
-  const response = await api.post("/products/search", params);
+  // Format the parameters before sending
+  const formattedParams = {
+    ...params,
+    category_id: formatCategoryId(params.category_id),
+  };
+
+  const response = await api.post("/products/search", formattedParams);
   return response.data;
+}
+
+// Helper function to format category_id
+function formatCategoryId(
+  categoryId?: string | string[] | number | number[]
+): string | undefined {
+  if (!categoryId) return undefined;
+
+  // If it's already a string and starts with '[', assume it's already formatted
+  if (typeof categoryId === "string" && categoryId.startsWith("[")) {
+    return categoryId;
+  }
+
+  // Convert single number or string to array format
+  if (typeof categoryId === "number" || typeof categoryId === "string") {
+    return `[${categoryId}]`;
+  }
+
+  // If it's already an array, format it
+  if (Array.isArray(categoryId)) {
+    return `[${categoryId.join(",")}]`;
+  }
+
+  return undefined;
 }
 
 export async function getRecommendedData() {

@@ -13,5 +13,6 @@ export const CONSTANT = {
     usFlag: "/images/us.png",
     comingSoon: "/images/coming-soon.svg",
     prmotional_home_food: "/images/prmotional_home_food.png",
+    notFound: "/images/no_food.png",
   },
 };

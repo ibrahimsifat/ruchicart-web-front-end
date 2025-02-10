@@ -12,7 +12,7 @@ export default async function ProductsPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading category...</div>}>
       <ProductsPageWrapper searchParams={searchParams} />
     </Suspense>
   );
@@ -24,6 +24,7 @@ const ProductsPageWrapper = async ({
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   const params = await searchParams;
+  console.log(params);
   const recommendedData = await getRecommendedData();
   const initialProducts = await searchProducts({
     limit: 12,

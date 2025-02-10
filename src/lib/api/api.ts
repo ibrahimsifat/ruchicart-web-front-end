@@ -9,6 +9,7 @@ const locale = Cookies.get("NEXT_LOCALE");
 const api = axios.create({
   baseURL: API_V1,
   timeout: 30000,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -22,6 +23,7 @@ api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().token;
     const user = useAuthStore.getState().user;
+    console.log("Making request:", config);
     console.log(token, "token from api");
     console.log(user, "user from api");
     if (token) {
