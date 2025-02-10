@@ -1,17 +1,13 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { ImageType } from "@/types/image";
 import type { Product } from "@/types/product";
-import { Heart, ShoppingCart, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import Link from "next/link";
+import ProductCardAction from "./product-card/product-card-action";
+import ProductCartWishlist from "./product-card/product-cart-wishlist";
 
 interface ProductListItemProps {
   product: Product;
@@ -98,28 +94,10 @@ export function ProductListItem({
             </div>
             <div className="flex items-center gap-2">
               <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button size="icon" variant="outline">
-                      <Heart className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Add to Wishlist</TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button size="icon" disabled={!isAvailable}>
-                      <ShoppingCart className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {isAvailable ? "Add to Cart" : "Out of Stock"}
-                  </TooltipContent>
-                </Tooltip>
+                <ProductCartWishlist />
+
+                <ProductCardAction product={product} />
               </TooltipProvider>
-              <Link href={`/product/${product.id}`}>
-                <Button variant="default">View Details</Button>
-              </Link>
             </div>
           </CardFooter>
         </div>

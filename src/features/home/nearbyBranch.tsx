@@ -1,128 +1,189 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+"use client";
+
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
-import { SectionHeader } from "@/components/ui/section-header";
-import { getBranch } from "@/lib/hooks/queries/Branch/useBranch";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/lib/api/api";
+import { calculateDistance } from "@/lib/utils/distance";
+import { cn } from "@/lib/utils/utils";
+import { useBranchStore } from "@/store/branchStore";
+import { useLocationStore } from "@/store/locationStore";
+import { BaseBranch } from "@/types/branch";
 import { ImageType } from "@/types/image";
-import { ChevronDown, Clock, Mail, MapPin, Phone } from "lucide-react";
-import { getTranslations } from "next-intl/server";
-import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import { MapPin, Navigation } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useCallback, useMemo, useState } from "react";
 
-export async function NearbyBranch() {
-  const branches = await getBranch();
-  const t = await getTranslations("home");
+// Dynamically import the map component to avoid SSR issues
+const BranchMap = dynamic(
+  () => import("../location/branch-map").then((mod) => mod.BranchMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-full w-full animate-pulse rounded-lg bg-muted" />
+    ),
+  }
+);
+
+async function getBranches() {
+  const res = await api.get("/branch/list");
+  return res.data;
+}
+
+export function NearbyBranch() {
+  const [selectedBranch, setSelectedBranch] = useState<BaseBranch | null>(null);
+  const { toast } = useToast();
+  const { currentLocation } = useLocationStore();
+  const { currentBranch, setCurrentBranch } = useBranchStore();
+
+  const { data: branchesData = [], isLoading } = useQuery({
+    queryKey: ["branches", currentLocation],
+    queryFn: getBranches,
+    enabled: !!currentLocation,
+  });
+
+  // Calculate distances and sort branches by distance
+  const branches = useMemo(() => {
+    if (!currentLocation) return branchesData;
+
+    return branchesData
+      .map((branch: BaseBranch) => ({
+        ...branch,
+        distance: calculateDistance(
+          currentLocation.lat,
+          currentLocation.lng,
+          Number(branch.latitude),
+          Number(branch.longitude)
+        ),
+      }))
+      .sort((a, b) => (a.distance || 0) - (b.distance || 0));
+  }, [branchesData, currentLocation]);
+
+  const handleBranchSelect = useCallback(
+    async (branch: BaseBranch) => {
+      try {
+        const res = await api.post("/products/change-branch", {
+          from_branch_id: currentBranch?.id,
+          to_branch_id: branch.id,
+          products: [
+            {
+              product_id: 2, // Must match an ID in product_ids
+              quantity: 3,
+              variations: [], // Include if product has variations
+            },
+          ], // Current cart products
+          product_ids: [2], // Current cart product IDs
+        });
+        if (res.status !== 200) {
+          throw new Error("Failed to change branch");
+        }
+        setSelectedBranch(branch);
+        setCurrentBranch(branch as any);
+        toast({
+          title: "Branch Changed",
+          description: `Successfully switched to ${branch.name}`,
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to change branch. Please try again.",
+          variant: "destructive",
+        });
+      }
+    },
+    [currentBranch, setCurrentBranch, toast]
+  );
+
   return (
-    <section className="py-12">
-      <SectionHeader
-        title={t("restaurantsNearYou")}
-        description={t("discoverGreatPlacesToEatAroundYou")}
-      />
-      <div className="grid md:grid-cols-3 gap-8">
-        <Card className="p-6 bg-gradient-to-br from-primary/10 to-primary/5">
-          <div className="relative h-48 mb-4 rounded-lg overflow-hidden">
-            <Image
-              src="/placeholder.svg"
-              alt="Map"
-              fill
-              className="object-cover"
-            />
-          </div>
-          <h3 className="text-xl font-semibold mb-2">{t("findNearby")}</h3>
-          <p className="text-muted-foreground mb-4">
-            {t("exploreRestaurantsAndCafesNearYourLocation")}
-          </p>
-          <Button className="w-full">
-            <MapPin className="mr-2 h-4 w-4" />
-            {t("setLocation")}
-          </Button>
-        </Card>
+    <section className="container py-8">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold">Select Branch</h2>
+        <p className="text-muted-foreground">
+          Choose a branch near you for delivery or pickup
+        </p>
+      </div>
 
-        <div className="md:col-span-2 space-y-6">
-          <div className="grid gap-4">
-            {branches?.map((branch) => (
-              <Card key={branch.id} className="overflow-hidden duration-300">
-                <div className="flex flex-col sm:flex-row">
-                  <div className="relative w-full sm:w-2/5 h-48 sm:h-auto">
-                    <CustomImage
-                      src={branch.image || "/placeholder-branch.jpg"}
-                      alt={branch.name}
-                      type={ImageType.BRANCH}
-                      fill
-                    />
-                    <div className="absolute top-2 left-2 flex flex-col gap-2">
-                      <Badge className="text-xs font-semibold">
-                        {branch.status}
-                      </Badge>
-                      <Badge
-                        variant="secondary"
-                        className="text-xs font-semibold capitalize"
-                      >
-                        {branch?.branch_promotion_status == 1
-                          ? "Recommended"
-                          : "New"}
-                      </Badge>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[400px_1fr] xl:grid-cols-[450px_1fr]">
+        <Card className="h-[calc(100vh-12rem)] overflow-hidden">
+          <ScrollArea className="h-full">
+            <div className="space-y-2 p-4">
+              {isLoading
+                ? Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex gap-4 rounded-lg border p-4">
+                      <Skeleton className="h-16 w-16 rounded-md" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-2/3" />
+                        <Skeleton className="h-4 w-full" />
+                        <div className="flex justify-between">
+                          <Skeleton className="h-4 w-20" />
+                          <Skeleton className="h-4 w-24" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-1 p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-xl font-semibold mb-1">
-                          {branch.name}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
+                  ))
+                : branches.map((branch: BaseBranch) => (
+                    <div
+                      key={branch.id}
+                      className={cn(
+                        "flex cursor-pointer gap-4 rounded-lg border p-4 transition-all hover:bg-accent",
+                        (selectedBranch?.id === branch.id ||
+                          currentBranch?.id === branch.id) &&
+                          "border-primary bg-primary/5"
+                      )}
+                      onClick={() => handleBranchSelect(branch)}
+                    >
+                      <div className="relative h-16 w-16 overflow-hidden rounded-md">
+                        <CustomImage
+                          type={ImageType.BRANCH}
+                          src={branch.image || "/placeholder.svg"}
+                          alt={branch.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <h3 className="font-medium">{branch.name}</h3>
+                        <p className="flex items-center text-sm text-muted-foreground">
+                          <MapPin className="mr-1 h-4 w-4" />
                           {branch.address}
                         </p>
-                      </div>
-                      <Avatar className="h-12 w-12 border-2 border-primary">
-                        <AvatarImage src={branch.image} alt={branch.name} />
-                        <AvatarFallback>{branch.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                      <div className="flex items-center">
-                        <Phone className="h-5 w-5 mr-3 text-primary" />
-                        <span className="text-sm">{branch.phone}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Mail className="h-5 w-5 mr-3 text-primary" />
-                        <span className="text-sm">{branch.email}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="h-5 w-5 mr-3 text-primary" />
-                        <span className="text-sm">
-                          {branch.preparation_time} mins prep time
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        <MapPin className="h-5 w-5 mr-3 text-primary" />
-                        <span className="text-sm">
-                          {branch.coverage} km coverage
-                        </span>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">
+                            Preparation Time:
+                          </span>
+                          <Badge
+                            variant={
+                              branch.preparation_time ? "success" : "secondary"
+                            }
+                          >
+                            {branch.preparation_time}
+                          </Badge>
+                          {currentLocation && (
+                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                              <Navigation className="h-4 w-4" />
+                              {branch.distance} km Away
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <div className="flex justify-end">
-                      <Button
-                        variant="default"
-                        size="sm"
-                        className="w-full sm:w-auto"
-                      >
-                        {t("switchToThisBranch")}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-          <div className="flex justify-center">
-            <Button variant="default" className="w-full sm:w-auto">
-              {t("allBranches")}
-              <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+                  ))}
+            </div>
+          </ScrollArea>
+        </Card>
+
+        <Card className="h-[calc(100vh-12rem)] overflow-hidden">
+          <BranchMap
+            branches={branches}
+            selectedBranch={selectedBranch || currentBranch}
+            onBranchSelect={handleBranchSelect}
+            currentLocation={currentLocation}
+          />
+        </Card>
       </div>
     </section>
   );

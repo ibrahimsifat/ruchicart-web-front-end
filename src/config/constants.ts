@@ -14,5 +14,8 @@ export const CONSTANT = {
     comingSoon: "/images/coming-soon.svg",
     prmotional_home_food: "/images/prmotional_home_food.png",
     notFound: "/images/no_food.png",
+    userLocationPic: "/images/user-location-marker.png",
+    branchMarker: "/images/branch-marker.png",
+    branchMarkerActive: "/images/branch-marker-active.png",
   },
 };

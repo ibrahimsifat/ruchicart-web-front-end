@@ -28,5 +28,6 @@ export interface BaseBranch {
   image: string;
   phone: string;
   cover_image: string;
+  distance?: number;
   preparation_time: number;
 }
