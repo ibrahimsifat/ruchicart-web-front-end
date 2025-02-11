@@ -12,8 +12,6 @@ import { DiscountBanner } from "@/features/home/discountBanner";
 import { FeaturedProducts } from "@/features/home/featuredProducts";
 import HeroSlider from "@/features/home/heroSlider/heroSlider";
 import { TrendingDishes } from "@/features/home/trendingDishes";
-import { fetchData } from "@/lib/api/fetchUtils";
-import { getQueryClient, queryKeys } from "@/lib/api/queries";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -54,55 +52,6 @@ async function generateMetadata({
       images: ["/home-twitter-image.jpg"],
     },
   };
-}
-
-// Separate data fetching component for dynamic content
-async function DynamicContent() {
-  const queryClient = getQueryClient();
-
-  // Prefetch all data in parallel
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: queryKeys.categories.all,
-      queryFn: () => fetchData("/categories"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: queryKeys.products.latest,
-      queryFn: () => fetchData("/products/latest"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: queryKeys.products.popular,
-      queryFn: () => fetchData("/products/popular"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: queryKeys.banners.all,
-      queryFn: () => fetchData("/banners"),
-    }),
-    queryClient.prefetchQuery({
-      queryKey: queryKeys.branches.all,
-      queryFn: () => fetchData("/branch/list"),
-    }),
-  ]);
-
-  return (
-    <>
-      <Suspense fallback={<HeroSkeleton />}>
-        <HeroSlider />
-      </Suspense>
-      <Suspense fallback={<CategorySkeleton />}>
-        <ExploreCategoriesSection />
-      </Suspense>
-      <Suspense fallback={<ProductCardSkeleton />}>
-        <FeaturedProducts />
-      </Suspense>
-      <Suspense fallback={<PromoCardSkeleton />}>
-        <TrendingDishes />
-      </Suspense>
-      <Suspense fallback={<BranchCardSkeleton />}>
-        <NearbyBranch />
-      </Suspense>
-    </>
-  );
 }
 
 // Static components that don't need data fetching
