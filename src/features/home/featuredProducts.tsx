@@ -9,20 +9,16 @@ import {
 import { SectionHeader } from "@/components/ui/section-header";
 import { ProductCard } from "@/features/products/product-card";
 import { Link } from "@/i18n/routing";
-import { useLatestProducts } from "@/lib/hooks/queries/product/useProducts";
-import { Product } from "@/types/product";
+import { Product, ProductResponse } from "@/types/product";
 import { useTranslations } from "next-intl";
 
-interface GetPopularOptions {
-  page?: number;
-  limit?: number;
-  search?: string;
-}
-
-export function FeaturedProducts() {
-  const { data: productData } = useLatestProducts();
-  const products = productData?.products;
-
+export function FeaturedProducts({
+  featuredProductsData,
+}: {
+  featuredProductsData: ProductResponse[];
+}) {
+  const products = featuredProductsData?.products;
+  console.log(products);
   const t = useTranslations("home");
   return (
     <section className="py-12">

@@ -1,4 +1,3 @@
-// lib/api/fetch-utils.ts
 import axios from "axios";
 import { api } from "./api";
 import { getQueryClient } from "./queries";

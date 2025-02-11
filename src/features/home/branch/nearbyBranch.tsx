@@ -5,49 +5,68 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/lib/api/api";
+import { useBranch } from "@/lib/hooks/queries/Branch/useBranch";
 import { calculateDistance } from "@/lib/utils/distance";
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { BaseBranch } from "@/types/branch";
-import { useQuery } from "@tanstack/react-query";
-import React, { Suspense } from "react";
+import React, { memo, Suspense, useCallback, useMemo, useState } from "react";
 import { BranchListItem } from "./BranchListItem";
 
 // Separate loading component
-const MapLoadingComponent = () => (
+const MapLoadingComponent = memo(() => (
   <div className="h-full w-full animate-pulse rounded-lg bg-muted" />
+));
+
+// Map component with proper lazy loading and prefetching
+const BranchMap = memo(
+  React.lazy(() => {
+    const promise = import("./branch-map").then((mod) => ({
+      default: memo(mod.BranchMap),
+    }));
+    // Trigger prefetch
+    import("./branch-map");
+    return promise;
+  })
 );
 
-// Map component with proper lazy loading
-const BranchMap = React.lazy(() =>
-  import("./branch-map").then((mod) => ({
-    default: mod.BranchMap,
-  }))
-);
+// Extracted skeleton component for reusability and memoization
+const BranchSkeleton = memo(() => (
+  <div className="flex gap-4 rounded-lg border p-4">
+    <Skeleton className="h-16 w-16 rounded-md" />
+    <div className="flex-1 space-y-2">
+      <Skeleton className="h-4 w-2/3" />
+      <Skeleton className="h-4 w-full" />
+      <div className="flex justify-between">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-4 w-24" />
+      </div>
+    </div>
+  </div>
+));
 
-const getBranches = async () => {
-  const res = await api.get("/branch/list");
-  return res.data;
-};
+// Extracted loading list component
+const LoadingList = memo(() => (
+  <>
+    {Array.from({ length: 4 }).map((_, i) => (
+      <BranchSkeleton key={i} />
+    ))}
+  </>
+));
 
 export function NearbyBranch() {
-  const [selectedBranch, setSelectedBranch] = React.useState<BaseBranch | null>(
-    null
-  );
+  const [selectedBranch, setSelectedBranch] = useState<BaseBranch | null>(null);
   const { toast } = useToast();
   const { currentLocation } = useLocationStore();
   const { currentBranch, setCurrentBranch } = useBranchStore();
 
-  const { data: branchesData = [], isLoading } = useQuery({
-    queryKey: ["branches", currentLocation],
-    queryFn: getBranches,
-    enabled: !!currentLocation,
-  });
+  const { data: branchesData = [], isLoading } = useBranch();
 
-  const branches = React.useMemo(() => {
-    if (!currentLocation) return branchesData;
+  // Memoized branches calculation
+  const branches = useMemo(() => {
+    if (!currentLocation || !branchesData.length) return branchesData;
 
-    return branchesData
+    return [...branchesData]
       .map((branch: BaseBranch) => ({
         ...branch,
         distance: calculateDistance(
@@ -60,8 +79,11 @@ export function NearbyBranch() {
       .sort((a, b) => (a.distance || 0) - (b.distance || 0));
   }, [branchesData, currentLocation]);
 
-  const handleBranchSelect = React.useCallback(
+  // Optimized branch selection handler
+  const handleBranchSelect = useCallback(
     async (branch: BaseBranch) => {
+      if (branch.id === currentBranch?.id) return;
+
       try {
         const res = await api.post("/products/change-branch", {
           from_branch_id: currentBranch?.id,
@@ -86,10 +108,6 @@ export function NearbyBranch() {
           title: "Branch Changed",
           description: `Successfully switched to ${branch.name}`,
         });
-
-        // if (onBranchSelect) {
-        //   onBranchSelect();
-        // }
       } catch (error) {
         toast({
           title: "Error",
@@ -98,7 +116,7 @@ export function NearbyBranch() {
         });
       }
     },
-    [currentBranch, setCurrentBranch, toast]
+    [currentBranch?.id, setCurrentBranch, toast]
   );
 
   return (
@@ -114,32 +132,22 @@ export function NearbyBranch() {
         <Card className="h-[calc(100vh-12rem)] overflow-hidden">
           <ScrollArea className="h-full">
             <div className="space-y-2 p-4">
-              {isLoading
-                ? Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="flex gap-4 rounded-lg border p-4">
-                      <Skeleton className="h-16 w-16 rounded-md" />
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-4 w-2/3" />
-                        <Skeleton className="h-4 w-full" />
-                        <div className="flex justify-between">
-                          <Skeleton className="h-4 w-20" />
-                          <Skeleton className="h-4 w-24" />
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                : branches.map((branch: BaseBranch) => (
-                    <BranchListItem
-                      key={branch.id}
-                      branch={branch}
-                      isSelected={
-                        selectedBranch?.id === branch.id ||
-                        currentBranch?.id === branch.id
-                      }
-                      currentLocation={currentLocation}
-                      onSelect={handleBranchSelect}
-                    />
-                  ))}
+              {isLoading ? (
+                <LoadingList />
+              ) : (
+                branches.map((branch: BaseBranch) => (
+                  <BranchListItem
+                    key={branch.id}
+                    branch={branch}
+                    isSelected={
+                      selectedBranch?.id === branch.id ||
+                      currentBranch?.id === branch.id
+                    }
+                    currentLocation={currentLocation}
+                    onSelect={handleBranchSelect}
+                  />
+                ))
+              )}
             </div>
           </ScrollArea>
         </Card>
@@ -149,7 +157,7 @@ export function NearbyBranch() {
             <BranchMap
               branches={branches}
               selectedBranch={selectedBranch || currentBranch}
-              onBranchSelect={handleBranchSelect}
+              onSelect={handleBranchSelect}
               currentLocation={currentLocation}
             />
           </Suspense>

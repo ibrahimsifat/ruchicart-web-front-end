@@ -1,6 +1,7 @@
 import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
 import { Category } from "@/types";
+import { Cuisine } from "@/types/cuisine";
 import { ProductResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 
@@ -22,11 +23,11 @@ export function useCategories(options: GetCategoriesOptions = {}) {
 }
 
 async function getCuisines(options: GetCategoriesOptions = {}) {
-  return fetchData<Category[]>("/cuisine/list", { params: options });
+  return fetchData<Cuisine[]>("/cuisine/list", { params: options });
 }
 
 export function useCuisines(options: GetCategoriesOptions = {}) {
-  return useQuery({
+  return useQuery<Cuisine[]>({
     queryKey: queryKeys.cuisines.all,
     queryFn: () => getCuisines(options),
   });

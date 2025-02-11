@@ -2,12 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import CustomImage from "@/components/ui/customImage";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCuisines } from "@/lib/hooks/queries/category/useCategories";
 import { useSearch } from "@/lib/hooks/search/useSearch";
+import { ImageType } from "@/types/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Search, X } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
@@ -27,7 +29,7 @@ export function SearchBar() {
     recommendedData,
     isRecommendedLoading,
   } = useSearch();
-
+  const { data: cuisines } = useCuisines();
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       // Add null check for searchRef.current
@@ -67,14 +69,30 @@ export function SearchBar() {
     navigateToSearchResults(suggestion);
   };
 
+  // handle category suggestion click
+  const handleCategorySuggestionClick = (categoryId: number) => {
+    if (categoryId) {
+      performSearch();
+      router.push(`/products?category_id=${categoryId}`);
+    }
+  };
+
+  // handle cuisine suggestion click
+  const handleCuisineSuggestionClick = (cuisineId: number) => {
+    console.log(cuisineId);
+    if (cuisineId) {
+      performSearch();
+      router.push(`/products?cuisine_id=${cuisineId}`);
+    }
+  };
+
   const handleClearSearch = () => {
     setSearchTerm("");
     if (inputRef.current && isOpen) {
       inputRef.current.focus();
     }
   };
-  console.log(searchTerm);
-  console.log(suggestions);
+
   return (
     <div ref={searchRef} className="relative flex-1 max-w-2xl mx-auto">
       <form onSubmit={handleSubmit} className="relative">
@@ -164,10 +182,13 @@ export function SearchBar() {
                           <div
                             key={category.id}
                             className="text-center cursor-pointer hover:scale-105 transition-transform duration-200"
-                            onClick={() => handleSuggestionClick(category.name)}
+                            onClick={() =>
+                              handleCategorySuggestionClick(category.id)
+                            }
                           >
                             <div className="relative w-16 h-16 mx-auto mb-2 rounded-full overflow-hidden">
-                              <Image
+                              <CustomImage
+                                type={ImageType.CATEGORY}
                                 src={category.image || "/placeholder.svg"}
                                 alt={category.name}
                                 fill
@@ -193,15 +214,27 @@ export function SearchBar() {
                       </div>
                     ) : recommendedData?.cuisines ? (
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        {recommendedData.cuisines.map((cuisine, index) => (
-                          <Button
+                        {cuisines?.map((cuisine, index) => (
+                          <div
                             key={index}
-                            variant="outline"
-                            className="w-full hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                            onClick={() => handleSuggestionClick(cuisine)}
+                            className="w-full hover:bg-primary hover:text-primary-foreground transition-colors duration-200 cursor-pointer text-center"
+                            onClick={() =>
+                              handleCuisineSuggestionClick(cuisine.id)
+                            }
                           >
-                            {cuisine}
-                          </Button>
+                            <div className="relative w-16 h-16 mx-auto mb-2 rounded-full overflow-hidden">
+                              <CustomImage
+                                type={ImageType.CUISINE}
+                                src={cuisine.image || "/placeholder.svg"}
+                                alt={cuisine.name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <p className="text-sm font-medium">
+                              {cuisine.name}
+                            </p>
+                          </div>
                         ))}
                       </div>
                     ) : (

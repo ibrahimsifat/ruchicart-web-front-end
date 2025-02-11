@@ -7,11 +7,15 @@ import {
 } from "@/components/ui/skeletons";
 import { AppDownload } from "@/features/home/appDownload";
 import { NearbyBranch } from "@/features/home/branch/nearbyBranch";
-import ExploreCategoriesSection from "@/features/home/categories/exploreCategoriesSecetion";
+import ExploreCategoriesSection from "@/features/home/categories/exploreCategoriesSection";
 import { DiscountBanner } from "@/features/home/discountBanner";
 import { FeaturedProducts } from "@/features/home/featuredProducts";
 import HeroSlider from "@/features/home/heroSlider/heroSlider";
 import { TrendingDishes } from "@/features/home/trendingDishes";
+import {
+  getFeaturedProducts,
+  getTrendingProducts,
+} from "@/lib/api/services/product.service";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -65,7 +69,9 @@ function StaticContent() {
 }
 
 // Main page component
-export default function Home() {
+export default async function Home() {
+  const featuredProducts = await getFeaturedProducts();
+  const trendingProducts = await getTrendingProducts();
   return (
     <PageLayout>
       <Suspense fallback={<HeroSkeleton />}>
@@ -75,10 +81,10 @@ export default function Home() {
         <ExploreCategoriesSection />
       </Suspense>
       <Suspense fallback={<ProductCardSkeleton />}>
-        <FeaturedProducts />
+        <FeaturedProducts featuredProductsData={featuredProducts} />
       </Suspense>
       <Suspense fallback={<PromoCardSkeleton />}>
-        <TrendingDishes />
+        <TrendingDishes trendingProductsData={trendingProducts} />
       </Suspense>
       <Suspense fallback={<BranchCardSkeleton />}>
         <NearbyBranch />
