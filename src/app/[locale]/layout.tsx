@@ -1,4 +1,3 @@
-import ErrorBoundary from "@/components/error-boundary";
 import { routing } from "@/i18n/routing";
 import "@/styles/globals.css";
 import { Metadata } from "next";
@@ -58,9 +57,7 @@ export default async function RootLayout({ children, params }: Props) {
   setRequestLocale(locale);
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ErrorBoundary>
-        <BaseLayout locale={locale}>{children}</BaseLayout>
-      </ErrorBoundary>
+      <BaseLayout locale={locale}>{children}</BaseLayout>
     </Suspense>
   );
 }

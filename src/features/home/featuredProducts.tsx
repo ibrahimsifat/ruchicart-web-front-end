@@ -18,7 +18,7 @@ interface GetPopularOptions {
   search?: string;
 }
 export async function getLatestProducts(options: GetPopularOptions = {}) {
-  "use cache";
+  // "use cache";
   return fetchData<ProductResponse>("/products/popular", { params: options });
 }
 

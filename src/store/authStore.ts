@@ -183,7 +183,6 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         Cookies.set("auth-token", token, { path: "/" });
         try {
-          ("use cache");
           const response = await api.get("/customer/info");
           const userData = response.data;
           set({ user: userData, isLoading: false });

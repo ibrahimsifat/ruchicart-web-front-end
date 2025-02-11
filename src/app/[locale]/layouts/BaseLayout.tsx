@@ -28,7 +28,9 @@ export default function BaseLayout({ children, locale }: LayoutProps) {
   return (
     <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning className="antialiased">
+        {/* <ErrorBoundary> */}
         <LocalizedContent locale={locale}>{children}</LocalizedContent>
+        {/* </ErrorBoundary> */}
       </body>
     </html>
   );

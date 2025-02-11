@@ -4,7 +4,7 @@ import { Category } from "@/types";
 import { Suspense } from "react";
 
 export async function getCategories() {
-  "use cache";
+  // "use cache";
   return fetchData<Category[]>("/categories");
 }
 export default async function ExploreCategoriesSection() {

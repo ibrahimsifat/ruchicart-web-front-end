@@ -9,7 +9,7 @@ import { ImageType } from "@/types/image";
 import { GoogleMap, InfoWindow, Marker } from "@react-google-maps/api";
 import { Loader2, MapPin, Navigation } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CONSTANT } from "../../config/constants";
+import { CONSTANT } from "../../../config/constants";
 
 interface BranchMapProps {
   branches: BaseBranch[];

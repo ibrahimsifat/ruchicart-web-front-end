@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { BranchSelector } from "@/features/branch/branchSelector";
 import { LocationModal } from "@/features/location/location-modal";
 import { useRouter } from "@/i18n/routing";
 import { useBranchStore } from "@/store/branchStore";
@@ -13,26 +12,28 @@ import { useEffect, useState } from "react";
 const TopBar = () => {
   const { currentLocation } = useLocationStore();
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const [showBranchSelector, setShowBranchSelector] = useState(false);
   const { currentBranch } = useBranchStore();
   const router = useRouter();
   const t = useTranslations("home");
 
   useEffect(() => {
-    if (!currentLocation && "geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        () => setShowLocationModal(true),
-        (error) => {
-          console.error("Error getting location:", error);
-          setShowLocationModal(true);
-        }
-      );
-    } else if (!currentLocation) {
-      setShowLocationModal(true);
-    } else if (!currentBranch) {
-      router.push("/select-branch");
-    }
-  }, [currentLocation, currentBranch, router]);
+    // wait for 1 second before checking if currentLocation is set
+    const timeout = setTimeout(() => {
+      if (!currentLocation && "geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          () => setShowLocationModal(true),
+          (error) => {
+            console.error("Error getting location:", error);
+            setShowLocationModal(true);
+          }
+        );
+      } else if (!currentLocation) {
+        setShowLocationModal(true);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [currentLocation, router]);
 
   useEffect(() => {
     const handleOffline = () => router.push("/no-internet");
@@ -45,9 +46,6 @@ const TopBar = () => {
     lat: number;
     lng: number;
   }) => {
-    if (!currentBranch) {
-      router.push("/select-branch");
-    }
     setShowLocationModal(false);
   };
 
@@ -76,7 +74,7 @@ const TopBar = () => {
           <Button
             variant="link"
             className="p-0 h-auto font-medium"
-            onClick={() => setShowBranchSelector(true)}
+            onClick={() => router.push("/select-branch")}
           >
             <GitBranch className="h-4 w-4 mr-2 text-primary" />
             {currentBranch ? currentBranch.name : "Select Branch"}
@@ -87,10 +85,6 @@ const TopBar = () => {
           isOpen={showLocationModal}
           onClose={() => setShowLocationModal(false)}
           onLocationSelect={handleLocationSelect}
-        />
-        <BranchSelector
-          isOpen={showBranchSelector}
-          onClose={() => setShowBranchSelector(false)}
         />
       </div>
     </nav>
