@@ -14,8 +14,9 @@ import {
 } from "firebase/auth";
 import Cookies from "js-cookie";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 const { privatePages } = CONSTANT;
+
 const isPrivatePage = () => {
   const currentPath = window.location.pathname;
   return privatePages.some((page) => currentPath.includes(page));
@@ -502,7 +503,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
-      getStorage: () => localStorage,
+      storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         // Sync cookie with rehydrated state
         if (state?.token) {

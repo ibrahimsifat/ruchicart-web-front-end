@@ -1,7 +1,7 @@
+import Providers from "@/lib/provider/providers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { ReactNode, Suspense } from "react";
-import Providers from "../query-provider";
 
 // Types
 interface LayoutProps {

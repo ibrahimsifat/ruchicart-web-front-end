@@ -274,7 +274,8 @@
     "selectedLocation": "Selected Location",
     "selectedAddress": "Selected Address",
     "errorLoadingGoogleMaps": "Error loading Google Maps",
-    "pleaseCheckYourApiKeyConfigurationAndTryAgain": "Please check your API key configuration and try again."
+    "pleaseCheckYourApiKeyConfigurationAndTryAgain": "Please check your API key configuration and try again.",
+    "loadingGoogleMaps": "Loading Google Maps..."
   },
   "dashboard": {
     "myAddresses": "My Addresses",

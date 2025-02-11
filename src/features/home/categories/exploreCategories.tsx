@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
 import { SectionHeader } from "@/components/ui/section-header";
 import { getCategoryBGGradient } from "@/components/utils/getCategoryBGGradient";
+import { debounce } from "@/lib/hooks/useDebounce";
 import { cn } from "@/lib/utils/utils";
 import { Category } from "@/types";
 import { ImageType } from "@/types/image";
@@ -12,25 +13,24 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 
-export function ExploreCategories({ categories }) {
+export function ExploreCategories({ categories }: { categories: Category[] }) {
   const gridRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
   const t = useTranslations("home");
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (gridRef.current && containerRef.current) {
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const gridRect = gridRef.current.getBoundingClientRect();
-
-        // Check if we've scrolled past the container's top
-        setIsSticky(containerRect.top <= 30);
-      }
-    };
+    const handleScroll = debounce(() => {
+      if (!containerRef.current) return;
+      const containerRect = containerRef.current.getBoundingClientRect();
+      setIsSticky(containerRect.top <= 30);
+    }, 10);
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      handleScroll.cancel(); // Cancel the debounced function on cleanup
+    };
   }, []);
 
   return (

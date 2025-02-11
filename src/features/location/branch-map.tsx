@@ -3,16 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
+import { useGoogleMaps } from "@/lib/provider/google-maps-provider";
 import { BaseBranch } from "@/types/branch";
 import { ImageType } from "@/types/image";
-import {
-  GoogleMap,
-  InfoWindow,
-  Marker,
-  useJsApiLoader,
-} from "@react-google-maps/api";
+import { GoogleMap, InfoWindow, Marker } from "@react-google-maps/api";
 import { Loader2, MapPin, Navigation } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CONSTANT } from "../../config/constants";
 
 interface BranchMapProps {
@@ -42,13 +38,9 @@ export function BranchMap({
   onBranchSelect,
   currentLocation,
 }: BranchMapProps) {
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    libraries: ["places"],
-  });
+  const { isLoaded, loadError } = useGoogleMaps();
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const markersRef = useRef<{ [key: number]: google.maps.Marker }>({});
 
   useEffect(() => {
     if (map && branches.length > 0) {

@@ -10,42 +10,49 @@ import { GitBranch, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-export function TopBar() {
-  const { currentLocation, setCurrentLocation } = useLocationStore();
+const TopBar = () => {
+  const { currentLocation } = useLocationStore();
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showBranchSelector, setShowBranchSelector] = useState(false);
   const { currentBranch } = useBranchStore();
   const router = useRouter();
   const t = useTranslations("home");
+
   useEffect(() => {
-    // need to wait here for 1 second to get the location
-    const timeout = setTimeout(() => {
-      if (!currentLocation?.lat) {
-        setShowLocationModal(true);
-      } else if (!currentBranch) {
-        router.push("/select-branch");
-      }
-    }, 2000);
+    if (!currentLocation && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        () => setShowLocationModal(true),
+        (error) => {
+          console.error("Error getting location:", error);
+          setShowLocationModal(true);
+        }
+      );
+    } else if (!currentLocation) {
+      setShowLocationModal(true);
+    } else if (!currentBranch) {
+      router.push("/select-branch");
+    }
+  }, [currentLocation, currentBranch, router]);
 
-    return () => clearTimeout(timeout);
-  }, [currentLocation]);
+  useEffect(() => {
+    const handleOffline = () => router.push("/no-internet");
+    window.addEventListener("offline", handleOffline);
+    return () => window.removeEventListener("offline", handleOffline);
+  }, [router]);
 
-  const handleOpenLocationModal = () => {
-    setShowLocationModal(true);
-  };
   const handleLocationSelect = (location: {
     address: string;
     lat: number;
     lng: number;
   }) => {
-    setCurrentLocation(location);
-    setShowLocationModal(false);
     if (!currentBranch) {
       router.push("/select-branch");
     }
+    setShowLocationModal(false);
   };
+
   return (
-    <div className="w-full bg-primary/5 border-b">
+    <nav className="w-full bg-primary/5 border-b">
       <div className="container mx-auto px-4 py-2 flex items-center justify-between text-sm">
         <div className="flex items-center gap-2">
           <MapPin className="h-4 w-4 text-primary" />
@@ -53,11 +60,12 @@ export function TopBar() {
           <Button
             variant="link"
             className="p-0 h-auto font-medium max-w-[200px] truncate"
-            onClick={handleOpenLocationModal}
+            onClick={() => setShowLocationModal(true)}
           >
             {currentLocation?.address || "Select Location"}
           </Button>
         </div>
+
         <div className="hidden md:flex items-center gap-4">
           <Button variant="ghost" size="sm">
             {t("becomeAPartner")}
@@ -85,6 +93,8 @@ export function TopBar() {
           onClose={() => setShowBranchSelector(false)}
         />
       </div>
-    </div>
+    </nav>
   );
-}
+};
+
+export default TopBar;

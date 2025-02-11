@@ -27,7 +27,7 @@ import {
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import LocaleSwitcher from "../../components/LocaleSwitcher";
 import {
   Avatar,
@@ -44,14 +44,10 @@ import {
 import { CONSTANT } from "../../config/constants";
 import MegaMenu from "./megaMenu";
 
-export const CartIconRef =
-  React.createContext<React.RefObject<HTMLButtonElement | null> | null>(null);
-
 export function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
-  const cartIconRef = useRef<HTMLButtonElement>(null);
   const { data: categories } = useCategories();
   const { itemCount } = useCart();
   const { token, getProfileInfo } = useAuthStore();
@@ -69,7 +65,7 @@ export function Navbar() {
   }, []);
 
   return (
-    <CartIconRef.Provider value={cartIconRef}>
+    <>
       <nav
         className={cn(
           "border-b transition-opacity duration-500 ",
@@ -149,7 +145,6 @@ export function Navbar() {
             <LocaleSwitcher />
             {/* Cart */}
             <Button
-              ref={cartIconRef}
               variant="ghost"
               size="icon"
               className="relative"
@@ -185,7 +180,7 @@ export function Navbar() {
       {isMegaMenuOpen && <MegaMenu categories={categories || []} />}
 
       <CartDrawer open={showCartDrawer} onOpenChange={setShowCartDrawer} />
-    </CartIconRef.Provider>
+    </>
   );
 }
 const UserMenu = () => {

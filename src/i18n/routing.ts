@@ -11,6 +11,8 @@ export const routing = defineRouting({
     "/categories": "/categories",
     "/deals": "/deals",
     "/select-branch": "/select-branch",
+    "/enable-location": "/enable-location",
+    "/no-internet": "/no-internet",
     "/pathnames": {
       en: "/pathnames",
       bn: "/pfadnamen",

@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { useGoogleMaps } from "@/lib/provider/google-maps-provider";
 import { useLocationStore } from "@/store/locationStore";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 import { MapPin, Navigation, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -47,26 +48,19 @@ export function LocationSelector({
   onSelectLocation,
   initialLocation,
 }: LocationSelectorProps) {
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: apiKey || "",
-    libraries,
-  });
+  const { isLoaded, loadError } = useGoogleMaps();
   const t = useTranslations("location");
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [searchQuery, setSearchQuery] = useState(
-    initialLocation?.address || ""
-  );
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedAddress, setSelectedAddress] = useState<string>("");
+
   const [selectedLocation, setSelectedLocation] =
     useState<google.maps.LatLngLiteral | null>(
       initialLocation
         ? { lat: initialLocation.lat, lng: initialLocation.lng }
         : null
     );
-  const [selectedAddress, setSelectedAddress] = useState<string>(
-    initialLocation?.address || ""
-  );
+
   const { setCurrentLocation } = useLocationStore();
   const { toast } = useToast();
   const autocompleteService =
@@ -78,6 +72,17 @@ export function LocationSelector({
   const [showPredictions, setShowPredictions] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
 
+  // Initialize values from initialLocatio
+  useEffect(() => {
+    if (initialLocation) {
+      setSearchQuery(initialLocation.address || "");
+      setSelectedAddress(initialLocation.address || "");
+      setSelectedLocation({
+        lat: initialLocation.lat,
+        lng: initialLocation.lng,
+      });
+    }
+  }, [initialLocation]);
   useEffect(() => {
     if (window.google && window.google.maps && window.google.maps.places) {
       autocompleteService.current =

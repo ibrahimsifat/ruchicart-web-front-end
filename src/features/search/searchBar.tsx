@@ -30,38 +30,46 @@ export function SearchBar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Add null check for searchRef.current
       if (
         searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
+        event.target instanceof Node && // Type guard for event.target
+        !searchRef.current.contains(event.target)
       ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    // Only add listener if searchRef is initialized
+    if (searchRef.current) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  });
+  }, [searchRef]); // Add searchRef as dependency
+
+  const navigateToSearchResults = (term: string) => {
+    if (term.trim()) {
+      performSearch();
+      router.push(`/products?name=${encodeURIComponent(term)}`);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchTerm.trim()) {
-      performSearch();
-      router.push(`/products?name=${encodeURIComponent(searchTerm)}`);
-    }
+    navigateToSearchResults(searchTerm);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setSearchTerm(suggestion);
-    performSearch();
-    router.push(`/products?name=${encodeURIComponent(suggestion)}`);
+    navigateToSearchResults(suggestion);
   };
 
   const handleClearSearch = () => {
     setSearchTerm("");
-    if (inputRef.current) {
+    if (inputRef.current && isOpen) {
       inputRef.current.focus();
     }
   };
@@ -79,6 +87,7 @@ export function SearchBar() {
           onChange={(e) => handleSearch(e.target.value)}
           onFocus={() => setIsOpen(true)}
           className="pl-12 pr-12 py-6 text-lg border-2 hover:border-primary/50 focus:border-primary transition-all duration-300 rounded-full focus:ring-4 focus:ring-primary/20"
+          aria-label="Search for restaurant, cuisine or a dish"
         />
         {searchTerm && (
           <Button
@@ -103,6 +112,7 @@ export function SearchBar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            key="search-results" // Add a unique key
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -148,7 +158,7 @@ export function SearchBar() {
                       <div className="flex items-center justify-center py-4">
                         <Loader2 className="h-6 w-6 animate-spin text-primary" />
                       </div>
-                    ) : recommendedData?.categories ? (
+                    ) : recommendedData ? (
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         {recommendedData.categories.map((category) => (
                           <div
@@ -172,7 +182,7 @@ export function SearchBar() {
                       </div>
                     ) : (
                       <p className="text-muted-foreground text-center py-4">
-                        No categories found
+                        No data available
                       </p>
                     )}
                   </TabsContent>

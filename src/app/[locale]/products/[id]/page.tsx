@@ -7,6 +7,7 @@ import { getProductDetails } from "@/lib/hooks/queries/product/useProducts";
 import { ImageType } from "@/types/image";
 import { Star } from "lucide-react";
 import { Suspense } from "react";
+import PageLayout from "../../layouts/PageLayout";
 
 type ProductDetailsPageProps = {
   params: { id: string };
@@ -34,43 +35,47 @@ async function ProductDetails({ params }: { params: { id: string } }) {
       : "N/A";
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="overflow-hidden">
-        <div className="md:flex">
-          <div className="md:w-1/2">
-            <div className="relative aspect-square">
-              <CustomImage
-                type={ImageType.PRODUCT}
-                src={product.image}
-                alt={product.name}
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-          <div className="md:w-1/2 p-6">
-            <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-            <div className="flex items-center gap-2 mb-4">
-              <Badge
-                variant={product.product_type === "veg" ? "success" : "default"}
-              >
-                {product.product_type}
-              </Badge>
-              {product.is_recommended === 1 && (
-                <Badge variant="secondary">Recommended</Badge>
-              )}
-              <div className="flex items-center">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                <span className="text-sm font-medium">{averageRating}</span>
+    <PageLayout>
+      <div className="mx-auto py-8">
+        <Card className="overflow-hidden">
+          <div className="md:flex">
+            <div className="md:w-1/2">
+              <div className="relative aspect-square">
+                <CustomImage
+                  type={ImageType.PRODUCT}
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
-            <p className="text-gray-600 mb-4">{product.description}</p>
-            <Separator className="my-6" />
+            <div className="md:w-1/2 p-6">
+              <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+              <div className="flex items-center gap-2 mb-4">
+                <Badge
+                  variant={
+                    product.product_type === "veg" ? "success" : "default"
+                  }
+                >
+                  {product.product_type}
+                </Badge>
+                {product.is_recommended === 1 && (
+                  <Badge variant="secondary">Recommended</Badge>
+                )}
+                <div className="flex items-center">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                  <span className="text-sm font-medium">{averageRating}</span>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4">{product.description}</p>
+              <Separator className="my-6" />
 
-            <ProductActions product={product} />
+              <ProductActions product={product} />
+            </div>
           </div>
-        </div>
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </PageLayout>
   );
 }

@@ -292,7 +292,8 @@
     "selectedAddress": "নির্বাচিত ঠিকানা",
     "errorLoadingGoogleMaps": "গুগল ম্যাপস লোড করার সময় ত্রুটি দেখা দিয়েছে",
     "pleaseCheckYourApiKeyConfigurationAndTryAgain": "আপনার API কী কনফিগারেশন পরীক্ষা করুন এবং পুনরায় চেষ্টা করুন।",
-    "retryLoadingMaps": "গুগল ম্যাপস লোড করুন"
+    "retryLoadingMaps": "গুগল ম্যাপস লোড করুন",
+    "loadingGoogleMaps": "গুগল ম্যাপস লোড করার সময়"
   },
   "dashboard": {
     "myAddresses": "আমার ঠিকানা",

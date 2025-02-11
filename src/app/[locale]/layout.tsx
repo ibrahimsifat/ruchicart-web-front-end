@@ -1,3 +1,4 @@
+import ErrorBoundary from "@/components/error-boundary";
 import { routing } from "@/i18n/routing";
 import "@/styles/globals.css";
 import { Metadata } from "next";
@@ -6,7 +7,6 @@ import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { ReactNode, Suspense } from "react";
 import BaseLayout from "./layouts/BaseLayout";
-
 const inter = Inter({ subsets: ["latin"] });
 type SupportedLocale = (typeof routing.locales)[number];
 type Props = {
@@ -58,7 +58,9 @@ export default async function RootLayout({ children, params }: Props) {
   setRequestLocale(locale);
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <BaseLayout locale={locale}>{children}</BaseLayout>
+      <ErrorBoundary>
+        <BaseLayout locale={locale}>{children}</BaseLayout>
+      </ErrorBoundary>
     </Suspense>
   );
 }
