@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { BranchSelector } from "@/features/branch/branchSelector";
 import { LocationModal } from "@/features/location/location-modal";
+import { useRouter } from "@/i18n/routing";
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { GitBranch, MapPin } from "lucide-react";
@@ -14,12 +15,15 @@ export function TopBar() {
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showBranchSelector, setShowBranchSelector] = useState(false);
   const { currentBranch } = useBranchStore();
+  const router = useRouter();
   const t = useTranslations("home");
   useEffect(() => {
     // need to wait here for 1 second to get the location
     const timeout = setTimeout(() => {
       if (!currentLocation?.lat) {
         setShowLocationModal(true);
+      } else if (!currentBranch) {
+        router.push("/select-branch");
       }
     }, 2000);
 
@@ -29,7 +33,17 @@ export function TopBar() {
   const handleOpenLocationModal = () => {
     setShowLocationModal(true);
   };
-
+  const handleLocationSelect = (location: {
+    address: string;
+    lat: number;
+    lng: number;
+  }) => {
+    setCurrentLocation(location);
+    setShowLocationModal(false);
+    if (!currentBranch) {
+      router.push("/select-branch");
+    }
+  };
   return (
     <div className="w-full bg-primary/5 border-b">
       <div className="container mx-auto px-4 py-2 flex items-center justify-between text-sm">
@@ -64,10 +78,7 @@ export function TopBar() {
         <LocationModal
           isOpen={showLocationModal}
           onClose={() => setShowLocationModal(false)}
-          onLocationSelect={(location) => {
-            setCurrentLocation(location);
-            setShowLocationModal(false);
-          }}
+          onLocationSelect={handleLocationSelect}
         />
         <BranchSelector
           isOpen={showBranchSelector}

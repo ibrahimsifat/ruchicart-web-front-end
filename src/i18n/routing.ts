@@ -8,10 +8,9 @@ export const routing = defineRouting({
   pathnames: {
     "/": "/",
     "/products": "/products",
-    "/products/:id": "/products/:id",
     "/categories": "/categories",
-    "/categories/:id": "/categories/:id",
     "/deals": "/deals",
+    "/select-branch": "/select-branch",
     "/pathnames": {
       en: "/pathnames",
       bn: "/pfadnamen",

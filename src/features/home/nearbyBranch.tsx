@@ -17,7 +17,9 @@ import { useQuery } from "@tanstack/react-query";
 import { MapPin, Navigation } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
-
+interface NearbyBranchProps {
+  onBranchSelect?: () => void;
+}
 // Dynamically import the map component to avoid SSR issues
 const BranchMap = dynamic(
   () => import("../location/branch-map").then((mod) => mod.BranchMap),
@@ -34,7 +36,7 @@ async function getBranches() {
   return res.data;
 }
 
-export function NearbyBranch() {
+export function NearbyBranch({ onBranchSelect }: NearbyBranchProps) {
   const [selectedBranch, setSelectedBranch] = useState<BaseBranch | null>(null);
   const { toast } = useToast();
   const { currentLocation } = useLocationStore();
@@ -87,6 +89,9 @@ export function NearbyBranch() {
           title: "Branch Changed",
           description: `Successfully switched to ${branch.name}`,
         });
+        if (onBranchSelect) {
+          onBranchSelect();
+        }
       } catch (error) {
         toast({
           title: "Error",
@@ -95,7 +100,7 @@ export function NearbyBranch() {
         });
       }
     },
-    [currentBranch, setCurrentBranch, toast]
+    [currentBranch, setCurrentBranch, toast, onBranchSelect]
   );
 
   return (
