@@ -61,13 +61,12 @@ export default function CheckoutPage() {
         cart: items.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
-          variant: item.variations || [],
+          variant: item.variant || [],
           variations: formatVariations(item.variations || {}),
           add_on_ids: item.add_ons?.map((addOn) => addOn.id) || [],
           add_on_qtys: item.add_ons?.length > 0 ? [item.add_ons.length] : [],
         })),
       };
-      console.log(orderDataWithCart);
       const response = await placeOrder(orderDataWithCart);
 
       if (response.status !== 200) {

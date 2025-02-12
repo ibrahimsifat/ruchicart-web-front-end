@@ -24,7 +24,6 @@ const ProductsPageWrapper = async ({
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
   const params = await searchParams;
-  console.log(params);
   const recommendedData = await getRecommendedData();
   const initialProducts = await searchProducts({
     limit: 12,

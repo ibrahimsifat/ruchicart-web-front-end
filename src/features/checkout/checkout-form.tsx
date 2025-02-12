@@ -259,13 +259,6 @@ export function CheckoutForm({
     const orderData = {
       ...values,
       guest_id: !token && getGuestId() ? String(getGuestId()) : undefined,
-      cart: items.map((item) => ({
-        product_id: item.id,
-        quantity: item.quantity,
-        variant: item.variant,
-        add_on_ids: [], //  if have add-ons
-        add_on_qtys: [], //  if have add-ons
-      })),
     };
     if (
       values.payment_method === "stripe" &&

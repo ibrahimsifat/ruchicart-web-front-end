@@ -96,7 +96,8 @@
     "iAgreeThatPlacingTheOrderPlacesMeUnder": "আমি এই অর্ডার প্রদত্ত শর্তাবলী এবং নির্দেশনার অধীনে থাকি",
     "privacyPolicy": "প্রাইভেটি পলিসি",
     "kmCoverage": "কিলোমিটার কভার",
-    "processing": "প্রসেসিং..."
+    "processing": "প্রসেসিং...",
+    "minsPrepTime": "মিনিটের প্রস্তুতি সময়"
   },
   "auth": {
     "loginTitle": "স্বাগতম",

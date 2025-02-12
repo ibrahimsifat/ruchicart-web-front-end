@@ -74,7 +74,8 @@
     "iAgreeThatPlacingTheOrderPlacesMeUnder": "I agree that placing the order places me under",
     "privacyPolicy": "Privacy Policy",
     "kmCoverage": "km coverage",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "minsPrepTime": "mins prep time"
   },
   "auth": {
     "loginTitle": "Welcome Back",

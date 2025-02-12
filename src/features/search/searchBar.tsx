@@ -9,14 +9,43 @@ import { useCuisines } from "@/lib/hooks/queries/category/useCategories";
 import { useSearch } from "@/lib/hooks/search/useSearch";
 import { ImageType } from "@/types/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2, Search, X } from "lucide-react";
+import { Loader2, Search, Send, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
+const cardVariants = {
+  hidden: {
+    y: 20,
+    scale: 0.95,
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 25,
+      mass: 0.5,
+      duration: 0.2,
+    },
+  },
+  exit: {
+    y: -10,
+    scale: 0.95,
+    opacity: 0,
+    transition: {
+      duration: 0.2,
+      ease: "easeOut",
+    },
+  },
+};
 
 export function SearchBar() {
   const [isOpen, setIsOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const {
@@ -123,18 +152,41 @@ export function SearchBar() {
           size="icon"
           className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full"
         >
-          <Search className="h-5 w-5 font-bold" />
+          <AnimatePresence mode="popLayout">
+            {searchTerm.length > 0 ? (
+              <motion.div
+                key="send"
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Send className="h-5 w-5 font-bold" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="search"
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Search className="h-5 w-5 font-bold" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Button>
       </form>
 
-      <AnimatePresence>
+      <AnimatePresence mode="popLayout">
         {isOpen && (
           <motion.div
-            key="search-results" // Add a unique key
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
+            key="search-results"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="w-full"
           >
             <Card className="absolute top-full left-0 w-full mt-2 p-4 z-50 max-h-[70vh] overflow-y-auto">
               {searchTerm ? (
@@ -145,9 +197,9 @@ export function SearchBar() {
                       <Loader2 className="h-6 w-6 animate-spin text-primary" />
                     </div>
                   ) : suggestions && suggestions.length > 0 ? (
-                    <ul className="space-y-2">
+                    <div className="space-y-2">
                       {suggestions.map((suggestion, index) => (
-                        <li
+                        <motion.li
                           key={index}
                           className="py-2 px-3 hover:bg-accent rounded-lg cursor-pointer transition-colors duration-200"
                           onClick={() => handleSuggestionClick(suggestion)}
@@ -156,9 +208,9 @@ export function SearchBar() {
                             <Search className="h-4 w-4 mr-2  text-primary" />
                             <span>{suggestion}</span>
                           </div>
-                        </li>
+                        </motion.li>
                       ))}
-                    </ul>
+                    </div>
                   ) : (
                     <p className="text-muted-foreground text-center py-4">
                       No suggestions found
