@@ -1,3 +1,4 @@
+import { AppDownload } from "@/features/home/appDownload";
 import { Footer } from "@/features/layout/footer";
 import { Navbar } from "@/features/layout/navbar";
 import TopBar from "@/features/layout/topBar";
@@ -36,6 +37,9 @@ export default function PageLayout({ children }: Props) {
       <main>
         <div className="container mx-auto px-4">{children}</div>
       </main>
+      <div className="container mx-auto px-4">
+        <AppDownload />
+      </div>
       <Suspense fallback={<FooterLoading />}>
         <Footer />
       </Suspense>

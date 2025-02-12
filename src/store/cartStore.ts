@@ -14,6 +14,7 @@ export interface CartItem {
       optionPrice: number;
     };
   }[];
+  addOns?: number[];
 }
 
 interface CartStore {
@@ -34,35 +35,37 @@ export const useCart = create<CartStore>()(
       total: 0,
       addItem: (item) =>
         set((state) => {
-          const existingItem = state.items.find(
+          const existingItemIndex = state.items.findIndex(
             (i) =>
               i.id === item.id &&
-              JSON.stringify(i.variant) === JSON.stringify(item.variant)
+              JSON.stringify(i.variations) ===
+                JSON.stringify(item.variations) &&
+              JSON.stringify(i.addOns) === JSON.stringify(item.addOns)
           );
-          if (existingItem) {
+
+          if (existingItemIndex > -1) {
+            const updatedItems = [...state.items];
+            updatedItems[existingItemIndex].quantity += item.quantity;
             return {
-              items: state.items.map((i) =>
-                i.id === item.id &&
-                JSON.stringify(i.variant) === JSON.stringify(item.variant)
-                  ? { ...i, quantity: i.quantity + 1 }
-                  : i
-              ),
-              itemCount: state.itemCount + 1,
-              total: state.total + item.price,
+              items: updatedItems,
+              itemCount: state.itemCount + item.quantity,
+              total: state.total + item.price * item.quantity,
             };
           }
+
           return {
-            items: [...state.items, { ...item, quantity: 1 }],
-            itemCount: state.itemCount + 1,
-            total: state.total + item.price,
+            items: [...state.items, item],
+            itemCount: state.itemCount + item.quantity,
+            total: state.total + item.price * item.quantity,
           };
         }),
       removeItem: (id) =>
         set((state) => {
-          const itemToRemove = state.items.find((i) => i.id === id);
+          const itemToRemove = state.items.find((item) => item.id === id);
           if (!itemToRemove) return state;
+
           return {
-            items: state.items.filter((i) => i.id !== id),
+            items: state.items.filter((item) => item.id !== id),
             itemCount: state.itemCount - itemToRemove.quantity,
             total: state.total - itemToRemove.price * itemToRemove.quantity,
           };
@@ -71,6 +74,7 @@ export const useCart = create<CartStore>()(
         set((state) => {
           const item = state.items.find((i) => i.id === id);
           if (!item) return state;
+
           const quantityDiff = quantity - item.quantity;
           return {
             items: state.items.map((i) =>

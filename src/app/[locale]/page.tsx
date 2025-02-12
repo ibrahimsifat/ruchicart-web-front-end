@@ -5,7 +5,6 @@ import {
   ProductCardSkeleton,
   PromoCardSkeleton,
 } from "@/components/ui/skeletons";
-import { AppDownload } from "@/features/home/appDownload";
 import { NearbyBranch } from "@/features/home/branch/nearbyBranch";
 import ExploreCategoriesSection from "@/features/home/categories/exploreCategoriesSection";
 import { DiscountBanner } from "@/features/home/discountBanner";
@@ -58,16 +57,6 @@ async function generateMetadata({
   };
 }
 
-// Static components that don't need data fetching
-function StaticContent() {
-  return (
-    <>
-      <DiscountBanner />
-      <AppDownload />
-    </>
-  );
-}
-
 // Main page component
 export default async function Home() {
   const featuredProducts = await getFeaturedProducts();
@@ -89,8 +78,9 @@ export default async function Home() {
       <Suspense fallback={<BranchCardSkeleton />}>
         <NearbyBranch />
       </Suspense>
+
       {/* Static content renders immediately */}
-      <StaticContent />
+      <DiscountBanner />
     </PageLayout>
   );
 }

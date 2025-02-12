@@ -18,4 +18,9 @@ export const CONSTANT = {
     branchMarker: "/images/branch-marker.png",
     branchMarkerActive: "/images/branch-marker-active.png",
   },
+  API_CACHE_TIMES: {
+    SHORT: 60, // 1 minute
+    MEDIUM: 3600, // 1 hour
+    LONG: 86400, // 24 hours
+  },
 };

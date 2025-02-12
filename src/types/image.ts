@@ -1,5 +1,6 @@
 export enum ImageType {
   CATEGORY = "category",
+  CUISINE = "cuisine",
   PRODUCT = "product",
   BANNER = "banner",
   PROFILE = "profile",

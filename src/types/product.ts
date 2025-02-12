@@ -36,7 +36,7 @@ export type ProductResponse = {
   products: Product[];
 };
 
-interface Variation {
+export interface Variation {
   name: string;
   type: string;
   min: string;
@@ -50,12 +50,12 @@ interface VariationValue {
   optionPrice: string;
 }
 
-interface CategoryId {
+export interface CategoryId {
   id: string;
   position: number;
 }
 
-interface BranchProduct {
+export interface BranchProduct {
   id: number;
   product_id: number;
   price: number;
@@ -69,4 +69,19 @@ interface BranchProduct {
   stock_type: string;
   stock: number;
   sold_quantity: number;
+}
+
+interface VariationValue {
+  label: string;
+  optionPrice: string;
+}
+
+export interface AddOn {
+  id: number;
+  name: string;
+  price: number;
+  tax: number;
+  created_at: string;
+  updated_at: string;
+  translations: any[]; // Replace `any` with a more specific type if translations have a known structure
 }

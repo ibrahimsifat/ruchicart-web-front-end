@@ -1,81 +1,58 @@
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import CustomImage from "@/components/ui/customImage";
-import { Separator } from "@/components/ui/separator";
-import ProductActions from "@/features/product-details/ProductActions";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ProductDetailsImage } from "@/features/product-details/product-details";
+import { ProductDetailsContent } from "@/features/product-details/product-details-content";
+import { RelatedProducts } from "@/features/product-details/related-products";
 import { getProductDetails } from "@/lib/hooks/queries/product/useProducts";
-import { ImageType } from "@/types/image";
-import { Star } from "lucide-react";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import PageLayout from "../../layouts/PageLayout";
 
-type ProductDetailsPageProps = {
-  params: { id: string };
-};
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const product = await getProductDetails(params.id);
 
-export default async function ProductDetailsPage({
-  params,
-}: ProductDetailsPageProps) {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ProductDetails params={params} />
-    </Suspense>
-  );
+  if (!product) {
+    return {
+      title: "Product Not Found",
+      description: "The requested product could not be found",
+    };
+  }
+
+  return {
+    title: `${product.name} | RuchiCart`,
+    description: product.description,
+    openGraph: {
+      images: [{ url: product.image }],
+    },
+  };
 }
 
-async function ProductDetails({ params }: { params: { id: string } }) {
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const product = await getProductDetails(id);
-  const averageRating =
-    product.rating.length > 0
-      ? (
-          product.rating.reduce((acc, curr) => acc + curr, 0) /
-          product.rating.length
-        ).toFixed(1)
-      : "N/A";
+
+  if (!product) {
+    notFound();
+  }
 
   return (
     <PageLayout>
-      <div className="mx-auto py-8">
-        <Card className="overflow-hidden">
-          <div className="md:flex">
-            <div className="md:w-1/2">
-              <div className="relative aspect-square">
-                <CustomImage
-                  type={ImageType.PRODUCT}
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </div>
-            <div className="md:w-1/2 p-6">
-              <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-              <div className="flex items-center gap-2 mb-4">
-                <Badge
-                  variant={
-                    product.product_type === "veg" ? "success" : "default"
-                  }
-                >
-                  {product.product_type}
-                </Badge>
-                {product.is_recommended === 1 && (
-                  <Badge variant="secondary">Recommended</Badge>
-                )}
-                <div className="flex items-center">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span className="text-sm font-medium">{averageRating}</span>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-4">{product.description}</p>
-              <Separator className="my-6" />
-
-              <ProductActions product={product} />
-            </div>
-          </div>
-        </Card>
+      <div className="grid md:grid-cols-2 gap-8">
+        <Suspense fallback={<Skeleton className="aspect-square rounded-xl" />}>
+          <ProductDetailsImage product={product} />
+        </Suspense>
+        <div>
+          <Suspense fallback={<Skeleton className="h-[400px]" />}>
+            <ProductDetailsContent product={product} />
+          </Suspense>
+        </div>
       </div>
+      <Suspense fallback={<Skeleton className="h-[300px] mt-12" />}>
+        <RelatedProducts currentProductId={Number(id)} />
+      </Suspense>
     </PageLayout>
   );
 }
