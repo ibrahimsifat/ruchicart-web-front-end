@@ -23,6 +23,7 @@ interface CartDrawerProps {
 export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const router = useRouter();
   const { items, removeItem, updateQuantity, total, itemCount } = useCart();
+  console.log(items);
   const t = useTranslations("cart");
   const handleCheckout = () => {
     onOpenChange(false);
@@ -48,7 +49,9 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               <div className="space-y-4">
                 {items.map((item) => (
                   <div
-                    key={item.id}
+                    key={`${item.id}-${JSON.stringify(
+                      item.variations
+                    )}-${JSON.stringify(item.add_ons)}`}
                     className="flex items-center gap-4 pb-4 border-b"
                   >
                     <div className="relative h-20 w-20 rounded-lg overflow-hidden bg-muted">
@@ -61,12 +64,39 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                       />
                     </div>
                     <div className="flex-1 space-y-1">
-                      <h4 className="font-medium leading-none">{item.name}</h4>
-                      {item.variant && (
-                        <p className="text-sm text-muted-foreground">
-                          Variation: {item.variant[0].name}
-                        </p>
-                      )}
+                      <div className="flex-1">
+                        <h4 className="font-medium">{item.name}</h4>
+                        {item.variations &&
+                          Object.entries(item.variations).map(
+                            ([key, values]) => (
+                              <p
+                                key={key}
+                                className="text-sm text-muted-foreground"
+                              >
+                                {key}:{" "}
+                                {Array.isArray(values)
+                                  ? values.join(", ")
+                                  : values}
+                              </p>
+                            )
+                          )}
+                        {item.add_ons && item.add_ons.length > 0 && (
+                          <div className="text-sm text-muted-foreground">
+                            Add-ons:{" "}
+                            <Badge variant="secondary" className="font-medium">
+                              {item.add_ons
+                                .map((addOn) => addOn.name)
+                                .join(", ")}
+                            </Badge>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between mt-1">
+                          <p className="text-sm">Qty: {item.quantity}</p>
+                          <p className="font-medium">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary" className="font-medium">
                           ${item.price.toFixed(2)}

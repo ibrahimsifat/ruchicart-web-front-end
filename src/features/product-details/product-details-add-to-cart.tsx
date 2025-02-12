@@ -25,28 +25,33 @@ export function ProductDetailsAddToCart({ product }: { product: Product }) {
     let price = product.price;
 
     // Add variation prices
-    Object.entries(selectedVariations).forEach(
-      ([variationName, selectedOptions]) => {
-        const variation = product.variations?.find(
-          (v) => v.name === variationName
-        );
-        if (variation) {
-          if (Array.isArray(selectedOptions)) {
-            selectedOptions.forEach((option) => {
-              const optionPrice = variation.values.find(
-                (v) => v.label === option
-              )?.optionPrice;
-              if (optionPrice) price += Number.parseFloat(optionPrice);
-            });
-          } else {
+    const calculateTotalPrice = () => {
+      let price = product.price;
+
+      // Add variation prices
+      Object.entries(selectedVariations).forEach(
+        ([variationName, selectedOption]) => {
+          const variation = product.variations?.find(
+            (v) => v.name === variationName
+          );
+          if (variation) {
             const optionPrice = variation.values.find(
-              (v) => v.label === selectedOptions
+              (v) => v.label === selectedOption
             )?.optionPrice;
             if (optionPrice) price += Number.parseFloat(optionPrice);
           }
         }
-      }
-    );
+      );
+
+      // Add add-on prices
+      selectedAddOns.forEach((addOnId) => {
+        const addOn = product.add_ons?.find((a) => a.id === addOnId);
+        if (addOn) price += addOn.price;
+      });
+
+      price *= quantity;
+      setTotalPrice(price);
+    };
 
     // Add add-on prices
     selectedAddOns.forEach((addOnId) => {
@@ -70,7 +75,9 @@ export function ProductDetailsAddToCart({ product }: { product: Product }) {
       image: product.image,
       quantity: quantity,
       variations: selectedVariations,
-      addOns: selectedAddOns,
+      add_ons: selectedAddOns.map(
+        (id) => product.add_ons.find((addon) => addon.id === id)!
+      ),
     };
     addItem(item);
     toast({

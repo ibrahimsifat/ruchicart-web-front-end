@@ -4,6 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { CheckoutForm } from "@/features/checkout/checkout-form";
 import { OrderSummary } from "@/features/order/orderSummary";
 import { placeOrder } from "@/lib/api/order";
+import { formatVariations } from "@/lib/utils/cart";
 import { useCart } from "@/store/cartStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -49,6 +50,7 @@ export default function CheckoutPage() {
 
     guest_id: z.string().optional(),
   });
+
   // CheckoutPage.tsx
   const handlePlaceOrder = async (orderData: z.infer<typeof formSchema>) => {
     setIsLoading(true);
@@ -59,13 +61,15 @@ export default function CheckoutPage() {
         cart: items.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
-          variant: [],
-          add_on_ids: [],
-          add_on_qtys: [],
+          variant: item.variations || [],
+          variations: formatVariations(item.variations || {}),
+          add_on_ids: item.add_ons?.map((addOn) => addOn.id) || [],
+          add_on_qtys: item.add_ons?.length > 0 ? [item.add_ons.length] : [],
         })),
       };
-
+      console.log(orderDataWithCart);
       const response = await placeOrder(orderDataWithCart);
+
       if (response.status !== 200) {
         throw new Error("Failed to place order");
       }

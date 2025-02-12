@@ -1,3 +1,8 @@
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+} from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductDetailsImage } from "@/features/product-details/product-details";
 import { ProductDetailsContent } from "@/features/product-details/product-details-content";
@@ -40,6 +45,19 @@ export default async function ProductPage({
 
   return (
     <PageLayout>
+      <Breadcrumb className="mb-4">
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/">Home</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+          <BreadcrumbLink href={`/products`}>products</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem>
+          <BreadcrumbLink href={`/products/${product.id}`}>
+            {product.name}
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
       <div className="grid md:grid-cols-2 gap-8">
         <Suspense fallback={<Skeleton className="aspect-square rounded-xl" />}>
           <ProductDetailsImage product={product} />

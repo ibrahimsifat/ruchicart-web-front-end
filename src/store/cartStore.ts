@@ -1,3 +1,4 @@
+import { AddOn, FormattedVariation } from "@/types/product";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -14,7 +15,8 @@ export interface CartItem {
       optionPrice: number;
     };
   }[];
-  addOns?: number[];
+  add_ons?: AddOn[];
+  variations?: Record<string, FormattedVariation[]>;
 }
 
 interface CartStore {
@@ -40,7 +42,7 @@ export const useCart = create<CartStore>()(
               i.id === item.id &&
               JSON.stringify(i.variations) ===
                 JSON.stringify(item.variations) &&
-              JSON.stringify(i.addOns) === JSON.stringify(item.addOns)
+              JSON.stringify(i.add_ons) === JSON.stringify(item.add_ons)
           );
 
           if (existingItemIndex > -1) {

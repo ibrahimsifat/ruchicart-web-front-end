@@ -45,9 +45,15 @@ export interface Variation {
   values: VariationValue[];
 }
 
-interface VariationValue {
+export interface VariationValue {
   label: string;
   optionPrice: string;
+}
+export interface FormattedVariation {
+  name: string;
+  values: {
+    label: string[];
+  };
 }
 
 export interface CategoryId {
@@ -71,11 +77,6 @@ export interface BranchProduct {
   sold_quantity: number;
 }
 
-interface VariationValue {
-  label: string;
-  optionPrice: string;
-}
-
 export interface AddOn {
   id: number;
   name: string;
@@ -83,5 +84,5 @@ export interface AddOn {
   tax: number;
   created_at: string;
   updated_at: string;
-  translations: any[]; // Replace `any` with a more specific type if translations have a known structure
+  translations: any[];
 }

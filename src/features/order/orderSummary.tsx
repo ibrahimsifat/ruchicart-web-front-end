@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
 import {
@@ -71,9 +72,18 @@ export function OrderSummary({
                 {item.variations &&
                   Object.entries(item.variations).map(([key, values]) => (
                     <p key={key} className="text-sm text-muted-foreground">
-                      {key}: {values?.join(", ")}
+                      {key}:{" "}
+                      {Array.isArray(values) ? values.join(", ") : values}
                     </p>
                   ))}
+                {item.add_ons && item.add_ons.length > 0 && (
+                  <div className="text-sm text-muted-foreground">
+                    Add-ons:{" "}
+                    <Badge variant="secondary" className="font-medium">
+                      {item.add_ons.map((addOn) => addOn.name).join(", ")}
+                    </Badge>
+                  </div>
+                )}
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-sm">Qty: {item.quantity}</p>
                   <p className="font-medium">

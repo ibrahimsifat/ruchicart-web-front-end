@@ -107,7 +107,8 @@ export function CheckoutForm({
   const deleteAddressMutation = useDeleteAddress();
   const [showMap, setShowMap] = useState(false);
   const { toast } = useToast();
-
+  const deliveryDate = new Date();
+  const formattedDate = deliveryDate.toISOString().slice(0, 10);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -115,9 +116,9 @@ export function CheckoutForm({
       delivery_address_id: 0,
       payment_method: "",
       order_type: "delivery",
-      branch_id: branch.id,
+      branch_id: branch?.id || 1,
       delivery_time: "now",
-      delivery_date: performance.now(),
+      delivery_date: formattedDate,
       distance: 0,
       is_partial: 0,
       delivery_tip: deliveryTip,
@@ -139,7 +140,6 @@ export function CheckoutForm({
       road: "",
       floor: "",
       house: "",
-      is_guest: 0,
       contact_person_name: "",
       contact_person_number: "",
       latitude: 0,
