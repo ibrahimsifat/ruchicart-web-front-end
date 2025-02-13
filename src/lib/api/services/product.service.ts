@@ -1,16 +1,14 @@
 import { Product, ProductResponse } from "@/types/product";
-import { fetchData } from "../fetchUtils";
 import { fetcher } from "./api.service";
 
-export async function getFeaturedProducts() {
-  return fetcher<ProductResponse[]>("/products/popular", {
+export async function getFeaturedProducts(): Promise<ProductResponse> {
+  return fetcher<ProductResponse>("/products/popular", {
     cacheConfig: {
       revalidate: 3600, // Revalidate every hour
       tags: ["featured-products"],
     },
   });
 }
-
 export async function getTrendingProducts() {
   return fetcher<ProductResponse[]>("/products/latest", {
     cacheConfig: {
@@ -20,7 +18,7 @@ export async function getTrendingProducts() {
   });
 }
 export async function getProductDetails(id: string) {
-  return fetcher<Product>(`/products/${id}`, {
+  return fetcher<Product>(`/products/details/${id}`, {
     cacheConfig: {
       revalidate: 600, // 10 minutes
       tags: [`product:${id}`],
@@ -37,29 +35,13 @@ export async function getRelatedProducts({
   currentProductId,
   limit = 10,
 }: GetRelatedProductsParams): Promise<Product[]> {
-  return fetchData<Product[]>(
-    `/products/related-products/${currentProductId}`,
-    {
-      params: {
-        limit,
-      },
-    }
-  );
+  return fetcher<Product[]>(`/products/related-products/${currentProductId}`, {
+    params: {
+      limit,
+    },
+    cacheConfig: {
+      revalidate: 3600, // Revalidate every hour
+      tags: [`related-products:${currentProductId}`],
+    },
+  });
 }
-
-//   if (!categoryIds.length || !currentProductId) {
-//     return [];
-//   }
-
-//   return fetcher<Product[]>(`/products/related-products/${currentProductId}`, {
-//     cacheConfig: {
-//       revalidate: CONSTANT.API_CACHE_TIMES.MEDIUM,
-//       tags: ["related-products", `product-${currentProductId}`],
-//     },
-//     params: {
-//       category_ids: categoryIds.join(","),
-//       exclude_id: currentProductId,
-//       limit,
-//     },
-//   });
-// }

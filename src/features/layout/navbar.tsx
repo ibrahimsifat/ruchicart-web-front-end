@@ -43,20 +43,16 @@ import {
 } from "../../components/ui/dropdown-menu";
 import { CONSTANT } from "../../config/constants";
 import MegaMenu from "./megaMenu";
-
 export function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
   const { data: categories } = useCategories();
   const { itemCount } = useCart();
-  const { token, getProfileInfo } = useAuthStore();
+  const { token } = useAuthStore();
   const t = useTranslations("home");
 
   useEffect(() => {
-    if (token) {
-      getProfileInfo();
-    }
     const handleScroll = () => {
       setIsSticky(window.scrollY > 0);
     };

@@ -1,5 +1,16 @@
 import type { ProductResponse } from "@/types/product";
 import { api } from "./api";
+import { fetcher } from "./services/api.service";
+
+interface RecommendedData {
+  categories: Array<{
+    id: number;
+    name: string;
+    image: string;
+    banner_image: string;
+  }>;
+  cuisines: string[];
+}
 export async function searchProducts(params: {
   name?: string;
   rating?: number;
@@ -50,3 +61,8 @@ export async function getRecommendedData() {
   const { data } = await api.get("/products/search-recommended");
   return data;
 }
+
+export const fetchRecommendedData = async (): Promise<RecommendedData> => {
+  const data = await fetcher("/products/search-recommended");
+  return data as RecommendedData;
+};

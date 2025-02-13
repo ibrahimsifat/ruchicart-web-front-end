@@ -199,16 +199,16 @@ export function SearchBar() {
                   ) : suggestions && suggestions.length > 0 ? (
                     <div className="space-y-2">
                       {suggestions.map((suggestion, index) => (
-                        <motion.li
+                        <li
                           key={index}
-                          className="py-2 px-3 hover:bg-accent rounded-lg cursor-pointer transition-colors duration-200"
+                          className="py-2 px-3 hover:bg-accent rounded-lg cursor-pointer transition-colors duration-200 list-none"
                           onClick={() => handleSuggestionClick(suggestion)}
                         >
                           <div className="flex items-center">
                             <Search className="h-4 w-4 mr-2  text-primary" />
                             <span>{suggestion}</span>
                           </div>
-                        </motion.li>
+                        </li>
                       ))}
                     </div>
                   ) : (

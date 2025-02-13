@@ -1,13 +1,14 @@
 "use client";
 
+import { LoadingList } from "@/components/skeleton/branch-skeleton";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/lib/api/api";
 import { useBranch } from "@/lib/hooks/queries/Branch/useBranch";
 import { calculateDistance } from "@/lib/utils/distance";
 import { useBranchStore } from "@/store/branchStore";
+import { useCart } from "@/store/cartStore";
 import { useLocationStore } from "@/store/locationStore";
 import { BaseBranch } from "@/types/branch";
 import React, { memo, Suspense, useCallback, useMemo, useState } from "react";
@@ -30,36 +31,12 @@ const BranchMap = memo(
   })
 );
 
-// Extracted skeleton component for reusability and memoization
-const BranchSkeleton = memo(() => (
-  <div className="flex gap-4 rounded-lg border p-4">
-    <Skeleton className="h-16 w-16 rounded-md" />
-    <div className="flex-1 space-y-2">
-      <Skeleton className="h-4 w-2/3" />
-      <Skeleton className="h-4 w-full" />
-      <div className="flex justify-between">
-        <Skeleton className="h-4 w-20" />
-        <Skeleton className="h-4 w-24" />
-      </div>
-    </div>
-  </div>
-));
-
-// Extracted loading list component
-const LoadingList = memo(() => (
-  <>
-    {Array.from({ length: 4 }).map((_, i) => (
-      <BranchSkeleton key={i} />
-    ))}
-  </>
-));
-
 export function NearbyBranch() {
   const [selectedBranch, setSelectedBranch] = useState<BaseBranch | null>(null);
   const { toast } = useToast();
   const { currentLocation } = useLocationStore();
   const { currentBranch, setCurrentBranch } = useBranchStore();
-
+  const { items } = useCart();
   const { data: branchesData = [], isLoading } = useBranch();
 
   // Memoized branches calculation
@@ -88,14 +65,12 @@ export function NearbyBranch() {
         const res = await api.post("/products/change-branch", {
           from_branch_id: currentBranch?.id,
           to_branch_id: branch.id,
-          products: [
-            {
-              product_id: 2,
-              quantity: 3,
-              variations: [],
-            },
-          ],
-          product_ids: [2],
+          products: items.map((item) => ({
+            product_id: item.id,
+            quantity: item.quantity,
+            variations: item.variations,
+          })),
+          product_ids: items.map((item) => item.id),
         });
 
         if (res.status !== 200) {
@@ -157,7 +132,7 @@ export function NearbyBranch() {
             <BranchMap
               branches={branches}
               selectedBranch={selectedBranch || currentBranch}
-              onSelect={handleBranchSelect}
+              onBranchSelect={handleBranchSelect}
               currentLocation={currentLocation}
             />
           </Suspense>

@@ -6,6 +6,7 @@ const API_V1 = `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
 
 // console.log(currentBranch);
 const locale = Cookies.get("NEXT_LOCALE") || "en";
+
 const api = axios.create({
   baseURL: API_V1,
   timeout: 30000,

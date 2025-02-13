@@ -1,3 +1,4 @@
+import { api } from "@/lib/api/api";
 import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
 import { useBranchStore } from "@/store/branchStore";
@@ -18,6 +19,45 @@ export function useBranch() {
     queryFn: () => getBranch(),
   });
 }
+
+/**
+ *  const res = await api.post("/products/change-branch", {
+          from_branch_id: currentBranch?.id,
+          to_branch_id: branch.id,
+          products: [
+            {
+              product_id: 2,
+              quantity: 3,
+              variations: [],
+            },
+          ],
+          product_ids: [2],
+        });
+ */
+
+export const changeBranch = async (params: {
+  from_branch_id: number;
+  to_branch_id: number;
+  product_ids: number[];
+  products: {
+    product_id: number;
+    quantity: number;
+    variations: {
+      variation_id: number;
+      value: string;
+    }[];
+  }[];
+}) => {
+  const res = await api.post("/products/change-branch", params);
+  return res.data;
+};
+
+/**
+ * Get products from a specific branch
+ * @param branchId - The ID of the branch to get products from
+ * @param options - Additional options for the query
+ * @returns A promise that resolves to the products from the specified branch
+ */
 
 async function getBranchProducts(
   branchId: number | undefined,

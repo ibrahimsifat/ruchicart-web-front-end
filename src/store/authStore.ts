@@ -1,5 +1,6 @@
 import { CONSTANT } from "@/config/constants";
 import { api } from "@/lib/api/api";
+import { useUserInfo } from "@/lib/hooks/queries/user/useUsers";
 import { auth, googleProvider } from "@/lib/utils/firebase";
 import { formatFirebaseAuthError } from "@/lib/utils/firebase-errors";
 import { getAxiosErrorMessage } from "@/lib/utils/getAxiosErrorMessage";
@@ -203,7 +204,8 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await api.post("/auth/login", loginData);
           const data = response.data;
-          set({ token: data.token, isLoading: false });
+          const { data: user } = useUserInfo();
+          set({ token: data.token, user, isLoading: false });
           Cookies.set("auth-token", data.token, { path: "/" });
         } catch (error) {
           const errorMessage = getAxiosErrorMessage(

@@ -9,6 +9,7 @@ import { useState } from "react";
 
 export function ProductActions({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
+
   const { addItem } = useCart();
   const { toast } = useToast();
 

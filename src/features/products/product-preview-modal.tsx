@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
-import { getProductDetails } from "@/lib/hooks/queries/product/useProducts";
+import { getProductDetails } from "@/lib/api/services/product.service";
 import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { Product } from "@/types/product";

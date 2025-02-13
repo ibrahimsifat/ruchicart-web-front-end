@@ -1,19 +1,10 @@
 "use client";
 
 import { api } from "@/lib/api/api";
+import { fetchRecommendedData } from "@/lib/api/products";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
-
-interface RecommendedData {
-  categories: Array<{
-    id: number;
-    name: string;
-    image: string;
-    banner_image: string;
-  }>;
-  cuisines: string[];
-}
 
 export function useSearch() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,11 +14,6 @@ export function useSearch() {
     const { data } = await api.get("/products/search-suggestion", {
       params: { name: term },
     });
-    return data;
-  };
-
-  const fetchRecommendedData = async (): Promise<RecommendedData> => {
-    const { data } = await api.get("/products/search-recommended");
     return data;
   };
 

@@ -1,19 +1,16 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-} from "@/components/ui/breadcrumb";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductDetailsImage } from "@/features/product-details/product-details";
 import { ProductDetailsContent } from "@/features/product-details/product-details-content";
 import { RelatedProducts } from "@/features/product-details/related-products";
-import { getProductDetails } from "@/lib/hooks/queries/product/useProducts";
+import { getProductDetails } from "@/lib/api/services/product.service";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import PageLayout from "../../layouts/PageLayout";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-  const product = await getProductDetails(params.id);
+  const { id } = await params;
+  const product = await getProductDetails(id);
 
   if (!product) {
     return {
@@ -45,32 +42,24 @@ export default async function ProductPage({
 
   return (
     <PageLayout>
-      <Breadcrumb className="mb-4">
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Home</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbItem>
-          <BreadcrumbLink href={`/products`}>products</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbItem>
-          <BreadcrumbLink href={`/products/${product.id}`}>
-            {product.name}
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-      </Breadcrumb>
-      <div className="grid md:grid-cols-2 gap-8">
-        <Suspense fallback={<Skeleton className="aspect-square rounded-xl" />}>
-          <ProductDetailsImage product={product} />
-        </Suspense>
-        <div>
-          <Suspense fallback={<Skeleton className="h-[400px]" />}>
-            <ProductDetailsContent product={product} />
+      <div className="py-6">
+        <Breadcrumb name={product.name} />
+        <div className="grid md:grid-cols-2 gap-8">
+          <Suspense
+            fallback={<Skeleton className="aspect-square rounded-xl" />}
+          >
+            <ProductDetailsImage product={product} />
           </Suspense>
+          <div>
+            <Suspense fallback={<Skeleton className="h-[400px]" />}>
+              <ProductDetailsContent product={product} />
+            </Suspense>
+          </div>
         </div>
+        <Suspense fallback={<Skeleton className="h-[300px] mt-12" />}>
+          <RelatedProducts currentProductId={Number(id)} />
+        </Suspense>
       </div>
-      <Suspense fallback={<Skeleton className="h-[300px] mt-12" />}>
-        <RelatedProducts currentProductId={Number(id)} />
-      </Suspense>
     </PageLayout>
   );
 }
