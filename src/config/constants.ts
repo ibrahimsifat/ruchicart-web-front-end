@@ -12,7 +12,7 @@ export const CONSTANT = {
     bdFlag: "/images/bd.png",
     usFlag: "/images/us.png",
     comingSoon: "/images/coming-soon.svg",
-    prmotional_home_food: "/images/prmotional_home_food.png",
+    prmotional_home_food: "/images/food-set.webp",
     notFound: "/images/no_food.png",
     userLocationPic: "/images/user-location-marker.png",
     branchMarker: "/images/branch-marker.png",
