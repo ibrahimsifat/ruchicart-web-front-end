@@ -1,6 +1,9 @@
 import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
-import { getRelatedProducts } from "@/lib/api/services/product.service";
+import {
+  getFeaturedProducts,
+  getRelatedProducts,
+} from "@/lib/api/services/product.service";
 import { Product, ProductResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 
@@ -31,14 +34,10 @@ export function useProductDetails(id: string) {
   });
 }
 
-export async function getLatestProducts(options: GetPopularOptions = {}) {
-  return fetchData<ProductResponse>("/products/latest", { params: options });
-}
-
-export function useLatestProducts(options: GetPopularOptions = {}) {
+export function useLatestProducts() {
   return useQuery<ProductResponse>({
     queryKey: queryKeys.products.latest,
-    queryFn: () => getLatestProducts(options),
+    queryFn: () => getFeaturedProducts(),
   });
 }
 async function getBranchProducts(options: GetPopularOptions = {}) {

@@ -1,35 +1,28 @@
 import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
-import { Category } from "@/types";
+import {
+  getCategories,
+  getCuisines,
+} from "@/lib/api/services/category.service";
 import { Cuisine } from "@/types/cuisine";
 import { ProductResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 
-interface GetCategoriesOptions {
-  page?: number;
-  limit?: number;
-  search?: string;
-}
+// export async function getCategories(options: GetCategoriesOptions = {}) {
+//   return fetchData<Category[]>("/categories", { params: options });
+// }
 
-export async function getCategories(options: GetCategoriesOptions = {}) {
-  return fetchData<Category[]>("/categories", { params: options });
-}
-
-export function useCategories(options: GetCategoriesOptions = {}) {
+export function useCategories() {
   return useQuery({
     queryKey: queryKeys.categories.all,
-    queryFn: () => getCategories(options),
+    queryFn: () => getCategories(),
   });
 }
 
-async function getCuisines(options: GetCategoriesOptions = {}) {
-  return fetchData<Cuisine[]>("/cuisine/list", { params: options });
-}
-
-export function useCuisines(options: GetCategoriesOptions = {}) {
+export function useCuisines() {
   return useQuery<Cuisine[]>({
     queryKey: queryKeys.cuisines.all,
-    queryFn: () => getCuisines(options),
+    queryFn: () => getCuisines(),
   });
 }
 

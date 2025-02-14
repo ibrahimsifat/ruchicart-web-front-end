@@ -3,13 +3,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import CustomImage from "@/components/ui/customImage";
 import {
   Tooltip,
@@ -17,13 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useToast } from "@/components/ui/use-toast";
-import {
-  useLatestProducts,
-  useRelatedProducts,
-} from "@/lib/hooks/queries/product/useProducts";
 import { getDiscountedPrice } from "@/lib/utils/utils";
-import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Minus, Plus } from "lucide-react";
@@ -41,8 +28,7 @@ interface Product {
 }
 
 interface CartCarouselProps {
-  productId?: number;
-  isProductId?: boolean;
+  productId: number;
 }
 
 // Memoized Price Component
@@ -143,8 +129,7 @@ const CartControls = memo(
 
 CartControls.displayName = "CartControls";
 
-// Memoized Product Card Component
-const ProductCard = memo(
+export const CartProductCard = memo(
   ({
     product,
     handleAddToCart,
@@ -207,7 +192,11 @@ const ProductCard = memo(
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.8, opacity: 0 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 30,
+                    }}
                   >
                     <TooltipProvider>
                       <Tooltip>
@@ -238,97 +227,4 @@ const ProductCard = memo(
   }
 );
 
-ProductCard.displayName = "ProductCard";
-
-// Main Cart Carousel Component
-export function CartCarousel({ productId, isProductId }: CartCarouselProps) {
-  const { addItem, items, updateQuantity, removeItem } = useCart();
-  const { toast } = useToast();
-  const { data: latestProducts } = useLatestProducts();
-  // Only call useRelatedProducts if isProductId is true and productId is provided
-  const { data: relatedProducts, isLoading: relatedProductsLoading } =
-    isProductId && productId
-      ? useRelatedProducts(productId)
-      : { data: undefined, isLoading: false };
-
-  const carouselProducts = useMemo(() => {
-    // If isProductId is false, only use latest products
-    if (!isProductId) {
-      return latestProducts?.products?.filter(
-        (product) => !items.some((item) => item.id === product.id)
-      );
-    }
-
-    // Otherwise, try related products first, then fall back to latest
-    let filtered = relatedProducts?.filter(
-      (product) => !items.some((item) => item.id === product.id)
-    );
-
-    if (!filtered?.length) {
-      filtered = latestProducts?.products?.filter(
-        (product) => !items.some((item) => item.id === product.id)
-      );
-    }
-    return filtered;
-  }, [isProductId, relatedProducts, latestProducts?.products, items]);
-
-  const handleAddToCart = useCallback(
-    (product: Product) => {
-      addItem({
-        id: product.id,
-        name: product.name,
-        image: product.image,
-        price: product.price,
-        quantity: 1,
-      });
-
-      toast({
-        title: "Added to cart",
-        description: `${product.name} has been added to your cart.`,
-      });
-    },
-    [addItem, toast]
-  );
-
-  // Return null if loading or no products available
-  if (
-    (isProductId && productId && relatedProductsLoading) ||
-    !carouselProducts?.length
-  ) {
-    return null;
-  }
-
-  return (
-    <div className="space-y-6 bg-gray-50 p-6 rounded-lg mt-4">
-      <h3 className="font-semibold text-2xl text-center">
-        You might also like
-      </h3>
-      <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-        className="w-full"
-      >
-        <CarouselContent className="-ml-2 md:-ml-4">
-          {carouselProducts.map((product) => (
-            <CarouselItem
-              key={product.id}
-              className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3"
-            >
-              <ProductCard
-                product={product}
-                handleAddToCart={handleAddToCart}
-                cartItem={items.find((item) => item.id === product.id)}
-                updateQuantity={updateQuantity}
-                removeItem={removeItem}
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="hidden md:flex -left-12 bg-white shadow-md hover:bg-gray-100" />
-        <CarouselNext className="hidden md:flex -right-12 bg-white shadow-md hover:bg-gray-100" />
-      </Carousel>
-    </div>
-  );
-}
+CartProductCard.displayName = "CartProductCard"; // Memoized Product Card Component

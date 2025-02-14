@@ -12,6 +12,7 @@ import { Plus } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import CustomImage from "../../components/ui/customImage";
 import { Product } from "../../types/product";
+import { CartDrawer } from "../cart/cart-drawer";
 
 interface FrequentlyBoughtProps {
   currentProduct: Product;
@@ -32,9 +33,9 @@ const calculateDiscountedPrice = (product: Product): number => {
 };
 
 export function FrequentlyBought({ currentProduct }: FrequentlyBoughtProps) {
-  const { addItem, items } = useCart();
+  const { addItem } = useCart();
   const { toast } = useToast();
-  console.log("items", items);
+  const [showCartDrawer, setShowCartDrawer] = useState(false);
   const { data: relatedProducts } = useRelatedProducts(
     Number(currentProduct.id)
   );
@@ -78,7 +79,8 @@ export function FrequentlyBought({ currentProduct }: FrequentlyBoughtProps) {
       console.log("cartItem", cartItem);
       addItem(cartItem);
     });
-
+    // Open the cart drawer
+    setShowCartDrawer(true);
     toast({
       title: "Added to cart",
       description: `${selectedProductsData.length} items added to your cart.`,
@@ -184,6 +186,7 @@ export function FrequentlyBought({ currentProduct }: FrequentlyBoughtProps) {
             </Button>
           </div>
         </CardContent>
+        <CartDrawer open={showCartDrawer} onOpenChange={setShowCartDrawer} />
       </Card>
     )
   );

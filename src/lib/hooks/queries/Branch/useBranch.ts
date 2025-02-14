@@ -1,6 +1,7 @@
 import { api } from "@/lib/api/api";
 import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
+import { fetcher } from "@/lib/api/services/api.service";
 import { useBranchStore } from "@/store/branchStore";
 import { BaseBranch } from "@/types/branch";
 import { ProductResponse } from "@/types/product";
@@ -11,7 +12,7 @@ interface GetPopularOptions {
   search?: string;
 }
 export async function getBranch() {
-  return fetchData<BaseBranch[]>("/branch/list");
+  return fetcher<BaseBranch[]>("/branch/list");
 }
 export function useBranch() {
   return useQuery<BaseBranch[]>({

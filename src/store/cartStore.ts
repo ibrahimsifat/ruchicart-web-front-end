@@ -89,7 +89,7 @@ export const useCart = create<CartStore>()(
       clearCart: () => set({ items: [], itemCount: 0, total: 0 }),
     }),
     {
-      name: "food-delivery-cart",
+      name: "ruchicart-cart",
     }
   )
 );

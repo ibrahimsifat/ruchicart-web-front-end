@@ -110,6 +110,8 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                             onClick={() => {
                               if (item.quantity > 1) {
                                 updateQuantity(item.id, item.quantity - 1);
+                              } else {
+                                removeItem(item.id);
                               }
                             }}
                           >
@@ -164,19 +166,22 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
-            <div className="relative h-32 w-32 text-muted-foreground">
-              <ShoppingBag className="h-full w-full stroke-1" />
+          <div className="">
+            <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
+              <div className="relative h-32 w-32 text-muted-foreground">
+                <ShoppingBag className="h-full w-full stroke-1" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-medium text-lg">{t("yourCartIsEmpty")}</h3>
+                <p className="text-muted-foreground">
+                  {t("addItemsToYourCartToProceedWithCheckout")}
+                </p>
+              </div>
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                {t("continueShopping")}
+              </Button>
             </div>
-            <div className="space-y-1">
-              <h3 className="font-medium text-lg">{t("yourCartIsEmpty")}</h3>
-              <p className="text-muted-foreground">
-                {t("addItemsToYourCartToProceedWithCheckout")}
-              </p>
-            </div>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              {t("continueShopping")}
-            </Button>
+            <CartCarousel isProductId={false} />
           </div>
         )}
       </SheetContent>

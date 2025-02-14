@@ -2,7 +2,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getRelatedProducts } from "@/lib/api/services/product.service";
 import { Product } from "@/types/product";
 import { AlertCircle, Clock, Leaf, Star } from "lucide-react";
 import { Suspense } from "react";
@@ -14,10 +13,6 @@ export const ProductDetailsContent = async ({
 }: {
   product: Product;
 }) => {
-  const relatedProducts = await getRelatedProducts({
-    currentProductId: Number(product.id),
-  });
-  const suggestedProducts = relatedProducts.slice(0, 2);
   return (
     <div className="space-y-4 bg-white md:p-5 p-3 rounded-lg">
       <div className="flex items-center justify-between">
@@ -164,12 +159,7 @@ export const ProductDetailsContent = async ({
       </Tabs>
 
       <Suspense fallback={<Skeleton className="h-[300px]" />}>
-        {suggestedProducts.length > 0 && (
-          <FrequentlyBought
-            currentProduct={product}
-            suggestedProducts={suggestedProducts}
-          />
-        )}
+        <FrequentlyBought currentProduct={product} />
       </Suspense>
     </div>
   );
