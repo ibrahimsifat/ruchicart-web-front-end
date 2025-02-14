@@ -7,7 +7,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { SectionHeader } from "@/components/ui/section-header";
-import { ProductCard } from "@/features/products/product-card";
+import { ProductCard } from "@/features/products/product-card/product-card";
 import { Link } from "@/i18n/routing";
 import { Product, ProductResponse } from "@/types/product";
 import { useTranslations } from "next-intl";
@@ -18,7 +18,7 @@ export function FeaturedProducts({
   featuredProductsData: ProductResponse[];
 }) {
   const products = featuredProductsData?.products;
-  console.log(products);
+  // console.log(products);
   const t = useTranslations("home");
   return (
     <section className="py-12">

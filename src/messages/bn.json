@@ -281,7 +281,9 @@
     "restaurantsAndCafesNearYou": "আপনার কাছাকাছি রেস্তোরাঁ এবং ক্যাফে অন্বেষণ করুন",
     "discoverGreatPlacesToEatAroundYou": "আপনার আশেপাশে খাওয়ার জন্য দারুণ জায়গা আবিষ্কার করুন",
     "setLocationToFindNearbyRestaurantsAndCafes": "আপনার অবস্থানের কাছাকাছি রেস্তোরাঁ এবং ক্যাফে অন্বেষণ করতে আপনার অবস্থান নির্ধারণ করুন",
-    "viewDetails": "বিস্তারিত দেখুন"
+    "viewDetails": "বিস্তারিত দেখুন",
+    "selectBranch": "শাখা নির্বাচন করুন",
+    "selectBranchDescription": "আপনার কাছাকাছি রেস্তোরাঁ এবং ক্যাফে অন্বেষণ করুন"
   },
   "location": {
     "changeLocation": "অবস্থান পরিবর্তন করুন",

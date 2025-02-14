@@ -2,7 +2,7 @@ import { Product, ProductResponse } from "@/types/product";
 import { fetcher } from "./api.service";
 
 export async function getFeaturedProducts(): Promise<ProductResponse> {
-  return fetcher<ProductResponse>("/products/popular", {
+  return fetcher<ProductResponse>("/products/latest", {
     cacheConfig: {
       revalidate: 3600, // Revalidate every hour
       tags: ["featured-products"],
@@ -10,7 +10,7 @@ export async function getFeaturedProducts(): Promise<ProductResponse> {
   });
 }
 export async function getTrendingProducts() {
-  return fetcher<ProductResponse[]>("/products/latest", {
+  return fetcher<ProductResponse[]>("/products/popular", {
     cacheConfig: {
       revalidate: 3600, // Revalidate every hour
       tags: ["trending-products"],
@@ -18,12 +18,7 @@ export async function getTrendingProducts() {
   });
 }
 export async function getProductDetails(id: string) {
-  return fetcher<Product>(`/products/details/${id}`, {
-    cacheConfig: {
-      revalidate: 600, // 10 minutes
-      tags: [`product:${id}`],
-    },
-  });
+  return fetcher<Product>(`/products/details/${id}`);
 }
 
 export interface GetRelatedProductsParams {

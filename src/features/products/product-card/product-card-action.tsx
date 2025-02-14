@@ -8,28 +8,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useCart } from "@/store/cartStore";
 import { Product } from "@/types/product";
-import { motion } from "framer-motion";
-import { Eye, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Eye, ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { ProductPreviewModal } from "../product-preview-modal";
 
-const ProductCardAction = ({ product }: { product: Product }) => {
-  const { addItem, items, updateQuantity, removeItem } = useCart();
-  const cartItem = items.find((item) => item.id == product.id);
-  console.log(cartItem, items, product);
+const ProductCardAction = ({
+  product,
+  showAddToCart = true,
+}: {
+  product: Product;
+  showAddToCart?: boolean;
+}) => {
+  const [showPreview, setShowPreview] = useState(false);
+
   const t = useTranslations("home");
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    addItem({
-      id: product.id,
-      name: product.name,
-      image: product.image,
-      price: product.price,
-      quantity: 1,
-    });
-  };
   return (
     <div className="pt-2 flex justify-between items-center gap-2">
       <Link href={`/products/${product.id}`} className="flex-grow">
@@ -41,6 +36,28 @@ const ProductCardAction = ({ product }: { product: Product }) => {
           {t("viewDetails")}
         </Button>
       </Link>
+
+      {showAddToCart && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="default"
+                className="h-12 w-12 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors duration-300"
+                onClick={() => setShowPreview(true)}
+                data-add-to-cart
+              >
+                <ShoppingCart className="h-6 w-6" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Add to cart</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+
       {/* <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -58,7 +75,7 @@ const ProductCardAction = ({ product }: { product: Product }) => {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider> */}
-      <div className="">
+      {/* <div className="">
         {cartItem ? (
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -125,7 +142,13 @@ const ProductCardAction = ({ product }: { product: Product }) => {
             </TooltipProvider>
           </motion.div>
         )}
-      </div>
+      </div> */}
+
+      <ProductPreviewModal
+        open={showPreview}
+        onOpenChange={setShowPreview}
+        product={product}
+      />
     </div>
   );
 };

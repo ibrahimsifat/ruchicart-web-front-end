@@ -1,5 +1,6 @@
 import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
+import { getRelatedProducts } from "@/lib/api/services/product.service";
 import { Product, ProductResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 
@@ -31,7 +32,7 @@ export function useProductDetails(id: string) {
 }
 
 export async function getLatestProducts(options: GetPopularOptions = {}) {
-  return fetchData<ProductResponse>("/products/popular", { params: options });
+  return fetchData<ProductResponse>("/products/latest", { params: options });
 }
 
 export function useLatestProducts(options: GetPopularOptions = {}) {
@@ -53,6 +54,12 @@ export function useBranchProducts(options: GetPopularOptions = {}) {
   });
 }
 
+export function useRelatedProducts(productId: number) {
+  return useQuery<Product[]>({
+    queryKey: queryKeys.products.related(productId),
+    queryFn: () => getRelatedProducts({ currentProductId: productId }),
+  });
+}
 // export function useInfiniteCategories(
 //   options: Omit<GetCategoriesOptions, "page"> = {}
 // ) {

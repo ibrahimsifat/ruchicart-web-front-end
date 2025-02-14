@@ -65,7 +65,7 @@ export const useCart = create<CartStore>()(
         set((state) => {
           const itemToRemove = state.items.find((item) => item.id === id);
           if (!itemToRemove) return state;
-
+          console.log(itemToRemove, "itemToRemove", itemToRemove.quantity);
           return {
             items: state.items.filter((item) => item.id !== id),
             itemCount: state.itemCount - itemToRemove.quantity,

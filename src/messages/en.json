@@ -264,7 +264,9 @@
     "restaurantsAndCafesNearYou": "Restaurants and Cafes Near You",
     "discoverGreatPlacesToEatAroundYou": "Discover great places to eat around you",
     "setLocationToFindNearbyRestaurantsAndCafes": "Set Location to Find Nearby Restaurants and Cafes",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "selectBranch": "Select Branch",
+    "selectBranchDescription": "Choose a branch near you for delivery or pickup"
   },
   "location": {
     "changeLocation": "Change Location",

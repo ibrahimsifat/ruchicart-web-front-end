@@ -53,9 +53,9 @@ export async function fetcher<T>(
       const error = new Error("API Error") as ApiError;
       error.status = res.status;
       try {
-        error.data = await res.json();
+        error.data = await res;
       } catch {
-        error.data = await res.text();
+        error.data = await res;
       }
       throw error;
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
+import { AnimatedCartIcon } from "@/components/ui/animated-cart-icon";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -146,15 +146,15 @@ export function Navbar() {
               className="relative"
               onClick={() => setShowCartDrawer(true)}
             >
-              <ShoppingBag className="h-5 w-5" />
-              {itemCount > 0 && (
+              <AnimatedCartIcon />
+              {/* {itemCount > 0 && (
                 <Badge
                   variant="secondary"
                   className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center"
                 >
                   {itemCount}
                 </Badge>
-              )}
+              )} */}
             </Button>
             {/* Sign In */}
             {token ? (

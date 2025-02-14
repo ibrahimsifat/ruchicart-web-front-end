@@ -6,7 +6,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Product } from "@/types/product";
-import { ProductCard } from "../products/product-card";
+import { ProductCard } from "../products/product-card/product-card";
 
 export function RelatedProductsCarousel({ products }: { products: Product[] }) {
   return (

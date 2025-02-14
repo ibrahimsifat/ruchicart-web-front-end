@@ -14,7 +14,7 @@ import { ImageType } from "@/types/image";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-
+import { CartCarousel } from "./cart-carousel";
 interface CartDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -23,6 +23,7 @@ interface CartDrawerProps {
 export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const router = useRouter();
   const { items, removeItem, updateQuantity, total, itemCount } = useCart();
+
   console.log(items);
   const t = useTranslations("cart");
   const handleCheckout = () => {
@@ -93,13 +94,13 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                         <div className="flex items-center justify-between mt-1">
                           <p className="text-sm">Qty: {item.quantity}</p>
                           <p className="font-medium">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            ${(item.price * item.quantity)?.toFixed(2)}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary" className="font-medium">
-                          ${item.price.toFixed(2)}
+                          ${item.price}
                         </Badge>
                         <div className="flex items-center gap-1">
                           <Button
@@ -140,13 +141,22 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                     </div>
                   </div>
                 ))}
+
+                <div className="">
+                  {/* Show carousel only when items are 3 or fewer */}
+                  {items.length <= 3 && (
+                    <div className="mt-6">
+                      <CartCarousel productId={items[0].id} />
+                    </div>
+                  )}
+                </div>
               </div>
             </ScrollArea>
 
             <div className="pt-6 space-y-4">
               <div className="flex items-center justify-between text-lg font-semibold">
                 <span>{t("totalPrice")}</span>
-                <span>${total.toFixed(2)}</span>
+                <span>${total?.toFixed(2)}</span>
               </div>
               <Button className="w-full" size="lg" onClick={handleCheckout}>
                 {t("proceedToCheckout")}

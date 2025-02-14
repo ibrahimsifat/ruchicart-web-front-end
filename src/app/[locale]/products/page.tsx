@@ -1,7 +1,7 @@
+import { ProductsLoading } from "@/components/skeleton/products-loading";
 import { CategoryBanners } from "@/features/products/category-banners";
 import { ProductFilters } from "@/features/products/product-filters";
 import { ProductGrid } from "@/features/products/product-grid";
-import { ProductsLoading } from "@/features/products/products-loading";
 import { getRecommendedData, searchProducts } from "@/lib/api/products";
 import { Suspense } from "react";
 import PageLayout from "../layouts/PageLayout";

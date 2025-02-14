@@ -3,7 +3,9 @@
 import { LoadingList } from "@/components/skeleton/branch-skeleton";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { SectionHeader } from "@/components/ui/section-header";
 import { useToast } from "@/components/ui/use-toast";
+import { Link } from "@/i18n/routing";
 import { api } from "@/lib/api/api";
 import { useBranch } from "@/lib/hooks/queries/Branch/useBranch";
 import { calculateDistance } from "@/lib/utils/distance";
@@ -11,6 +13,7 @@ import { useBranchStore } from "@/store/branchStore";
 import { useCart } from "@/store/cartStore";
 import { useLocationStore } from "@/store/locationStore";
 import { BaseBranch } from "@/types/branch";
+import { useTranslations } from "next-intl";
 import React, { memo, Suspense, useCallback, useMemo, useState } from "react";
 import { BranchListItem } from "./BranchListItem";
 
@@ -38,7 +41,7 @@ export function NearbyBranch() {
   const { currentBranch, setCurrentBranch } = useBranchStore();
   const { items } = useCart();
   const { data: branchesData = [], isLoading } = useBranch();
-
+  const t = useTranslations("home");
   // Memoized branches calculation
   const branches = useMemo(() => {
     if (!currentLocation || !branchesData.length) return branchesData;
@@ -96,15 +99,20 @@ export function NearbyBranch() {
 
   return (
     <section className="container py-8">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold">Select Branch</h2>
-        <p className="text-muted-foreground">
-          Choose a branch near you for delivery or pickup
-        </p>
-      </div>
-
+      <SectionHeader
+        title={t("selectBranch")}
+        description={t("selectBranchDescription")}
+        action={
+          <Link
+            href="/select-branch"
+            className="text-primary hover:text-primary/80 font-bold md:text-lg text-xl mb-2"
+          >
+            {t("viewAll")}
+          </Link>
+        }
+      />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[400px_1fr] xl:grid-cols-[450px_1fr]">
-        <Card className="h-[calc(100vh-12rem)] overflow-hidden">
+        <Card className="h-[calc(100vh-14rem)] overflow-hidden">
           <ScrollArea className="h-full">
             <div className="space-y-2 p-4">
               {isLoading ? (
@@ -127,7 +135,7 @@ export function NearbyBranch() {
           </ScrollArea>
         </Card>
 
-        <Card className="h-[calc(100vh-12rem)] overflow-hidden">
+        <Card className="h-[calc(100vh-14rem)] overflow-hidden">
           <Suspense fallback={<MapLoadingComponent />}>
             <BranchMap
               branches={branches}

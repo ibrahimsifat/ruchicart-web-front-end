@@ -17,6 +17,9 @@ export const CONSTANT = {
     userLocationPic: "/images/user-location-marker.png",
     branchMarker: "/images/branch-marker.png",
     branchMarkerActive: "/images/branch-marker-active.png",
+    mobileDownload: "/images/mobile-download.webp",
+    appQRCode: "/images/app-qr-code.png",
+    bankBankLogo: "/images/visa-master-logo.webp",
   },
   API_CACHE_TIMES: {
     SHORT: 60, // 1 minute

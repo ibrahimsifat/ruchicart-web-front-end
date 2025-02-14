@@ -1,6 +1,6 @@
 "use client";
 
-import { NearbyBranch } from "@/features/home/branch/nearbyBranch";
+import { NearbyBranch } from "@/features/branch/nearbyBranch";
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { useRouter } from "next/navigation";

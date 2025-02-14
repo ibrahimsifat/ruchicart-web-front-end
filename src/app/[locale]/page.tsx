@@ -5,7 +5,7 @@ import {
   ProductCardSkeleton,
   PromoCardSkeleton,
 } from "@/components/ui/skeletons";
-import { NearbyBranch } from "@/features/home/branch/nearbyBranch";
+import { NearbyBranch } from "@/features/branch/nearbyBranch";
 import ExploreCategoriesSection from "@/features/home/categories/exploreCategoriesSection";
 import { DiscountBanner } from "@/features/home/discountBanner";
 import { FeaturedProducts } from "@/features/home/featuredProducts";

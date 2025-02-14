@@ -1,25 +1,29 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Variation } from "@/types/product";
+import { cn } from "@/lib/utils/utils";
+import { Variation, VariationValue } from "@/types/product";
+
+interface ProductVariationsProps {
+  variations: Variation[];
+  selectedVariations: Record<string, string[]>;
+  setSelectedVariations: React.Dispatch<
+    React.SetStateAction<Record<string, string[]>>
+  >;
+}
 
 export function ProductVariations({
   variations,
   selectedVariations,
   setSelectedVariations,
-}: {
-  variations: Variation[];
-  selectedVariations: Record<string, string[]>;
-  setSelectedVariations: (variations: Record<string, string[]>) => void;
-}) {
+}: ProductVariationsProps) {
   const handleVariationChange = (
     variationName: string,
     value: string,
     type: string
   ) => {
-    setSelectedVariations((prev: Record<string, string[]>) => ({
+    setSelectedVariations((prev) => ({
       ...prev,
       [variationName]:
         type === "single"
@@ -31,55 +35,97 @@ export function ProductVariations({
   };
 
   return (
-    <div className="space-y-6">
-      {variations.map((variation) => (
-        <div key={variation.name} className="space-y-2">
-          <h3 className="font-semibold">{variation.name}</h3>
-          {variation.type === "single" ? (
-            <RadioGroup
-              onValueChange={(value) =>
-                handleVariationChange(variation.name, value, "single")
-              }
-              value={selectedVariations[variation.name]?.join(",")}
-            >
-              {variation.values.map((option) => (
-                <div key={option.label} className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value={option.label}
-                    id={`${variation.name}-${option.label}`}
-                  />
-                  <Label htmlFor={`${variation.name}-${option.label}`}>
-                    {option.label} (+${option.optionPrice})
-                  </Label>
+    <div className="space-y-4">
+      {variations.length > 0 && (
+        <>
+          <h3 className="font-semibold text-lg">Available Variations</h3>
+          {variations.map((variation) => (
+            <div key={variation.name} className="space-y-2">
+              <h4 className="font-medium">
+                {variation.name}
+                {variation.required === "on" && (
+                  <span className="text-red-500 ml-1">*</span>
+                )}
+              </h4>
+              {variation.type === "single" ? (
+                <RadioGroup
+                  onValueChange={(value) =>
+                    handleVariationChange(variation.name, value, variation.type)
+                  }
+                  value={selectedVariations[variation.name]?.[0] || ""}
+                >
+                  <div className="grid grid-cols-2 gap-2">
+                    {variation.values.map((option: VariationValue) => (
+                      <label
+                        key={option.label}
+                        className={cn(
+                          "flex items-center justify-between p-2 rounded-lg border cursor-pointer transition-all",
+                          (
+                            selectedVariations[variation.name] as string[]
+                          )?.includes(option.label)
+                            ? "border-primary bg-primary/5"
+                            : "hover:border-primary/50"
+                        )}
+                      >
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem
+                            value={option.label}
+                            id={`${variation.name}-${option.label}`}
+                          />
+                          <span>{option.label}</span>
+                        </div>
+                        {Number(option.optionPrice) > 0 && (
+                          <span className="text-sm font-medium">
+                            +${option.optionPrice}
+                          </span>
+                        )}
+                      </label>
+                    ))}
+                  </div>
+                </RadioGroup>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  {variation.values.map((option: VariationValue) => (
+                    <label
+                      key={option.label}
+                      className={cn(
+                        "flex items-center justify-between p-2 rounded-lg border cursor-pointer transition-all",
+                        (
+                          selectedVariations[variation.name] as string[]
+                        )?.includes(option.label)
+                          ? "border-primary bg-primary/5"
+                          : "hover:border-primary/50"
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          checked={(
+                            selectedVariations[variation.name] as string[]
+                          )?.includes(option.label)}
+                          onCheckedChange={(checked) =>
+                            handleVariationChange(
+                              variation.name,
+                              option.label,
+                              variation.type
+                            )
+                          }
+                          id={`${variation.name}-${option.label}`}
+                        />
+                        <span>{option.label}</span>
+                      </div>
+                      {Number(option.optionPrice) > 0 && (
+                        <span className="text-sm font-medium">
+                          +${option.optionPrice}
+                        </span>
+                      )}
+                    </label>
+                  ))}
                 </div>
-              ))}
-            </RadioGroup>
-          ) : (
-            <div className="space-y-2">
-              {variation.values.map((option) => (
-                <div key={option.label} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`${variation.name}-${option.label}`}
-                    checked={selectedVariations[variation.name]?.includes(
-                      option.label
-                    )}
-                    onCheckedChange={(checked) =>
-                      handleVariationChange(
-                        variation.name,
-                        option.label,
-                        "multi"
-                      )
-                    }
-                  />
-                  <Label htmlFor={`${variation.name}-${option.label}`}>
-                    {option.label} (+${option.optionPrice})
-                  </Label>
-                </div>
-              ))}
+              )}
             </div>
-          )}
-        </div>
-      ))}
+          ))}
+        </>
+      )}
     </div>
   );
 }

@@ -20,6 +20,16 @@ export function useBranch() {
   });
 }
 
+export async function getBranchById(branchId: number) {
+  return fetchData<BaseBranch>(`/branch/${branchId}`);
+}
+export function useBranchById(branchId: number) {
+  return useQuery<BaseBranch>({
+    queryKey: queryKeys.branches.byId(branchId),
+    queryFn: () => getBranchById(branchId),
+  });
+}
+
 /**
  *  const res = await api.post("/products/change-branch", {
           from_branch_id: currentBranch?.id,

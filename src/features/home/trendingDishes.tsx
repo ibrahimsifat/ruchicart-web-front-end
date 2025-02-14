@@ -9,7 +9,7 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { Link } from "@/i18n/routing";
 import { Product, ProductResponse } from "@/types/product";
 import { getTranslations } from "next-intl/server";
-import { ProductCard } from "../products/product-card";
+import { ProductCard } from "../products/product-card/product-card";
 
 interface GetPopularOptions {
   page?: number;

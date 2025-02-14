@@ -12,7 +12,7 @@ import type { Product, ProductResponse } from "@/types/product";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { ProductCard } from "./product-card";
+import { ProductCard } from "./product-card/product-card";
 
 import { Button } from "@/components/ui/button";
 import ItemNotFound from "@/components/utils/itemNotFound";

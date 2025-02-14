@@ -1,237 +1,65 @@
-"use client";
-
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import CustomImage from "@/components/ui/customImage";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useToast } from "@/components/ui/use-toast";
-import { getProductDetails } from "@/lib/api/services/product.service";
-import { useCart } from "@/store/cartStore";
-import { ImageType } from "@/types/image";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Product } from "@/types/product";
-import { Heart, Minus, Plus, ShoppingCart, Star } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { Star } from "lucide-react";
+import { Suspense } from "react";
+import { ProductDetailsAddToCart } from "../product-details/product-details-add-to-cart";
+import { ProductGallery } from "../product-details/product-gallery";
+import ProductCardAction from "./product-card/product-card-action";
 
-// Separate the modal content into its own component
-export default async function ProductQuickView({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const product = await getProductDetails(id);
-  return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <ProductQuickViewContent product={product} />
-    </Suspense>
-  );
+interface ProductPreviewModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  product: Product;
 }
 
-const ProductQuickViewContent = ({ product }: { product: Product }) => {
-  const router = useRouter();
-  const [quantity, setQuantity] = useState(1);
-  const [selectedVariation, setSelectedVariation] = useState<string | null>(
-    null
-  );
-
-  const { addItem } = useCart();
-  const { toast } = useToast();
-
-  const discountedPrice =
-    product.discount_type === "percent"
-      ? product.price - (product.price * product.discount) / 100
-      : product.price - product.discount;
-
-  const rating =
-    product.rating.length > 0
-      ? product.rating.reduce((acc, curr) => acc + curr.rating, 0) /
-        product.rating.length
-      : 0;
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    addItem({
-      id: product.id,
-      name: product.name,
-      image: product.image,
-      price: product.price,
-      quantity: quantity,
-    });
-    toast({
-      title: "Added to cart",
-      description: `${quantity} x ${product.name} added to your cart.`,
-    });
-  };
-
-  const handleAddToWishlist = () => {
-    toast({
-      title: "Added to wishlist",
-      description: `${product.name} has been added to your wishlist.`,
-    });
-  };
-
-  const handleClose = () => {
-    router.back();
-  };
-
-  const handleDetails = () => {
-    window.location.reload();
-  };
-
+export function ProductPreviewModal({
+  open,
+  onOpenChange,
+  product,
+}: ProductPreviewModalProps) {
   return (
-    <Dialog open={true} defaultOpen={true} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl">
-        <div className="relative mx-auto max-w-3xl">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            <div className="relative aspect-square overflow-hidden rounded-lg">
-              <Badge variant="secondary">{product.product_type}</Badge>
-              <CustomImage
-                type={ImageType.PRODUCT}
-                src={product.image || "/placeholder.svg"}
-                alt={product.name}
-                fill
-                className="object-cover"
-              />
-              {product.discount > 0 && (
-                <Badge variant="destructive" className="absolute right-2 top-2">
-                  {product.discount_type === "percent"
-                    ? `${product.discount}% OFF`
-                    : `$${product.discount} OFF`}
-                </Badge>
-              )}
-            </div>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-3xl p-0 overflow-hidden">
+        <AnimatePresence>
+          {open && (
+            <div className="grid md:grid-cols-2 gap-8 lg:p-6 p-4">
+              <Suspense
+                fallback={<Skeleton className="aspect-square rounded-xl" />}
+              >
+                <ProductGallery product={product} />
+              </Suspense>
 
-            <div className="text-left">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-bold">
-                  {product.name}
-                </DialogTitle>
-                {product.is_recommended === 1 && (
-                  <Badge className="bg-primary w-26">Recommended</Badge>
-                )}
-              </DialogHeader>
-              <p className="mt-2 text-gray-600">
-                {product.description?.slice(0, 100)}...
-              </p>
-
-              <div className="mt-4 flex items-center space-x-2">
-                <div className="flex items-center">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-5 w-5 ${
-                        i < Math.floor(rating)
-                          ? "fill-primary text-primary"
-                          : "text-gray-300"
-                      }`}
+              <div>
+                <div className=" mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h1 className="text-3xl font-bold">{product.name}</h1>
+                    <div className="flex items-center gap-1">
+                      <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                      <span className="font-medium">{product.rating}</span>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground">
+                    {product.description.slice(0, 100)}...
+                  </p>
+                </div>
+                <Suspense fallback={<Skeleton className="h-[400px]" />}>
+                  <ProductDetailsAddToCart product={product} />
+                </Suspense>
+                <div className="mt-3">
+                  <Suspense fallback={<Skeleton className="h-[400px]" />}>
+                    <ProductCardAction
+                      product={product}
+                      showAddToCart={false}
                     />
-                  ))}
-                </div>
-                <span className="text-sm text-gray-600">
-                  ({product.rating.length} reviews)
-                </span>
-              </div>
-
-              <div className="mt-4 space-x-2">
-                <span className="text-3xl font-bold text-primary">
-                  ${discountedPrice.toFixed(2)}
-                </span>
-                {product.discount > 0 && (
-                  <span className="text-xl text-gray-500 line-through">
-                    ${product.price.toFixed(2)}
-                  </span>
-                )}
-              </div>
-
-              {product.variations && product.variations.length > 0 && (
-                <div className="mt-6">
-                  <Label>Select Variation</Label>
-                  <RadioGroup
-                    value={selectedVariation || ""}
-                    onValueChange={setSelectedVariation}
-                    className="mt-2"
-                  >
-                    {product.variations.map((variation) => (
-                      <div
-                        key={variation.name}
-                        className="flex items-center space-x-2"
-                      >
-                        <RadioGroupItem
-                          value={variation.name}
-                          id={variation.name}
-                        />
-                        <Label htmlFor={variation.name}>{variation.name}</Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                </div>
-              )}
-
-              <div className="mt-6">
-                <Label>Quantity</Label>
-                <div className="mt-2 flex items-center space-x-4">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                  <Input
-                    type="number"
-                    min="1"
-                    value={quantity}
-                    onChange={(e) =>
-                      setQuantity(Number.parseInt(e.target.value) || 1)
-                    }
-                    className="w-20 text-center"
-                  />
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setQuantity(quantity + 1)}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              <div className="mt-8 space-y-4">
-                <Button className="w-full" onClick={handleAddToCart}>
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  Add to Cart
-                </Button>
-                <div className="flex space-x-4">
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={handleAddToWishlist}
-                  >
-                    <Heart className="mr-2 h-5 w-5" />
-                    Add to Wishlist
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    className="w-full"
-                    onClick={handleDetails}
-                  >
-                    View Details
-                  </Button>
+                  </Suspense>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          )}
+        </AnimatePresence>
       </DialogContent>
     </Dialog>
   );
-};
+}
