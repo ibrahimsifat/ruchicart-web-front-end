@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { DeliveryManReview } from "@/features/order/dalivery-man-review";
+import { DeliveryManReview } from "@/features/order/delivery-man-review";
 import { Star } from "lucide-react";
 
 interface Review {
@@ -49,7 +49,7 @@ export const DeliveryManReviewDisplay = ({
     );
   }
   const userReview = review.order_id == orderId && review.user_id == userId;
-  console.log(userReview);
+
   if (userReview) {
     return (
       <div>

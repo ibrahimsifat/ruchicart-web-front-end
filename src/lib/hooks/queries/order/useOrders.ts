@@ -1,11 +1,12 @@
+import { toast } from "@/components/ui/use-toast";
 import { fetchData } from "@/lib/api/fetchUtils";
-import { queryKeys } from "@/lib/api/queries";
+import { getQueryClient, queryKeys } from "@/lib/api/queries";
 import {
   OrderDetailsItem,
   OrderListResponse,
   TrackOrderItem,
 } from "@/types/order";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 interface orderTrackOptions {
   order_id: string;
   guest_id: string;
@@ -54,3 +55,56 @@ export const useOrders = ({ limit, page }: { limit: number; page: number }) => {
     queryFn: () => getOrders({ limit, page }),
   });
 };
+
+const cancelOrder = async (order_id: string) => {
+  return fetchData<OrderDetailsItem>("/customer/order/cancel", {
+    params: { order_id },
+  });
+};
+
+export const useCancelOrder = (order_id: string) => {
+  const queryClient = getQueryClient();
+  return useMutation({
+    mutationFn: () => cancelOrder(order_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.orders.details(order_id),
+      });
+      toast({
+        title: "Order Canceled",
+        description: "Your order has been successfully canceled.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to cancel order. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+};
+
+// export const useCancelOrder = (id: string) => {
+//   return useMutation({
+//     mutationFn: async () => {
+//       await api.put(`/customer/order/cancel`, { order_id: id });
+//     },
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({
+//         queryKey: queryKeys.orders.details(id as string),
+//       });
+//       toast({
+//         title: "Order Canceled",
+//         description: "Your order has been successfully canceled.",
+//       });
+//     },
+//     onError: () => {
+//       toast({
+//         title: "Error",
+//         description: "Failed to cancel order. Please try again.",
+//         variant: "destructive",
+//       });
+//     },
+//   });
+// };

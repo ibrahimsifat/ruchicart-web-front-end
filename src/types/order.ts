@@ -160,6 +160,7 @@ export interface OrderDetailsItem {
   variation: any[]; // Define a more specific type if applicable
   product_details: ProductDetails;
   order: Order;
+  reviews: Review[];
 }
 
 export interface OrderListResponse {
