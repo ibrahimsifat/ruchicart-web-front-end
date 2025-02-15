@@ -38,6 +38,14 @@ export const queryKeys = {
   cuisines: {
     all: ["cuisines"] as const,
   },
+  reviews: {
+    all: ["reviews"] as const,
+    byId: (id: number) => ["reviews", id] as const,
+  },
+  rating: {
+    all: ["rating"] as const,
+    byId: (id: number) => ["rating", id] as const,
+  },
 } as const;
 
 const createQueryClient = () => {

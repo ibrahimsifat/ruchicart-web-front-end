@@ -14,12 +14,17 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import CustomImage from "@/components/ui/customImage";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
+import UserReviewDisplay from "@/features/dashboard/order/UserReviewDisplay";
 import { api } from "@/lib/api/api";
-import { queryKeys } from "@/lib/api/queries";
+import { getQueryClient, queryKeys } from "@/lib/api/queries";
 import { useOrderDetails } from "@/lib/hooks/queries/order/useOrders";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useReviews } from "@/lib/hooks/queries/product/useProducts";
+import { useAuthStore } from "@/store/authStore";
+import { ImageType } from "@/types/image";
+import { useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import {
@@ -31,16 +36,22 @@ import {
   Truck,
   User,
 } from "lucide-react";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function OrderDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
+  const { user } = useAuthStore();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-
+  const queryClient = getQueryClient();
+  const { data: reviews } = useReviews(Number(id));
+  console.log(reviews);
+  const [reviewingProductId, setReviewingProductId] = useState<number | null>(
+    null
+  );
   const { data: orderDetails, isLoading } = useOrderDetails(id as string);
+
   const cancelOrderMutation = useMutation({
     mutationFn: async () => {
       await api.put(`/customer/order/cancel`, { order_id: id });
@@ -217,9 +228,10 @@ export default function OrderDetailsPage() {
                   <Separator />
                   <div className="flex items-center gap-4">
                     <div className="relative h-12 w-12 rounded-full overflow-hidden">
-                      <Image
+                      <CustomImage
+                        type={ImageType.DELIVERY_MAN}
                         src={
-                          // orderDetails[0].order.delivery_man.image ||
+                          orderDetails[0].order.delivery_man.image ||
                           "/placeholder.svg"
                         }
                         alt="Delivery Person"
@@ -229,8 +241,8 @@ export default function OrderDetailsPage() {
                     </div>
                     <div>
                       <p className="font-medium">
-                        {/* {orderDetails[0].order.delivery_man.f_name}{" "}
-                        {orderDetails[0].order.delivery_man.l_name} */}
+                        {orderDetails[0].order.delivery_man.f_name}{" "}
+                        {orderDetails[0].order.delivery_man.l_name}
                       </p>
                       <p className="text-sm text-muted-foreground">
                         Delivery Partner
@@ -238,7 +250,11 @@ export default function OrderDetailsPage() {
                     </div>
                     <Button variant="outline" className="ml-auto">
                       <Phone className="h-4 w-4 mr-2" />
-                      Call
+                      <a
+                        href={`tel:${orderDetails[0].order.delivery_man.phone}`}
+                      >
+                        Call
+                      </a>
                     </Button>
                   </div>
                 </>
@@ -262,10 +278,10 @@ export default function OrderDetailsPage() {
                     className="flex gap-4"
                   >
                     <div className="relative h-20 w-20 rounded-lg overflow-hidden flex-shrink-0">
-                      <Image
+                      <CustomImage
+                        type={ImageType.PRODUCT}
                         src={
-                          `${process.env.NEXT_PUBLIC_IMAGE_URL}/product/${item.product_details.image}` ||
-                          "/placeholder.svg"
+                          `${item.product_details.image}` || "/placeholder.svg"
                         }
                         alt={item.product_details.name}
                         fill
@@ -305,6 +321,37 @@ export default function OrderDetailsPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Review Section */}
+          {orderDetails[0].order.order_status === "delivered" && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Reviews</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {orderDetails.map((item) => (
+                  <div
+                    key={item.id}
+                    className="mb-4 pb-4 border-b last:border-b-0"
+                  >
+                    <h4 className="font-medium text-lg mb-2">
+                      {item.product_details.name}
+                    </h4>
+                    {item.reviews && user?.id && (
+                      <UserReviewDisplay
+                        reviews={item.reviews}
+                        productId={item.product_id}
+                        userId={user.id}
+                        reviewingProductId={reviewingProductId}
+                        setReviewingProductId={setReviewingProductId}
+                        orderId={orderDetails[0].order.id}
+                      />
+                    )}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Order Summary */}
@@ -356,7 +403,7 @@ export default function OrderDetailsPage() {
                     variant={
                       orderDetails[0].order.payment_status === "paid"
                         ? "success"
-                        : "warning"
+                        : "destructive"
                     }
                   >
                     {orderDetails[0].order.payment_status}

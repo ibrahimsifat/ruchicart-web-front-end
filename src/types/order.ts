@@ -1,3 +1,4 @@
+import { User } from ".";
 import { BaseBranch } from "./branch";
 import { Variation } from "./product";
 
@@ -210,6 +211,19 @@ interface ProductDetails {
   translations: Translation[];
 }
 
+interface DeliveryMan {
+  branch_id: number;
+  email: string;
+  f_name: string;
+  id: number;
+  image: string;
+  is_active: 1 | 0;
+  l_name: string;
+  phone: string;
+  rating: [];
+  delivery_date: string;
+}
+
 interface Order {
   id: number;
   user_id: number;
@@ -234,6 +248,7 @@ interface Order {
   updated_at: string;
   checked: number;
   delivery_man_id: null | number;
+  delivery_man: null | DeliveryMan;
   delivery_charge: number;
   order_note: null | string;
   coupon_code: null | string;
@@ -248,7 +263,6 @@ interface Order {
   number_of_people: null | number;
   table_order_id: null | number;
   is_cutlery_required: number;
-  delivery_man: null; // Or define a type for delivery man
   order_partial_payments: []; // Or define a type for order partial payments
   offline_payment: null; // Or define a type for offline payment
   deliveryman_review: null; // Or define a type for deliveryman review
@@ -276,4 +290,18 @@ export interface OrderItem {
   reviews_count: number;
   is_product_available: number;
   order: Order;
+  reviews: Review[];
+}
+
+export interface Review {
+  id: number;
+  product_id: number;
+  user_id: number;
+  comment: string;
+  attachment: [];
+  rating: number;
+  created_at: string; // ISO 8601 format
+  updated_at: string; // ISO 8601 format
+  order_id: number;
+  customer: User;
 }

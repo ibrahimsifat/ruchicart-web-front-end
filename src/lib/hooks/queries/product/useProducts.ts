@@ -1,9 +1,11 @@
 import { fetchData } from "@/lib/api/fetchUtils";
 import { queryKeys } from "@/lib/api/queries";
+import { fetcher } from "@/lib/api/services/api.service";
 import {
   getFeaturedProducts,
   getRelatedProducts,
 } from "@/lib/api/services/product.service";
+import { Review } from "@/types/order";
 import { Product, ProductResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 
@@ -59,6 +61,29 @@ export function useRelatedProducts(productId: number) {
     queryFn: () => getRelatedProducts({ currentProductId: productId }),
   });
 }
+
+export function getReviews(productId: number) {
+  return fetcher<Review[]>(`/products/reviews/${productId}`);
+}
+
+export function useReviews(productId: number) {
+  return useQuery<Review[]>({
+    queryKey: queryKeys.reviews.byId(productId),
+    queryFn: () => getReviews(productId),
+  });
+}
+
+export function getRating(productId: number) {
+  return fetcher(`/products/rating/${productId}`);
+}
+
+export function useRating(productId: number) {
+  return useQuery({
+    queryKey: queryKeys.rating.byId(productId),
+    queryFn: () => getRating(productId),
+  });
+}
+
 // export function useInfiniteCategories(
 //   options: Omit<GetCategoriesOptions, "page"> = {}
 // ) {

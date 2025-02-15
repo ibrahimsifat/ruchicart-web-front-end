@@ -7,7 +7,7 @@ export enum ImageType {
   REVIEW = "review",
   NOTIFICATION = "notification",
   RESTAURANT = "restaurant",
-  DELIVERY = "delivery-man",
+  DELIVERY_MAN = "delivery-man",
   CHAT = "chat",
   BRANCH = "branch",
   GATEWAY = "gateway",

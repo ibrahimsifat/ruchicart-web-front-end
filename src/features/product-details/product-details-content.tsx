@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product } from "@/types/product";
 import { AlertCircle, Clock, Leaf, Star } from "lucide-react";
 import { Suspense } from "react";
+import { ProductReviewDisplay } from "../products/product-review-display";
 import { FrequentlyBought } from "./frequently-bought";
 import { ProductDetailsAddToCart } from "./product-details-add-to-cart";
 
@@ -18,8 +19,13 @@ export const ProductDetailsContent = async ({
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">{product.name}</h1>
         <div className="flex items-center gap-1">
-          <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-          <span className="font-medium">{product.rating}</span>
+          {product.rating.length > 0 && (
+            //TODO:: displaying the first rating, need to display all ratings and get the average
+            <ProductReviewDisplay
+              average={product.rating[0].average}
+              count={product.rating.length}
+            />
+          )}
         </div>
       </div>
 
