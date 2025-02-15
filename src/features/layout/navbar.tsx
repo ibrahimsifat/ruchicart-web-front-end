@@ -64,7 +64,7 @@ export function Navbar() {
     <>
       <nav
         className={cn(
-          "border-b transition-opacity duration-500 ",
+          "border-b transition-opacity duration-500 bg-white",
           isSticky
             ? "fixed top-0 left-0 right-0 bg-yellow-300 shadow-sm z-50 "
             : ""

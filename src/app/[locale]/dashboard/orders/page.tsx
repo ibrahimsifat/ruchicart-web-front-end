@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/lib/api/api";
 import { ImageType } from "@/types/image";
-import type { Order } from "@/types/order";
+import type { Order, OrderListResponse } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
@@ -25,7 +25,7 @@ export default function OrdersPage() {
     data: orders,
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<OrderListResponse>({
     queryKey: ["orders", activeTab],
     queryFn: async () => {
       const response = await api.get(
@@ -238,14 +238,12 @@ export default function OrdersPage() {
                           <Button variant="ghost" className="ml-auto">
                             View Details
                           </Button>
-                          <div className="flex gap-2">
-                            <Link href={`/order-tracking?order_id=${order.id}`}>
-                              <Button variant="outline">
-                                <MapPin className="h-4 w-4 mr-2" />
-                                Track Order
-                              </Button>
-                            </Link>
-                          </div>
+                          <Link href={`/order-tracking?order_id=${order.id}`}>
+                            <Button variant="default" className="ml-auto">
+                              <MapPin className="h-4 w-4 mr-2" />
+                              Track Order
+                            </Button>
+                          </Link>
                         </div>
                       </Card>
                     </Link>
@@ -283,7 +281,7 @@ export default function OrdersPage() {
                     className="group"
                   >
                     <Link href={`/dashboard/orders/${order.id}`}>
-                      <Card className="p-6 hover:shadow-md transition-shadow">
+                      <Card className="p-6  transition-shadow">
                         <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
                           <div className="flex -space-x-4">
                             {order.product_images

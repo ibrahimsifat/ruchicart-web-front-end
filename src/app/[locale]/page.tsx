@@ -6,11 +6,12 @@ import {
   PromoCardSkeleton,
 } from "@/components/ui/skeletons";
 import { NearbyBranch } from "@/features/branch/nearbyBranch";
-import ExploreCategoriesSection from "@/features/home/categories/exploreCategoriesSection";
+import { ExploreCategories } from "@/features/home/categories/exploreCategories";
 import { DiscountBanner } from "@/features/home/discountBanner";
 import { FeaturedProducts } from "@/features/home/featuredProducts";
 import HeroSlider from "@/features/home/heroSlider/heroSlider";
 import { TrendingDishes } from "@/features/home/trendingDishes";
+import { getCategories } from "@/lib/api/services/category.service";
 import {
   getFeaturedProducts,
   getTrendingProducts,
@@ -61,13 +62,14 @@ async function generateMetadata({
 export default async function Home() {
   const featuredProducts = await getFeaturedProducts();
   const trendingProducts = await getTrendingProducts();
+  const categories = await getCategories();
   return (
     <PageLayout>
       <Suspense fallback={<HeroSkeleton />}>
         <HeroSlider />
       </Suspense>
       <Suspense fallback={<CategorySkeleton />}>
-        <ExploreCategoriesSection />
+        <ExploreCategories categories={categories} />
       </Suspense>
       <Suspense fallback={<ProductCardSkeleton />}>
         <FeaturedProducts featuredProductsData={featuredProducts} />

@@ -20,6 +20,8 @@ import { useAuthStore } from "@/store/authStore";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { AxiosError } from "axios";
 import { CheckCircle, Clock, Package, Search, Truck } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -59,11 +61,6 @@ export const statusSteps: StatusStep[] = [
   },
 ];
 // Loading Spinner
-const LoadingSpinner = () => (
-  <div className="flex justify-center items-center h-64">
-    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
-  </div>
-);
 
 // Main Component
 export default function OrderTrackingPage() {

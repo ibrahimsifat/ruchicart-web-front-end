@@ -19,13 +19,9 @@ function FooterLoading() {
   return <div className="h-40 bg-gray-100 animate-pulse" />;
 }
 
-function MainContentLoading() {
-  return <div className="min-h-screen bg-gray-100 animate-pulse" />;
-}
-
 export default function PageLayout({ children }: Props) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Suspense fallback={<TopBarLoading />}>
         <TopBar />
       </Suspense>
