@@ -15,13 +15,22 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import DeliveryManReviewDisplay from "@/features/dashboard/order/DeliveryManReviewDisplay";
 import UserReviewDisplay from "@/features/dashboard/order/UserReviewDisplay";
 import { api } from "@/lib/api/api";
 import { getQueryClient, queryKeys } from "@/lib/api/queries";
 import { useOrderDetails } from "@/lib/hooks/queries/order/useOrders";
-import { useReviews } from "@/lib/hooks/queries/product/useProducts";
 import { useAuthStore } from "@/store/authStore";
 import { ImageType } from "@/types/image";
 import { useMutation } from "@tanstack/react-query";
@@ -33,6 +42,7 @@ import {
   MapPin,
   Package2,
   Phone,
+  Star,
   Truck,
   User,
 } from "lucide-react";
@@ -45,11 +55,16 @@ export default function OrderDetailsPage() {
   const { user } = useAuthStore();
   const { toast } = useToast();
   const queryClient = getQueryClient();
-  const { data: reviews } = useReviews(Number(id));
-  console.log(reviews);
+  const [isDeliverymanRatingModalOpen, setIsDeliverymanRatingModalOpen] =
+    useState(false);
+  const [deliverymanRating, setDeliverymanRating] = useState(0);
+  const [deliverymanReview, setDeliverymanReview] = useState("");
   const [reviewingProductId, setReviewingProductId] = useState<number | null>(
     null
   );
+  const [reviewingDeliveryManId, setReviewingDeliveryManId] = useState<
+    number | null
+  >(null);
   const { data: orderDetails, isLoading } = useOrderDetails(id as string);
 
   const cancelOrderMutation = useMutation({
@@ -73,6 +88,41 @@ export default function OrderDetailsPage() {
       });
     },
   });
+
+  const submitDeliverymanReview = useMutation({
+    mutationFn: (reviewData: {
+      delivery_man_id: number;
+      order_id: number;
+      comment: string;
+      rating: number;
+    }) => api.post("/delivery-man/reviews/submit", reviewData),
+    onSuccess: () => {
+      toast({
+        title: "Deliveryman Review Submitted",
+        description: "Thank you for your feedback!",
+      });
+      setIsDeliverymanRatingModalOpen(false);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to submit deliveryman review. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDeliverymanRatingSubmit = () => {
+    if (order.delivery_man && order.delivery_man.id) {
+      submitDeliverymanReview.mutate({
+        delivery_man_id: order.delivery_man.id,
+        order_id: order.id,
+        comment: deliverymanReview,
+        rating: deliverymanRating,
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -93,7 +143,7 @@ export default function OrderDetailsPage() {
     );
   }
 
-  if (!orderDetails) {
+  if (!orderDetails || orderDetails.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
@@ -124,7 +174,7 @@ export default function OrderDetailsPage() {
         return "bg-gray-500";
     }
   };
-
+  const order = orderDetails[0].order;
   return (
     <div className="container mx-auto px-4 py-8">
       <Button
@@ -144,15 +194,13 @@ export default function OrderDetailsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Order ID</p>
-                  <h2 className="text-2xl font-bold">
-                    #{orderDetails[0].order.id}
-                  </h2>
+                  <h2 className="text-2xl font-bold">#{order.id}</h2>
                 </div>
                 <Badge
                   variant="outline"
-                  className={getStatusColor(orderDetails[0].order.order_status)}
+                  className={getStatusColor(order.order_status)}
                 >
-                  {orderDetails[0].order.order_status}
+                  {order.order_status}
                 </Badge>
               </div>
             </CardHeader>
@@ -160,7 +208,7 @@ export default function OrderDetailsPage() {
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
-                  {format(new Date(orderDetails[0].order.created_at), "PPP")}
+                  {format(new Date(order.created_at), "PPP")}
                 </div>
                 <div className="flex items-center gap-1">
                   <Package2 className="h-4 w-4" />
@@ -168,7 +216,7 @@ export default function OrderDetailsPage() {
                 </div>
                 <div className="flex items-center gap-1">
                   <Truck className="h-4 w-4" />
-                  {orderDetails[0].order.order_type}
+                  {order.order_type}
                 </div>
               </div>
             </CardContent>
@@ -185,25 +233,21 @@ export default function OrderDetailsPage() {
                 <div>
                   <p className="font-medium">Delivery Address</p>
                   <p className="text-sm text-muted-foreground">
-                    {orderDetails[0].order.delivery_address
-                      ? JSON.parse(orderDetails[0].order.delivery_address)
-                          .address
+                    {order.delivery_address
+                      ? JSON.parse(order.delivery_address).address
                       : "Address not available"}
                   </p>
                 </div>
               </div>
 
-              {orderDetails[0].order.delivery_address && (
+              {order.delivery_address && (
                 <>
                   <div className="flex items-start gap-4">
                     <User className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <div>
                       <p className="font-medium">Contact Person</p>
                       <p className="text-sm text-muted-foreground">
-                        {
-                          JSON.parse(orderDetails[0].order.delivery_address)
-                            .contact_person_name
-                        }
+                        {JSON.parse(order.delivery_address).contact_person_name}
                       </p>
                     </div>
                   </div>
@@ -214,7 +258,7 @@ export default function OrderDetailsPage() {
                       <p className="font-medium">Contact Number</p>
                       <p className="text-sm text-muted-foreground">
                         {
-                          JSON.parse(orderDetails[0].order.delivery_address)
+                          JSON.parse(order.delivery_address)
                             .contact_person_number
                         }
                       </p>
@@ -223,17 +267,14 @@ export default function OrderDetailsPage() {
                 </>
               )}
 
-              {orderDetails[0].order.delivery_man && (
+              {order.delivery_man && (
                 <>
                   <Separator />
                   <div className="flex items-center gap-4">
                     <div className="relative h-12 w-12 rounded-full overflow-hidden">
                       <CustomImage
                         type={ImageType.DELIVERY_MAN}
-                        src={
-                          orderDetails[0].order.delivery_man.image ||
-                          "/placeholder.svg"
-                        }
+                        src={order.delivery_man.image || "/placeholder.svg"}
                         alt="Delivery Person"
                         fill
                         className="object-cover"
@@ -241,8 +282,7 @@ export default function OrderDetailsPage() {
                     </div>
                     <div>
                       <p className="font-medium">
-                        {orderDetails[0].order.delivery_man.f_name}{" "}
-                        {orderDetails[0].order.delivery_man.l_name}
+                        {order.delivery_man.f_name} {order.delivery_man.l_name}
                       </p>
                       <p className="text-sm text-muted-foreground">
                         Delivery Partner
@@ -250,13 +290,19 @@ export default function OrderDetailsPage() {
                     </div>
                     <Button variant="outline" className="ml-auto">
                       <Phone className="h-4 w-4 mr-2" />
-                      <a
-                        href={`tel:${orderDetails[0].order.delivery_man.phone}`}
-                      >
-                        Call
-                      </a>
+                      <a href={`tel:${order.delivery_man.phone}`}>Call</a>
                     </Button>
                   </div>
+                  {order.order_status === "delivered" && (
+                    <DeliveryManReviewDisplay
+                      review={order.deliveryman_review || null}
+                      deliveryManId={order.delivery_man.id}
+                      userId={user?.id || 0}
+                      reviewingDeliveryManId={reviewingDeliveryManId}
+                      setReviewingDeliveryManId={setReviewingDeliveryManId}
+                      orderId={order.id}
+                    />
+                  )}
                 </>
               )}
             </CardContent>
@@ -323,7 +369,7 @@ export default function OrderDetailsPage() {
           </Card>
 
           {/* Review Section */}
-          {orderDetails[0].order.order_status === "delivered" && (
+          {order.order_status === "delivered" && (
             <Card>
               <CardHeader>
                 <CardTitle>Product Reviews</CardTitle>
@@ -344,7 +390,7 @@ export default function OrderDetailsPage() {
                         userId={user.id}
                         reviewingProductId={reviewingProductId}
                         setReviewingProductId={setReviewingProductId}
-                        orderId={orderDetails[0].order.id}
+                        orderId={order.id}
                       />
                     )}
                   </div>
@@ -363,17 +409,15 @@ export default function OrderDetailsPage() {
             <CardContent className="space-y-4">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${orderDetails[0].order.order_amount.toFixed(2)}</span>
+                <span>${order.order_amount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Delivery Fee</span>
-                <span>${orderDetails[0].order.delivery_charge.toFixed(2)}</span>
+                <span>${order.delivery_charge.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Tax</span>
-                <span>
-                  ${orderDetails[0].order.total_tax_amount.toFixed(2)}
-                </span>
+                <span>${order.total_tax_amount.toFixed(2)}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-medium">
@@ -381,9 +425,9 @@ export default function OrderDetailsPage() {
                 <span className="text-lg">
                   $
                   {(
-                    orderDetails[0].order.order_amount +
-                    orderDetails[0].order.delivery_charge +
-                    orderDetails[0].order.total_tax_amount
+                    order.order_amount +
+                    order.delivery_charge +
+                    order.total_tax_amount
                   ).toFixed(2)}
                 </span>
               </div>
@@ -393,24 +437,22 @@ export default function OrderDetailsPage() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Payment Method</span>
-                  <span className="font-medium">
-                    {orderDetails[0].order.payment_method}
-                  </span>
+                  <span className="font-medium">{order.payment_method}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Payment Status</span>
                   <Badge
                     variant={
-                      orderDetails[0].order.payment_status === "paid"
+                      order.payment_status === "paid"
                         ? "success"
                         : "destructive"
                     }
                   >
-                    {orderDetails[0].order.payment_status}
+                    {order.payment_status}
                   </Badge>
                 </div>
               </div>
-              {orderDetails[0].order.order_status === "pending" && (
+              {order.order_status === "pending" && (
                 <>
                   <Separator />
                   <AlertDialog>
@@ -440,7 +482,7 @@ export default function OrderDetailsPage() {
                   </AlertDialog>
                 </>
               )}
-              {orderDetails[0].order.order_status === "canceled" && (
+              {order.order_status === "canceled" && (
                 <Button variant="destructive" className="w-full">
                   Order canceled
                 </Button>
@@ -449,6 +491,50 @@ export default function OrderDetailsPage() {
           </Card>
         </div>
       </div>
+
+      {/* Deliveryman Rating Modal */}
+      <Dialog
+        open={isDeliverymanRatingModalOpen}
+        onOpenChange={setIsDeliverymanRatingModalOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rate Your Delivery Man</DialogTitle>
+            <DialogDescription>
+              Please rate your delivery experience and leave a review.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center space-x-2 my-4">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                className={`h-8 w-8 cursor-pointer ${
+                  star <= deliverymanRating
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "text-gray-300"
+                }`}
+                onClick={() => setDeliverymanRating(star)}
+              />
+            ))}
+          </div>
+          <Textarea
+            placeholder="Write your review for the delivery man here..."
+            value={deliverymanReview}
+            onChange={(e) => setDeliverymanReview(e.target.value)}
+            className="min-h-[100px]"
+          />
+          <DialogFooter>
+            <Button
+              onClick={handleDeliverymanRatingSubmit}
+              disabled={
+                deliverymanRating === 0 || deliverymanReview.trim() === ""
+              }
+            >
+              Submit Delivery Man Review
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
