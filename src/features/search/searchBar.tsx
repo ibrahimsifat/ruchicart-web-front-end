@@ -6,7 +6,7 @@ import CustomImage from "@/components/ui/customImage";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCuisines } from "@/lib/hooks/queries/category/useCategories";
-import { useSearch } from "@/lib/hooks/search/useSearch";
+import { useSearch } from "@/lib/hooks/queries/search/useSearch";
 import { ImageType } from "@/types/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Search, Send, X } from "lucide-react";

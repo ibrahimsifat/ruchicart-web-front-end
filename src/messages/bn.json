@@ -299,6 +299,7 @@
     "loadingGoogleMaps": "গুগল ম্যাপস লোড করার সময়"
   },
   "dashboard": {
+    "address": "ঠিকানা",
     "myAddresses": "আমার ঠিকানা",
     "addNewAddress": "নতুন ঠিকানা যোগ করুন",
     "noAddressesFound": "ঠিকানা পাওয়া যায়নি। প্রারম্ভিক হয়ে যান",

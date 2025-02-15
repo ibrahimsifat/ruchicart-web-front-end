@@ -46,6 +46,10 @@ export const queryKeys = {
     all: ["rating"] as const,
     byId: (id: number) => ["rating", id] as const,
   },
+  wishlist: {
+    all: ["wishlist"] as const,
+    byId: (id: number) => ["wishlist", id] as const,
+  },
 } as const;
 
 const createQueryClient = () => {

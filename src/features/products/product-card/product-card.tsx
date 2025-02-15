@@ -24,7 +24,7 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
 
         {product.discount > 0 && (
-          <Badge variant="destructive" className="absolute right-2 top-2">
+          <Badge variant="destructive" className="absolute right-2 bottom-2">
             {product.discount_type === "percent"
               ? `${product.discount}% OFF`
               : `$${product.discount} OFF`}

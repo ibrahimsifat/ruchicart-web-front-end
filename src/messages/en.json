@@ -281,6 +281,8 @@
     "loadingGoogleMaps": "Loading Google Maps..."
   },
   "dashboard": {
+    "address": "Address",
+    "phone": "Phone",
     "myAddresses": "My Addresses",
     "addNewAddress": "Add New Address",
     "noAddressesFound": "No addresses found. Add a new address to get started.",
