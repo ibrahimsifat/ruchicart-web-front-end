@@ -42,7 +42,7 @@ export const OrderItemsCard = ({ orderDetails }: OrderItemsCardProps) => {
                   <div className="mt-1">
                     <p className="text-sm font-medium">Add-ons:</p>
                     <div className="flex flex-wrap gap-2">
-                      {item.add_on_ids.map((addonId, idx) => (
+                      {item.add_on_ids.map((addonId: number, idx: number) => (
                         <Badge key={idx} variant="secondary">
                           {addonId}
                         </Badge>

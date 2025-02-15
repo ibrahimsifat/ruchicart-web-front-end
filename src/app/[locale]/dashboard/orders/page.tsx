@@ -13,7 +13,7 @@ import type { Order } from "@/types/order";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { Clock, DollarSign, Package2, ShoppingBag } from "lucide-react";
+import { Clock, DollarSign, MapPin, Package2, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -238,6 +238,14 @@ export default function OrdersPage() {
                           <Button variant="ghost" className="ml-auto">
                             View Details
                           </Button>
+                          <div className="flex gap-2">
+                            <Link href={`/order-tracking?order_id=${order.id}`}>
+                              <Button variant="outline">
+                                <MapPin className="h-4 w-4 mr-2" />
+                                Track Order
+                              </Button>
+                            </Link>
+                          </div>
                         </div>
                       </Card>
                     </Link>

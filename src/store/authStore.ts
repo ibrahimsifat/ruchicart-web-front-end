@@ -481,10 +481,10 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       getGuestId: () => {
-        let guestId = localStorage.getItem("guestId");
+        let guestId = Cookies.get("guestId");
         if (!guestId) {
-          guestId = "guest_" + Math.random().toString(36).substr(2, 9);
-          localStorage.setItem("guestId", guestId);
+          guestId = "guest_" + Math.random().toString(36).slice(2, 18);
+          Cookies.set("guestId", guestId, { path: "/" });
         }
         return guestId;
       },

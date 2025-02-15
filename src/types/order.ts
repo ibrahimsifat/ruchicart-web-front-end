@@ -225,7 +225,7 @@ interface DeliveryMan {
   delivery_date: string;
 }
 
-interface Order {
+export interface Order {
   id: number;
   user_id: number;
   is_guest: number;
@@ -254,6 +254,7 @@ interface Order {
   order_note: null | string;
   coupon_code: null | string;
   branch_id: number;
+  branch: BaseBranch;
   callback: null | string;
   delivery_date: string;
   delivery_time: string;
@@ -305,4 +306,10 @@ export interface Review {
   updated_at: string; // ISO 8601 format
   order_id: number;
   customer: User;
+}
+export interface StatusStep {
+  status: string;
+  color: string;
+  icon: React.ElementType;
+  label: string;
 }

@@ -29,7 +29,7 @@ export const queryKeys = {
   },
   orders: {
     details: (order_id: string) => ["orders", order_id] as const,
-    track: (order_id: string) => ["orders", order_id, "track"] as const,
+    track: (order_id: string | null) => ["orders", order_id, "track"] as const,
     list: ["orders"] as const,
   },
   coupons: {

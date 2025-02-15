@@ -85,26 +85,16 @@ export const useCancelOrder = (order_id: string) => {
   });
 };
 
-// export const useCancelOrder = (id: string) => {
-//   return useMutation({
-//     mutationFn: async () => {
-//       await api.put(`/customer/order/cancel`, { order_id: id });
-//     },
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({
-//         queryKey: queryKeys.orders.details(id as string),
+// useQuery({
+//     queryKey: ["orderStatus", orderId],
+//     queryFn: async () => {
+//       const response = await api.get("/customer/order/track", {
+//         params: {
+//           order_id: orderId,
+//           guest_id: token ? undefined : getGuestId(),
+//         },
 //       });
-//       toast({
-//         title: "Order Canceled",
-//         description: "Your order has been successfully canceled.",
-//       });
+//       return response.data;
 //     },
-//     onError: () => {
-//       toast({
-//         title: "Error",
-//         description: "Failed to cancel order. Please try again.",
-//         variant: "destructive",
-//       });
-//     },
+//     enabled: false,
 //   });
-// };
