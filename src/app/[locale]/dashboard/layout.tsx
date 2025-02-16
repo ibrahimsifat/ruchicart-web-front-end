@@ -4,7 +4,7 @@ import { useRouter } from "@/i18n/routing";
 
 import { useAuthStore } from "@/store/authStore";
 import { useEffect } from "react";
-import PageLayout from "../layouts/PageLayout";
+import PageLayout from "../layouts/pageLayout";
 
 export default function DashboardLayout({
   children,

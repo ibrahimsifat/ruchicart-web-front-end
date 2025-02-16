@@ -22,6 +22,7 @@ const TakeAwayOrderSection = ({
   handleTakeAwaySubmit,
   isLoading,
 }: TakeAwayOrderSectionProps) => {
+  console.log(branch);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const t = useTranslations("checkout");
   return (
@@ -34,9 +35,9 @@ const TakeAwayOrderSection = ({
         <div className="flex flex-col sm:flex-row">
           <div className="relative w-full sm:w-2/5 h-48 sm:h-auto">
             <CustomImage
+              type={ImageType.BRANCH}
               src={branch?.image || "/placeholder-branch.jpg"}
               alt={branch?.name || ""}
-              type={ImageType.BRANCH}
               fill
             />
           </div>

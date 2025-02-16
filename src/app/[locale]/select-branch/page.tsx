@@ -4,7 +4,7 @@ import { NearbyBranch } from "@/features/branch/nearbyBranch";
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { useRouter } from "next/navigation";
-import PageLayout from "../layouts/PageLayout";
+import PageLayout from "../layouts/pageLayout";
 
 export default function SelectBranchPage() {
   const router = useRouter();

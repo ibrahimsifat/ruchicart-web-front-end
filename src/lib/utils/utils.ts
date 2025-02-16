@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import DOMPurify from "isomorphic-dompurify";
 import { twMerge } from "tailwind-merge";
 
 /**
@@ -65,3 +66,21 @@ export function formatPrice(price: number | string | undefined): string {
 export function isValidDiscountType(type: string): type is DiscountType {
   return ["percent", "fixed"].includes(type);
 }
+// Function to clean the HTML content
+export const cleanContent = (content: string) => {
+  // Remove editor-specific divs and attributes
+  let cleaned = content.replace(/<div class="ql-[^>]*>/g, "");
+  cleaned = cleaned.replace(/<div class="ql-[^>]*>.*?<\/div>/g, "");
+  cleaned = cleaned.replace(
+    /<grammarly-extension[^>]*>.*?<\/grammarly-extension>/g,
+    ""
+  );
+
+  // Sanitize the HTML to prevent XSS
+  const sanitized = DOMPurify.sanitize(cleaned, {
+    ALLOWED_TAGS: ["p", "strong", "em", "br", "div"],
+    ALLOWED_ATTR: ["class"],
+  });
+
+  return sanitized;
+};

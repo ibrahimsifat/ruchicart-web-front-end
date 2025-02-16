@@ -9,7 +9,7 @@ import { RelatedProducts } from "@/features/product-details/related-products";
 import { getProductDetails } from "@/lib/api/services/product.service";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import PageLayout from "../../layouts/PageLayout";
+import PageLayout from "../../layouts/pageLayout";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const { id } = await params;

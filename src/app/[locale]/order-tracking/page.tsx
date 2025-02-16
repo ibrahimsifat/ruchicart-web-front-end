@@ -25,7 +25,7 @@ import { AxiosError } from "axios";
 import { CheckCircle, Clock, Package, Search, Truck } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import PageLayout from "../layouts/PageLayout";
+import PageLayout from "../layouts/pageLayout";
 
 // Define status steps
 export const statusSteps: StatusStep[] = [

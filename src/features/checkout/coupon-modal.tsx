@@ -161,7 +161,7 @@ export function CouponModal({
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center justify-between pt-2 border-t">
+                        <div className="flex items-center justify-between pt-1">
                           {isSelected && (
                             <div className="flex items-center gap-1.5 text-primary">
                               <span className="text-sm font-medium">

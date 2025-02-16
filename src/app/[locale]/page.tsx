@@ -19,7 +19,7 @@ import {
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import PageLayout from "./layouts/PageLayout";
+import PageLayout from "./layouts/pageLayout";
 
 // Separate metadata generation
 async function generateMetadata({

@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { ReactNode, Suspense } from "react";
-import BaseLayout from "./layouts/BaseLayout";
+import BaseLayout from "./layouts/baseLayout";
 const inter = Inter({ subsets: ["latin"] });
 type SupportedLocale = (typeof routing.locales)[number];
 type Props = {

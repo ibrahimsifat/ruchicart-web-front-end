@@ -48,7 +48,7 @@ const formSchema = z.object({
   payment_method: z.string(),
   order_type: z.enum(["delivery", "take_away"]),
   delivery_address_id: z.number().optional(),
-  branch_id: z.string(),
+  branch_id: z.number(),
   delivery_time: z.string(),
   delivery_date: z.string(),
   distance: z.number(),
@@ -116,7 +116,7 @@ export function CheckoutForm({
       delivery_address_id: 0,
       payment_method: "",
       order_type: "delivery",
-      branch_id: branch?.id || 1,
+      branch_id: branch?.id,
       delivery_time: "now",
       delivery_date: formattedDate,
       distance: 0,
@@ -142,8 +142,6 @@ export function CheckoutForm({
       house: "",
       contact_person_name: "",
       contact_person_number: "",
-      latitude: 0,
-      longitude: 0,
       is_default: false,
     },
   });
@@ -372,7 +370,7 @@ export function CheckoutForm({
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
-                            value={field.value}
+                            value={field.value?.toString() || ""}
                             className="space-y-2"
                             required
                           >
