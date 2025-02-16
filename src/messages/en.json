@@ -160,7 +160,8 @@
     "hasBeenCopiedToYourClipboard": "has been copied to your clipboard.",
     "failedToCopy": "Failed to copy",
     "pleaseTryCopyingTheCodeManually": "Please try copying the code manually.",
-    "expired": "Expired"
+    "expired": "Expired",
+    "apply": "Apply"
   },
   "address": {
     "addressAdded": "Address added",
@@ -299,6 +300,7 @@
     "coupons": "Coupons",
     "wishlist": "Wish List",
     "wallets": "Wallets",
+    "wallet": "Wallet",
     "loyaltyPoints": "Loyalty Points",
     "referralCode": "Referral Code",
     "inbox": "Inbox",

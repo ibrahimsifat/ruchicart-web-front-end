@@ -8,7 +8,7 @@ import CustomImage from "@/components/ui/customImage";
 import { Label } from "@/components/ui/label";
 import { BaseBranch } from "@/types/branch";
 import { ImageType } from "@/types/image";
-import { Clock, Mail, Phone } from "lucide-react";
+import { Clock, Coins, Mail, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -103,6 +103,7 @@ const TakeAwayOrderSection = ({
           className="w-full"
           disabled={isLoading || !acceptTerms}
         >
+          <Coins className="mr-2 h-4 w-4" />
           {isLoading ? t("processing") : t("confirmTakeAwayOrder")}
         </Button>
       </div>

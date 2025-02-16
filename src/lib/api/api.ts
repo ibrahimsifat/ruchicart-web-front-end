@@ -39,9 +39,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
-    }
+    // if (error.response?.status === 401) {
+    //   useAuthStore.getState().logout();
+    // }
     // Add specific handling for CORS errors
     if (error.message?.includes("Network Error") || !error.response) {
       console.error("Network or CORS error:", error);

@@ -47,9 +47,9 @@ const menuItems = [
     path: "/dashboard/wishlist",
   },
   {
-    name: "wallets",
+    name: "wallet",
     icon: Wallet2,
-    path: "/dashboard/wallets",
+    path: "/dashboard/wallet",
   },
   {
     name: "loyaltyPoints",

@@ -1,3 +1,4 @@
+"use client";
 import { format, isAfter, isBefore } from "date-fns";
 
 export const formatDateRange = (startDate: string, endDate: string) => {
@@ -8,7 +9,7 @@ export const formatDateRange = (startDate: string, endDate: string) => {
 };
 
 export const isCouponValid = (startDate: string, endDate: string) => {
-  const now = performance.now();
+  const now = Date.now();
   return isAfter(now, new Date(startDate)) && isBefore(now, new Date(endDate));
 };
 export const formatTimeRange = (startTime: string, endTime: string) => {

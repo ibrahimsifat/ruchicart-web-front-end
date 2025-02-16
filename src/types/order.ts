@@ -252,6 +252,8 @@ export interface Order {
   delivery_man: null | DeliveryMan;
   delivery_charge: number;
   order_note: null | string;
+  product_images: string[];
+  total_quantity: number;
   coupon_code: null | string;
   branch_id: number;
   branch: BaseBranch;

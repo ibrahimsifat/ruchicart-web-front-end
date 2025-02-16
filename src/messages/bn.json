@@ -165,7 +165,8 @@
     "hasBeenCopiedToYourClipboard": "আপনার ক্লিপবোর্ডে কপি হয়েছে",
     "failedToCopy": "কপি করা সম্ভব নয়",
     "pleaseTryCopyingTheCodeManually": "কোডটি কপি করার চেষ্টা করুন",
-    "expired": "প্রাসঙ্গিক"
+    "expired": "প্রাসঙ্গিক",
+    "apply": "প্রয়োগ করুন"
   },
   "address": {
     "addressAdded": "ঠিকানা যোগ করা হয়েছে",
@@ -299,6 +300,7 @@
     "loadingGoogleMaps": "গুগল ম্যাপস লোড করার সময়"
   },
   "dashboard": {
+    "wallet": "টাকা",
     "address": "ঠিকানা",
     "myAddresses": "আমার ঠিকানা",
     "addNewAddress": "নতুন ঠিকানা যোগ করুন",

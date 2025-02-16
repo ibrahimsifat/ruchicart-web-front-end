@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
 import {
@@ -10,9 +11,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { CONSTANT } from "@/config/constants";
+import { applyCoupon } from "@/lib/hooks/coupon/useCoupon";
+import { useToast } from "@/lib/hooks/use-toast";
+import { useAuthStore } from "@/store/authStore";
 import type { CartItem } from "@/store/cartStore";
+import { Coupon } from "@/types/coupon";
 import { ImageType } from "@/types/image";
-import { Info } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { Info, Tag } from "lucide-react";
+import { useState } from "react";
+import { CouponModal } from "../checkout/coupon-modal";
 
 interface OrderSummaryProps {
   items: CartItem[];
@@ -28,11 +36,52 @@ export function OrderSummary({
   isCashOnDelivery,
 }: OrderSummaryProps) {
   const subtotal = total;
-  const discount = 0;
+  let discount = 0;
   const vat = subtotal * 0.15; // 15% VAT
   const serviceCharge = 10;
   const deliveryFee = 45;
   const cashOnDeliveryFee = CONSTANT.cashOnDeliveryChangeAmount;
+  const [showCouponModal, setShowCouponModal] = useState(false);
+  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+  const { toast } = useToast();
+  const { token, getGuestId } = useAuthStore();
+
+  const applyCouponMutation = useMutation({
+    mutationFn: (coupon: Coupon) =>
+      applyCoupon(coupon.code, !token ? getGuestId() : undefined),
+    onSuccess: (data) => {
+      setSelectedCoupon(data);
+      setShowCouponModal(false);
+      toast({
+        title: "Coupon applied",
+        description: "The coupon has been successfully applied to your order.",
+      });
+    },
+    onError: (error: any) => {
+      // console.log(error.response?.data?.errors?.[0]?.message);
+      toast({
+        title: "Error",
+        description:
+          error.response?.data?.errors?.[0]?.message ||
+          "Failed to apply coupon",
+        variant: "destructive",
+      });
+      setSelectedCoupon(null);
+    },
+  });
+
+  const calculateDiscount = () => {
+    if (!selectedCoupon) return 0;
+
+    if (selectedCoupon.discount_type === "percent") {
+      const discount = (subtotal * selectedCoupon.discount) / 100;
+      return Math.min(discount, selectedCoupon.max_discount);
+    }
+    return Math.min(selectedCoupon.discount, selectedCoupon.max_discount);
+  };
+
+  discount = calculateDiscount();
+
   const finalTotal =
     subtotal +
     vat +
@@ -42,6 +91,17 @@ export function OrderSummary({
     discount +
     (isCashOnDelivery ? cashOnDeliveryFee : 0);
 
+  const handleCouponSelect = (coupon: Coupon) => {
+    if (subtotal < coupon.min_purchase) {
+      toast({
+        title: "Invalid coupon",
+        description: `Minimum purchase amount of $${coupon.min_purchase} required`,
+        variant: "destructive",
+      });
+      return;
+    }
+    applyCouponMutation.mutate(coupon);
+  };
   return (
     <Card className="sticky top-4 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 z-0" />
@@ -51,6 +111,45 @@ export function OrderSummary({
         </CardTitle>
       </CardHeader>
       <CardContent className="relative z-10 space-y-6 p-6">
+        {/* Coupon Section */}
+        <div className="space-y-2">
+          {selectedCoupon ? (
+            <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg border border-primary/20">
+              <div className="flex items-center gap-2">
+                <Tag className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-medium">{selectedCoupon.code}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedCoupon.discount_type === "percent"
+                      ? `${selectedCoupon.discount}% off`
+                      : `$${selectedCoupon.discount} off`}
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-1 text-right">
+                <p className="text-sm font-medium text-primary">
+                  -${discount.toFixed(2)}
+                </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedCoupon(null)}
+                >
+                  Remove
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button
+              variant="outline"
+              className="w-full justify-start text-left"
+              onClick={() => setShowCouponModal(true)}
+            >
+              <Tag className="h-4 w-4 mr-2" />
+              Apply Coupon
+            </Button>
+          )}
+        </div>
         {/* Order Items */}
         <div className="space-y-4">
           {items.map((item) => (
@@ -101,10 +200,12 @@ export function OrderSummary({
             <span>Subtotal</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between">
-            <span>Discount</span>
-            <span className="text-red-500">-${discount.toFixed(2)}</span>
-          </div>
+          {discount > 0 && (
+            <div className="flex justify-between text-primary">
+              <span>Discount</span>
+              <span>-${discount.toFixed(2)}</span>
+            </div>
+          )}
           {deliveryTip > 0 && (
             <div className="flex justify-between text-green-500">
               <span>Delivery Tip</span>
@@ -149,6 +250,13 @@ export function OrderSummary({
           </div>
         </div>
       </CardContent>
+      <CouponModal
+        isOpen={showCouponModal}
+        onClose={() => setShowCouponModal(false)}
+        onSelect={handleCouponSelect}
+        selectedCoupon={selectedCoupon}
+        orderAmount={subtotal}
+      />
     </Card>
   );
 }
