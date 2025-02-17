@@ -17,6 +17,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cartStore";
 import {
   ChevronDown,
+  Heart,
   Loader2,
   LogIn,
   LogOut,
@@ -139,6 +140,13 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             {/* Language Switcher */}
             <LocaleSwitcher />
+            {/* wishlist */}
+            <Link href="/dashboard/wishlist">
+              <Button variant="ghost" size="icon">
+                <Heart className="h-6 w-6" />
+              </Button>
+            </Link>
+
             {/* Cart */}
             <Button
               variant="ghost"

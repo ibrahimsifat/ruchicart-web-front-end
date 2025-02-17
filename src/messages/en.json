@@ -376,7 +376,12 @@
     "phone": "Phone",
     "selectOnMap": "Select on Map",
     "updateProfile": "Update Profile",
-    "becomeADeliveryMan": "Become a Delivery Man"
+    "becomeADeliveryMan": "Become a Delivery Man",
+    "wallet": "Wallet",
+    "wishlist": "Wish List",
+    "categories": "Categories",
+    "products": "Products",
+    "orderTracking": "Order Tracking"
   },
   "category": {
     "all": "All",

@@ -1,4 +1,6 @@
 import { CONSTANT } from "@/config/constants";
+import { Link } from "@/i18n/routing";
+import { getServerConfig } from "@/lib/api/config";
 import {
   Facebook,
   Instagram,
@@ -6,17 +8,14 @@ import {
   Mail,
   MapPin,
   Phone,
-  Twitter,
+  X,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
-import Link from "next/link";
-// function getCopyrightYear() {
-//   unstable_noStore(); // Opt out of static rendering
-//   return new Date().getFullYear();
-// }
-export function Footer() {
-  const t = useTranslations("footer");
+export async function Footer() {
+  const config = await getServerConfig();
+  console.log(config);
+  const t = await getTranslations("footer");
   return (
     <footer className="bg-[#1A1A1A] text-white py-12">
       {/* Social Media Icons */}
@@ -29,7 +28,7 @@ export function Footer() {
             <Facebook className="h-6 w-6" />
           </Link>
           <Link href="#" className="hover:text-primary transition-colors">
-            <Twitter className="h-6 w-6" />
+            <X className="h-6 w-6" />
           </Link>
           <Link href="#" className="hover:text-primary transition-colors">
             <Linkedin className="h-6 w-6" />
@@ -39,11 +38,17 @@ export function Footer() {
         {/* Main Navigation Links */}
         <div className="flex justify-center gap-8 mb-12 text-sm">
           <span className="text-gray-500">|</span>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link
+            href="/become-a-delivery-man"
+            className="hover:text-primary transition-colors"
+          >
             {t("becomeADeliveryMan")}
           </Link>
           <span className="text-gray-500">|</span>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link
+            href="/dashboard"
+            className="hover:text-primary transition-colors"
+          >
             {t("dashboard")}
           </Link>
           <span className="text-gray-500">|</span>
@@ -73,11 +78,11 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <Mail className="h-4 w-4" />
-                <span>admin@gmail.com</span>
+                <span>{config?.restaurant_email}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <Phone className="h-4 w-4" />
-                <span>01700000000</span>
+                <span>{config?.restaurant_phone}</span>
               </div>
             </div>
             <div className="flex gap-4">
@@ -113,23 +118,35 @@ export function Footer() {
             <h3 className="font-semibold mb-4">{t("quickLinks")}</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/about-us"
+                  className="hover:text-primary transition-colors"
+                >
                   {t("aboutUs")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/dashboard/wallet"
+                  className="hover:text-primary transition-colors"
+                >
                   {t("myWallet")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/dashboard/loyalty-points"
+                  className="hover:text-primary transition-colors"
+                >
                   {t("loyaltyPoints")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  {t("cuisines")}
+                <Link
+                  href="/wishlist"
+                  className="hover:text-primary transition-colors"
+                >
+                  {t("wishlist")}
                 </Link>
               </li>
             </ul>
@@ -140,13 +157,19 @@ export function Footer() {
             <h3 className="font-semibold mb-4">{t("quickLinks")}</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  {t("newRestaurants")}
+                <Link
+                  href="/categories"
+                  className="hover:text-primary transition-colors"
+                >
+                  {t("categories")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
-                  {t("popularRestaurants")}
+                <Link
+                  href="/products"
+                  className="hover:text-primary transition-colors"
+                >
+                  {t("products")}
                 </Link>
               </li>
               <li>
@@ -155,7 +178,10 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/order-tracking"
+                  className="hover:text-primary transition-colors"
+                >
                   {t("trackOrder")}
                 </Link>
               </li>
@@ -167,22 +193,34 @@ export function Footer() {
             <h3 className="font-semibold mb-4">{t("other")}</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/privacy-policy"
+                  className="hover:text-primary transition-colors"
+                >
                   {t("privacyPolicy")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/terms-and-conditions"
+                  className="hover:text-primary transition-colors"
+                >
                   {t("termsAndConditions")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/refund-policy"
+                  className="hover:text-primary transition-colors"
+                >
                   {t("refundPolicy")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="/cancellation-policy"
+                  className="hover:text-primary transition-colors"
+                >
                   {t("cancellationPolicy")}
                 </Link>
               </li>
@@ -192,7 +230,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="text-center text-sm text-gray-400">
-          {/* © {getCopyrightYear()} RuchiCart. All Rights Reserved */}
+          {config?.footer_copyright_text}
           {t("copyright")}
         </div>
       </div>

@@ -9,6 +9,7 @@ export const config = {
     defaultCenter: { lat: 23.8103, lng: 90.4125 }, // Default to Dhaka, Bangladesh
     defaultZoom: 11,
   },
+  configCacheTime: 24 * 60 * 60 * 1000,
 } as const;
 
 // Validate environment variables

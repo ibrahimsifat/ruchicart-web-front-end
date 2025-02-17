@@ -37,7 +37,16 @@ export function ProductPreviewModal({
                     <h1 className="text-3xl font-bold">{product.name}</h1>
                     <div className="flex items-center gap-1">
                       <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                      <span className="font-medium">{product.rating}</span>
+                      <span className="font-medium">
+                        {product.rating.length > 0
+                          ? (
+                              product.rating.reduce(
+                                (acc, curr) => acc + curr,
+                                0
+                              ) / product.rating.length
+                            ).toFixed(1)
+                          : "N/A"}
+                      </span>
                     </div>
                   </div>
                   <p className="text-muted-foreground">
