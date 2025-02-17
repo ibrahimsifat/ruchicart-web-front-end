@@ -8,6 +8,8 @@ export interface CartItem {
   price: number;
   quantity: number;
   image: string;
+  available_time_starts?: string;
+  available_time_ends?: string;
   variant?: {
     name: string;
     values: {

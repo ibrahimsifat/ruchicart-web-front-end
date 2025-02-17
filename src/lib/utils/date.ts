@@ -12,6 +12,7 @@ export const isCouponValid = (startDate: string, endDate: string) => {
   const now = Date.now();
   return isAfter(now, new Date(startDate)) && isBefore(now, new Date(endDate));
 };
+
 export const formatTimeRange = (startTime: string, endTime: string) => {
   const [startHour, startMinute] = startTime.split(":").map(Number);
   const [endHour, endMinute] = endTime.split(":").map(Number);
@@ -23,4 +24,11 @@ export const formatTimeRange = (startTime: string, endTime: string) => {
   endDate.setHours(endHour, endMinute, 0, 0); // Directly set hours and minutes
 
   return `${format(startDate, "hh:mm a")} - ${format(endDate, "hh:mm a")}`;
+};
+
+export const formatTime = (time: string) => {
+  const [hour, minute] = time.split(":").map(Number);
+  const startDate = new Date();
+  startDate.setHours(hour, minute, 0, 0);
+  return format(startDate, "hh:mm a");
 };

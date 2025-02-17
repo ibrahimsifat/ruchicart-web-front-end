@@ -58,7 +58,7 @@ export function Footer() {
           <div className="space-y-4">
             <Image
               src={CONSTANT.images.logo}
-              alt="Stack Food"
+              alt="RuchiCart"
               width={200}
               height={50}
               className="mb-4"

@@ -37,11 +37,11 @@ const ProductCardImage = ({ product }: { product: Product }) => {
   };
 
   return (
-    <div className="relative group aspect-square w-full h-[300px]">
+    <div className="relative group aspect-square w-full max-h-[320px]">
       <button
         onClick={handleWishlistClick}
         className={cn(
-          "absolute top-2 right-2 z-10 rounded-full p-1.5 bg-white/80 backdrop-blur-sm",
+          "absolute -top-6 right-0 z-10 rounded-full p-1.5 bg-white/80 backdrop-blur-sm",
           "transition-all duration-300 hover:scale-110",
           "focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1",
           isWishListed
@@ -54,7 +54,7 @@ const ProductCardImage = ({ product }: { product: Product }) => {
         />
       </button>
 
-      <div className="relative w-full h-full">
+      <div className="relative w-[80%] h-[80%] mx-auto mt-10">
         <CustomImage
           type={ImageType.PRODUCT}
           src={product.image || "/placeholder.svg"}

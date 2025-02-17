@@ -7,43 +7,42 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useCart } from "@/store/cartStore";
+import { ProductPreviewModal } from "@/features/products/product-preview-modal";
 import { Product } from "@/types/product";
 import { ShoppingBag } from "lucide-react";
+import { useState } from "react";
 
 function HeroSliderAction({ product }: { product: Product }) {
-  const { addItem } = useCart();
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    addItem({
-      id: product.id,
-      name: product.name,
-      image: product.image,
-      price: product.price,
-      quantity: 1,
-    });
-  };
-
+  const [showPreview, setShowPreview] = useState(false);
+  // console.log(product);
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            size="default"
-            variant="default"
-            className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary/90 transition-colors"
-            onClick={handleAddToCart}
-          >
-            Order Now
-            <ShoppingBag className="h-4 w-4 ml-2" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Add to cart</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="default"
+              variant="default"
+              className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary/90 transition-colors"
+              onClick={() => setShowPreview(true)}
+            >
+              Order Now
+              <ShoppingBag className="h-4 w-4 ml-2" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Add to cart</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      {/* Product Preview Modal */}
+      <ProductPreviewModal
+        open={showPreview}
+        onOpenChange={setShowPreview}
+        product={product}
+      />
+    </div>
   );
 }
 

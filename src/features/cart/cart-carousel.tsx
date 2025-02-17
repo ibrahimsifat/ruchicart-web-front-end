@@ -25,20 +25,11 @@ import {
 import { getDiscountedPrice } from "@/lib/utils/utils";
 import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
+import { Product } from "@/types/product";
 import { AnimatePresence, motion } from "framer-motion";
 import { Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { memo, useCallback, useMemo } from "react";
-
-interface Product {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  rating: number;
-  discount?: number;
-  discount_type?: string;
-}
 
 interface CartCarouselProps {
   productId?: number;
@@ -279,6 +270,8 @@ export function CartCarousel({ productId, isProductId }: CartCarouselProps) {
         name: product.name,
         image: product.image,
         price: product.price,
+        available_time_starts: product.available_time_starts,
+        available_time_ends: product.available_time_ends,
         quantity: 1,
       });
 

@@ -13,13 +13,15 @@ import {
 import { CONSTANT } from "@/config/constants";
 import { applyCoupon } from "@/lib/hooks/coupon/useCoupon";
 import { useToast } from "@/lib/hooks/use-toast";
+import { isProductAvailable } from "@/lib/utils/product-availability";
 import { useAuthStore } from "@/store/authStore";
-import type { CartItem } from "@/store/cartStore";
+import { useCart, type CartItem } from "@/store/cartStore";
 import { Coupon } from "@/types/coupon";
 import { ImageType } from "@/types/image";
 import { useMutation } from "@tanstack/react-query";
 import { Info, Tag } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CouponModal } from "../checkout/coupon-modal";
 
 interface OrderSummaryProps {
@@ -45,6 +47,41 @@ export function OrderSummary({
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
   const { toast } = useToast();
   const { token, getGuestId } = useAuthStore();
+  const router = useRouter();
+  const { itemCount } = useCart();
+  // Check availability of items
+  const [unavailableItems, setUnavailableItems] = useState<
+    {
+      name: string;
+      image: string;
+    }[]
+  >([]);
+  console.log(items);
+  useEffect(() => {
+    if (itemCount === 0) {
+      router.push("/");
+    }
+    const checkAvailability = () => {
+      const unavailable = items
+        .filter(
+          (item) =>
+            !isProductAvailable(
+              item.available_time_starts || "",
+              item.available_time_ends || ""
+            )
+        )
+        .map((item) => ({
+          name: item.name,
+          image: item.image,
+        }));
+      setUnavailableItems(unavailable);
+    };
+
+    checkAvailability();
+    const interval = setInterval(checkAvailability, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [itemCount, router]);
 
   const applyCouponMutation = useMutation({
     mutationFn: (coupon: Coupon) =>
@@ -152,6 +189,30 @@ export function OrderSummary({
         </div>
         {/* Order Items */}
         <div className="space-y-4">
+          {unavailableItems.length > 0 && (
+            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+              <h3 className="font-bold">Unavailable Items:</h3>
+              <ul className="list-disc list-inside">
+                {unavailableItems.map((item, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <li>{item.name}</li>
+                    <CustomImage
+                      type={ImageType.PRODUCT}
+                      src={item.image}
+                      alt="warning"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                ))}
+              </ul>
+              <p className="mt-2">
+                <span className="font-bold">Note:</span>
+                Please remove these items from your cart to proceed with the
+                checkout.
+              </p>
+            </div>
+          )}
           {items.map((item) => (
             <div
               key={`${item.id}-${JSON.stringify(item.variations)}`}

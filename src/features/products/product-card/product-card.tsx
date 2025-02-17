@@ -3,11 +3,21 @@ import { Card } from "@/components/ui/card";
 import type { Product } from "@/types/product";
 
 import { getDiscountedPrice } from "@/lib/utils/utils";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import ProductCardAction from "./product-card-action";
 import ProductCardImage from "./product-card-image";
 import ProductCardRating from "./product-card-rating";
-import ProductCardTimestamp from "./product-card-timestamp";
+
+const ProductCardTimestamp = dynamic(() => import("./product-card-timestamp"), {
+  loading: () => (
+    <div className="flex items-center gap-1 text-muted-foreground animate-pulse">
+      <div className="w-4 h-4 md:w-5 md:h-5 bg-gray-200 rounded-full" />
+      <div className="w-24 h-4 bg-gray-200 rounded" />
+    </div>
+  ),
+});
+
 interface ProductCardProps {
   product: Product;
 }
@@ -54,6 +64,7 @@ export function ProductCard({ product }: ProductCardProps) {
             productStartTime={product.available_time_starts}
             productEndTime={product.available_time_ends}
           />
+
           <div className="flex items-baseline gap-2">
             <span className="text-lg font-bold">
               $

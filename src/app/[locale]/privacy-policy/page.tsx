@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import { StaticPageLayout } from "../layouts/staticPageLayout";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Stack Food",
+  title: "Privacy Policy | RuchiCart",
   description:
-    "Learn about how we protect your privacy and handle your data at Stack Food.",
+    "Learn about how we protect your privacy and handle your data at RuchiCart.",
 };
 
 export default async function PrivacyPolicyPage() {

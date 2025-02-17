@@ -79,6 +79,8 @@ export function ProductDetailsAddToCart({ product }: { product: Product }) {
     const item = {
       id: product.id,
       name: product.name,
+      available_time_starts: product.available_time_starts,
+      available_time_ends: product.available_time_ends,
       price: totalPrice / quantity,
       image: product.image,
       quantity: quantity,

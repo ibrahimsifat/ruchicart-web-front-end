@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import { StaticPageLayout } from "../layouts/staticPageLayout";
 
 export const metadata: Metadata = {
-  title: "Terms and Conditions | Stack Food",
-  description: "Read our terms and conditions for using Stack Food services.",
+  title: "Terms and Conditions | RuchiCart",
+  description: "Read our terms and conditions for using RuchiCart services.",
 };
 
 export default async function TermsAndConditionsPage() {

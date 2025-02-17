@@ -1,14 +1,33 @@
 "use client";
 
 import { useToast } from "@/components/ui/use-toast";
-import { CheckoutForm } from "@/features/checkout/checkout-form";
-import { OrderSummary } from "@/features/order/orderSummary";
+
+import CheckoutSkeleton from "@/components/skeleton/checkout-skeleton";
+import OrderSummarySkeleton from "@/components/skeleton/orderSummary-skeleton";
 import { placeOrder } from "@/lib/api/order";
 import { formatVariations } from "@/lib/utils/cart";
 import { useCart } from "@/store/cartStore";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as z from "zod";
+// lazy loading
+const OrderSummary = dynamic(
+  () => import("@/features/order/orderSummary").then((mod) => mod.OrderSummary),
+  {
+    loading: () => <OrderSummarySkeleton />,
+    ssr: false,
+  }
+);
+
+const CheckoutForm = dynamic(
+  () =>
+    import("@/features/checkout/checkout-form").then((mod) => mod.CheckoutForm),
+  {
+    loading: () => <CheckoutSkeleton />,
+    ssr: false,
+  }
+);
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -19,6 +38,7 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCashOnDelivery, setIsCashOnDelivery] = useState(false);
 
+  // redirect to home if cart is empty
   useEffect(() => {
     if (itemCount === 0) {
       router.push("/");
@@ -41,9 +61,19 @@ export default function CheckoutPage() {
       z.object({
         product_id: z.string(),
         quantity: z.number(),
-        variant: z.array(),
-        add_on_ids: z.array(),
-        add_on_qtys: z.array(),
+        variant: z.array(
+          z.object({
+            name: z.string(),
+            values: z.array(
+              z.object({
+                label: z.array(z.string()),
+                optionPrice: z.number(),
+              })
+            ),
+          })
+        ),
+        add_on_ids: z.array(z.number()),
+        add_on_qtys: z.array(z.number()),
       })
     ),
     change_amount: z.string().optional(),
@@ -51,7 +81,6 @@ export default function CheckoutPage() {
     guest_id: z.string().optional(),
   });
 
-  // CheckoutPage.tsx
   const handlePlaceOrder = async (orderData: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
@@ -64,7 +93,7 @@ export default function CheckoutPage() {
           variant: item.variant || [],
           variations: formatVariations(item.variations || {}),
           add_on_ids: item.add_ons?.map((addOn) => addOn.id) || [],
-          add_on_qtys: item.add_ons?.length > 0 ? [item.add_ons.length] : [],
+          add_on_qtys: item.add_ons?.length ? [item.add_ons.length] : [],
         })),
       };
       const response = await placeOrder(orderDataWithCart);

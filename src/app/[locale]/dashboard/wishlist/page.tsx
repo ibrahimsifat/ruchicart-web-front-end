@@ -60,20 +60,6 @@ export default function WishlistPage() {
     },
   });
 
-  const addToCart = (item: Product) => {
-    addItem({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      image: item.image,
-      quantity: 1,
-    });
-    toast({
-      title: "Added to cart",
-      description: `${item.name} has been added to your cart.`,
-    });
-  };
-
   useEffect(() => {
     if (error) {
       toast({

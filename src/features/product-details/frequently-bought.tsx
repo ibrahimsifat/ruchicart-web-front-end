@@ -75,6 +75,8 @@ export function FrequentlyBought({ currentProduct }: FrequentlyBoughtProps) {
         price: calculateDiscountedPrice(product),
         image: product.image,
         quantity: 1,
+        available_time_starts: product.available_time_starts,
+        available_time_ends: product.available_time_ends,
       };
       console.log("cartItem", cartItem);
       addItem(cartItem);

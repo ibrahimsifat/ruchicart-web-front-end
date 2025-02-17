@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { StaticPageLayout } from "../layouts/staticPageLayout";
 
 export const metadata: Metadata = {
-  title: "Cancellation Policy | Stack Food",
+  title: "Cancellation Policy | RuchiCart",
   description:
     "Learn about our cancellation policy for food orders and deliveries.",
 };
