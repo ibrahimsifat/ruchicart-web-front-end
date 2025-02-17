@@ -46,9 +46,10 @@ export function OrderSummary({
   const [showCouponModal, setShowCouponModal] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
   const { toast } = useToast();
-  const { token, getGuestId } = useAuthStore();
   const router = useRouter();
-  const { itemCount } = useCart();
+  const { itemCount, removeItem, updateQuantity } = useCart();
+  const { token, getGuestId } = useAuthStore();
+
   // Check availability of items
   const [unavailableItems, setUnavailableItems] = useState<
     {
@@ -57,6 +58,7 @@ export function OrderSummary({
     }[]
   >([]);
   console.log(items);
+
   useEffect(() => {
     if (itemCount === 0) {
       router.push("/");
@@ -139,6 +141,7 @@ export function OrderSummary({
     }
     applyCouponMutation.mutate(coupon);
   };
+
   return (
     <Card className="sticky top-4 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 z-0" />
@@ -187,9 +190,10 @@ export function OrderSummary({
             </Button>
           )}
         </div>
+
         {/* Order Items */}
         <div className="space-y-4">
-          {unavailableItems.length > 0 && (
+          {/* {unavailableItems.length > 0 && (
             <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
               <h3 className="font-bold">Unavailable Items:</h3>
               <ul className="list-disc list-inside">
@@ -212,47 +216,86 @@ export function OrderSummary({
                 checkout.
               </p>
             </div>
-          )}
-          {items.map((item) => (
-            <div
-              key={`${item.id}-${JSON.stringify(item.variations)}`}
-              className="flex gap-4"
-            >
-              <div className="relative h-20 w-20 rounded-lg overflow-hidden flex-shrink-0">
-                <CustomImage
-                  type={ImageType.PRODUCT}
-                  src={item.image}
-                  alt={item.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-medium">{item.name}</h4>
-                {item.variations &&
-                  Object.entries(item.variations).map(([key, values]) => (
-                    <p key={key} className="text-sm text-muted-foreground">
-                      {key}:{" "}
-                      {Array.isArray(values) ? values.join(", ") : values}
-                    </p>
-                  ))}
-                {item.add_ons && item.add_ons.length > 0 && (
-                  <div className="text-sm text-muted-foreground">
-                    Add-ons:{" "}
-                    <Badge variant="secondary" className="font-medium">
-                      {item.add_ons.map((addOn) => addOn.name).join(", ")}
-                    </Badge>
+          )} */}
+          {items.map((item) => {
+            const isUnavailable = unavailableItems.some(
+              (unavailableItem) => unavailableItem.name === item.name
+            );
+
+            return (
+              <div
+                key={`${item.id}-${JSON.stringify(item.variations)}`}
+                className={`flex gap-4 p-3 rounded-lg ${
+                  isUnavailable
+                    ? "border-2 border-red-500 bg-red-50"
+                    : "border border-primary"
+                }`}
+              >
+                <div className="relative h-20 w-20 rounded-lg overflow-hidden flex-shrink-0">
+                  <CustomImage
+                    type={ImageType.PRODUCT}
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <h4 className="font-medium">{item.name}</h4>
+                    {isUnavailable && (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="h-7"
+                        onClick={() => {
+                          // Add removeFromCart
+                          removeItem(item.id);
+                          toast({
+                            title: "Item removed",
+                            description:
+                              "The unavailable item has been removed from your cart.",
+                          });
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    )}
                   </div>
-                )}
-                <div className="flex items-center justify-between mt-1">
-                  <p className="text-sm">Qty: {item.quantity}</p>
-                  <p className="font-medium">
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </p>
+
+                  {isUnavailable && (
+                    <p className="text-sm text-red-600 font-medium mt-1">
+                      This item is currently unavailable
+                    </p>
+                  )}
+
+                  {item.variations &&
+                    Object.entries(item.variations).map(([key, values]) => (
+                      <p key={key} className="text-sm text-muted-foreground">
+                        {key}:{" "}
+                        {Array.isArray(values) ? values.join(", ") : values}
+                      </p>
+                    ))}
+
+                  {item.add_ons && item.add_ons.length > 0 && (
+                    <div className="text-sm text-muted-foreground">
+                      Add-ons:{" "}
+                      <Badge variant="secondary" className="font-medium">
+                        {item.add_ons.map((addOn) => addOn.name).join(", ")}
+                      </Badge>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-sm">Qty: {item.quantity}</p>
+                    <p className="font-medium">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Price Breakdown */}

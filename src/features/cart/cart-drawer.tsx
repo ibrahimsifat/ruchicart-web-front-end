@@ -24,7 +24,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const router = useRouter();
   const { items, removeItem, updateQuantity, total, itemCount } = useCart();
 
-  console.log(items);
+  // console.log(items);
   const t = useTranslations("cart");
   const handleCheckout = () => {
     onOpenChange(false);
