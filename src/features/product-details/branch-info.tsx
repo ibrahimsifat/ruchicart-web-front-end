@@ -72,21 +72,21 @@ export function BranchInfo({ branchId }: BranchInfoProps) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center">
-            <Phone className="w-5 h-5 mr-2 text-primary" />
+            <Phone className="w-5 h-5 mr-2 text-primary-text" />
             <span>{branch.phone}</span>
           </div>
           <div className="flex items-center">
-            <Clock className="w-5 h-5 mr-2 text-primary" />
+            <Clock className="w-5 h-5 mr-2 text-primary-text" />
             <span>Prep time: {branch.preparation_time} mins</span>
           </div>
           {branch.distance && (
             <div className="flex items-center">
-              <MapPin className="w-5 h-5 mr-2 text-primary" />
+              <MapPin className="w-5 h-5 mr-2 text-primary-text" />
               <span>{branch.distance.toFixed(2)} km away</span>
             </div>
           )}
           <div className="flex items-center">
-            <Star className="w-5 h-5 mr-2 text-primary" />
+            <Star className="w-5 h-5 mr-2 text-primary-text" />
             <span>
               {branch.branch_promotion_status === 1
                 ? "Promoted"
@@ -104,7 +104,7 @@ export function BranchInfo({ branchId }: BranchInfoProps) {
               </span>
             </div>
             <div className="flex items-center gap-1 text-sm">
-              <ThumbsUp className="h-4 w-4 text-primary" />
+              <ThumbsUp className="h-4 w-4 text-primary-text" />
               <span>95% Positive</span>
             </div>
           </div>

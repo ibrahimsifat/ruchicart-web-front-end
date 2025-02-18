@@ -59,7 +59,7 @@ export default function EnableLocationPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
       <Card className="max-w-md w-full">
         <CardHeader className="text-center">
-          <MapPin className="mx-auto h-16 w-16 text-primary mb-4" />
+          <MapPin className="mx-auto h-16 w-16 text-primary-text mb-4" />
           <CardTitle className="text-2xl font-bold">
             Enable Location Services
           </CardTitle>

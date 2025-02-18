@@ -101,7 +101,7 @@ export function PersonalDetails({ user }: { user: any }) {
               <CardTitle className="text-2xl font-bold">
                 {user.f_name} {user.l_name}
               </CardTitle>
-              <p className="text-primary-light">
+              <p className="text-primary-text-light">
                 {user.orders_count} Orders | {user.wishlist_count} Wishlist
                 Items
               </p>
@@ -110,7 +110,7 @@ export function PersonalDetails({ user }: { user: any }) {
           <Button
             variant={isEditing ? "secondary" : "outline"}
             onClick={() => setIsEditing(!isEditing)}
-            className="bg-white text-primary hover:bg-primary-light hover:text-white"
+            className="bg-white text-primary-text hover:bg-primary-light hover:text-white"
           >
             {isEditing ? t("cancel") : t("editProfile")}
           </Button>

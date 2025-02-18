@@ -328,7 +328,7 @@ export default function LoginForm() {
           <div className="text-center mt-4">
             <Link
               href="/auth/forgot-password"
-              className="text-sm text-primary hover:underline"
+              className="text-sm text-primary-text hover:underline"
             >
               {t("auth.forgotPassword")}
             </Link>
@@ -365,7 +365,7 @@ export default function LoginForm() {
             {t("common.dontHaveAccount")}{" "}
             <Link
               href="/auth/registration"
-              className="font-semibold text-primary hover:underline"
+              className="font-semibold text-primary-text hover:underline"
             >
               {t("common.registration")}
             </Link>

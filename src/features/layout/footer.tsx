@@ -25,16 +25,16 @@ export function Footer() {
       {/* Social Media Icons */}
       <div className="container mx-auto px-4">
         <div className="flex justify-center gap-6 mb-8">
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href="#" className="hover:text-primary-text transition-colors">
             <Instagram className="h-6 w-6" />
           </Link>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href="#" className="hover:text-primary-text transition-colors">
             <Facebook className="h-6 w-6" />
           </Link>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href="#" className="hover:text-primary-text transition-colors">
             <X className="h-6 w-6" />
           </Link>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href="#" className="hover:text-primary-text transition-colors">
             <Linkedin className="h-6 w-6" />
           </Link>
         </div>
@@ -44,19 +44,19 @@ export function Footer() {
           <span className="text-gray-500">|</span>
           <Link
             href="/become-a-delivery-man"
-            className="hover:text-primary transition-colors"
+            className="hover:text-primary-text transition-colors"
           >
             {t("becomeADeliveryMan")}
           </Link>
           <span className="text-gray-500">|</span>
           <Link
             href="/dashboard"
-            className="hover:text-primary transition-colors"
+            className="hover:text-primary-text transition-colors"
           >
             {t("dashboard")}
           </Link>
           <span className="text-gray-500">|</span>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href="#" className="hover:text-primary-text transition-colors">
             {t("helpAndSupport")}
           </Link>
         </div>
@@ -124,7 +124,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/about-us"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("aboutUs")}
                 </Link>
@@ -132,7 +132,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/dashboard/wallet"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("myWallet")}
                 </Link>
@@ -140,7 +140,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/dashboard/loyalty-points"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("loyaltyPoints")}
                 </Link>
@@ -148,7 +148,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/wishlist"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("wishlist")}
                 </Link>
@@ -163,7 +163,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/categories"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("categories")}
                 </Link>
@@ -171,20 +171,23 @@ export function Footer() {
               <li>
                 <Link
                   href="/products"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("products")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link
+                  href="#"
+                  className="hover:text-primary-text transition-colors"
+                >
                   {t("bestReviewedFoods")}
                 </Link>
               </li>
               <li>
                 <Link
                   href="/order-tracking"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("trackOrder")}
                 </Link>
@@ -199,7 +202,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/privacy-policy"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("privacyPolicy")}
                 </Link>
@@ -207,7 +210,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/terms-and-conditions"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("termsAndConditions")}
                 </Link>
@@ -215,7 +218,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/refund-policy"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("refundPolicy")}
                 </Link>
@@ -223,7 +226,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/cancellation-policy"
-                  className="hover:text-primary transition-colors"
+                  className="hover:text-primary-text transition-colors"
                 >
                   {t("cancellationPolicy")}
                 </Link>

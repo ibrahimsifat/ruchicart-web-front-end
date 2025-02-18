@@ -283,7 +283,7 @@ export function CheckoutForm({
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-primary" />
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-primary" />
+              <MapPin className="h-5 w-5 text-primary-text" />
               {t("orderDetails")}
             </CardTitle>
           </CardHeader>

@@ -71,8 +71,8 @@ export default function OrdersPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <Card className="p-6 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <ShoppingBag className="h-6 w-6 text-primary" />
+          <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+            <ShoppingBag className="h-6 w-6 text-primary-text" />
           </div>
           <div>
             <p className="text-sm text-muted-foreground">Total Orders</p>
@@ -81,8 +81,8 @@ export default function OrdersPage() {
         </Card>
 
         <Card className="p-6 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Package2 className="h-6 w-6 text-primary" />
+          <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+            <Package2 className="h-6 w-6 text-primary-text" />
           </div>
           <div>
             <p className="text-sm text-muted-foreground">Ongoing</p>
@@ -98,8 +98,8 @@ export default function OrdersPage() {
         </Card>
 
         <Card className="p-6 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Clock className="h-6 w-6 text-primary" />
+          <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+            <Clock className="h-6 w-6 text-primary-text" />
           </div>
           <div>
             <p className="text-sm text-muted-foreground">Processing</p>
@@ -112,8 +112,8 @@ export default function OrdersPage() {
         </Card>
 
         <Card className="p-6 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <DollarSign className="h-6 w-6 text-primary" />
+          <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+            <DollarSign className="h-6 w-6 text-primary-text" />
           </div>
           <div>
             <p className="text-sm text-muted-foreground">Total Spent</p>

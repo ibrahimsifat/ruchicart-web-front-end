@@ -28,7 +28,7 @@ export function WalletBonusCards({ bonuses }: WalletBonusCardsProps) {
                     {bonus.bonus_amount} bonus
                   </p>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Gift className="h-4 w-4 text-primary" />
+                    <Gift className="h-4 w-4 text-primary-text" />
                     <span>Max bonus: ${bonus.maximum_bonus_amount}</span>
                   </div>
                 </div>

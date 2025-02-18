@@ -157,7 +157,7 @@ export default function VerifyOtpForm() {
                   variant="ghost"
                   onClick={() => phone && handleSendOTP(phone)}
                   disabled={countdown > 0 || isLoading}
-                  className="text-sm text-primary hover:text-primary/80"
+                  className="text-sm text-primary-text hover:text-primary-text/80"
                 >
                   {countdown > 0
                     ? `${t("resendOtpIn", { countdown })}`

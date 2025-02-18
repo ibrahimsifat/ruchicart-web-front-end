@@ -30,7 +30,7 @@ const TrustBadges = () => {
       ].map((badge, index) => (
         <Card key={index} className="border-dashed">
           <CardContent className="p-4 text-center">
-            <badge.icon className="h-6 w-6 mx-auto mb-2 text-primary" />
+            <badge.icon className="h-6 w-6 mx-auto mb-2 text-primary-text" />
             <div className="font-medium text-sm">{badge.title}</div>
             <div className="text-xs text-muted-foreground">
               {badge.description}

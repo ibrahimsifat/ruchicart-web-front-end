@@ -102,7 +102,7 @@ export function CouponModal({
                     >
                       <div className="absolute right-2 top-2">
                         <div className="relative h-20 w-20 overflow-hidden">
-                          <div className="flex items-center gap-1.5 text-primary">
+                          <div className="flex items-center gap-1.5 text-primary-text">
                             <span className="text-2xl font-bold">
                               {coupon.discount_type === "percent"
                                 ? `${coupon.discount}%`
@@ -110,7 +110,7 @@ export function CouponModal({
                             </span>
                             <span className="text-sm font-medium">OFF</span>
                           </div>
-                          <div className="absolute -right-10 top-10 h-20 w-20 -rotate-45 bg-primary/10" />
+                          <div className="absolute -right-10 top-10 h-20 w-20 -rotate-45 bg-primary/20" />
                         </div>
                       </div>
                       <div className="space-y-4">
@@ -164,7 +164,7 @@ export function CouponModal({
                         </div>
                         <div className="flex items-center justify-between pt-1">
                           {isSelected && (
-                            <div className="flex items-center gap-1.5 text-primary">
+                            <div className="flex items-center gap-1.5 text-primary-text">
                               <span className="text-sm font-medium">
                                 You save
                               </span>

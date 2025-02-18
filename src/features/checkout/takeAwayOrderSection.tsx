@@ -29,7 +29,7 @@ const TakeAwayOrderSection = ({
     <div className="space-y-4">
       <Label className="text-base font-medium">
         {t("selectedBranch")}{" "}
-        <span className="text-primary">{branch?.name}</span>
+        <span className="text-primary-text">{branch?.name}</span>
       </Label>
       <Card key={branch?.id} className="overflow-hidden duration-300">
         <div className="flex flex-col sm:flex-row">
@@ -56,15 +56,15 @@ const TakeAwayOrderSection = ({
             </div>
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="flex items-center">
-                <Phone className="h-5 w-5 mr-3 text-primary" />
+                <Phone className="h-5 w-5 mr-3 text-primary-text" />
                 <span className="text-sm">{branch?.phone}</span>
               </div>
               <div className="flex items-center">
-                <Mail className="h-5 w-5 mr-3 text-primary" />
+                <Mail className="h-5 w-5 mr-3 text-primary-text" />
                 <span className="text-sm">{branch?.email}</span>
               </div>
               <div className="flex items-center">
-                <Clock className="h-5 w-5 mr-3 text-primary" />
+                <Clock className="h-5 w-5 mr-3 text-primary-text" />
                 <span className="text-sm">
                   {branch?.preparation_time} {t("minsPrepTime")}
                 </span>

@@ -186,7 +186,7 @@ export function ProductFilters({
               variant="ghost"
               size="sm"
               onClick={clearAllFilters}
-              className="h-8 text-muted-foreground hover:text-primary"
+              className="h-8 text-muted-foreground hover:text-primary-text"
             >
               Clear all
             </Button>
@@ -323,7 +323,7 @@ export function ProductFilters({
                     onClick={() => handleRatingChange(rating.toString())}
                     className={`flex w-full items-center rounded-lg px-3 py-2 transition-colors ${
                       selectedRating === rating.toString()
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-primary/20 text-primary-text"
                         : "hover:bg-accent"
                     }`}
                   >
@@ -331,7 +331,7 @@ export function ProductFilters({
                       {Array.from({ length: rating }).map((_, i) => (
                         <Star
                           key={i}
-                          className="h-4 w-4 fill-primary text-primary"
+                          className="h-4 w-4 fill-primary text-primary-text"
                         />
                       ))}
                       {Array.from({ length: 5 - rating }).map((_, i) => (
@@ -343,7 +343,7 @@ export function ProductFilters({
                       <span className="ml-2">& Up</span>
                     </div>
                     {selectedRating === rating.toString() && (
-                      <Check className="h-4 w-4 text-primary" />
+                      <Check className="h-4 w-4 text-primary-text" />
                     )}
                   </motion.button>
                 ))}
@@ -435,13 +435,13 @@ export function ProductFilters({
                     onClick={() => handleTypeChange(type.value)}
                     className={`flex w-full items-center rounded-lg px-3 py-2 transition-colors ${
                       selectedType === type.value
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-primary/20 text-primary-text"
                         : "hover:bg-accent"
                     }`}
                   >
                     <span className="flex-1 text-left">{type.label}</span>
                     {selectedType === type.value && (
-                      <Check className="h-4 w-4 text-primary" />
+                      <Check className="h-4 w-4 text-primary-text" />
                     )}
                   </motion.button>
                 ))}
@@ -469,13 +469,13 @@ export function ProductFilters({
                     onClick={() => handleAvailabilityChange(option.value)}
                     className={`flex w-full items-center rounded-lg px-3 py-2 transition-colors ${
                       availability === option.value
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-primary/20 text-primary-text"
                         : "hover:bg-accent"
                     }`}
                   >
                     <span className="flex-1 text-left">{option.label}</span>
                     {availability === option.value && (
-                      <Check className="h-4 w-4 text-primary" />
+                      <Check className="h-4 w-4 text-primary-text" />
                     )}
                   </motion.button>
                 ))}

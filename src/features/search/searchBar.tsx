@@ -53,7 +53,7 @@ const SearchSuggestions = React.memo(
     if (isSuggestionsLoading) {
       return (
         <div className="flex items-center justify-center py-4">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <Loader2 className="h-6 w-6 animate-spin text-primary-text" />
         </div>
       );
     }
@@ -75,7 +75,7 @@ const SearchSuggestions = React.memo(
             onClick={() => onSuggestionClick(suggestion)}
           >
             <div className="flex items-center">
-              <Search className="h-4 w-4 mr-2 text-primary" />
+              <Search className="h-4 w-4 mr-2 text-primary-text" />
               <span>{suggestion}</span>
             </div>
           </li>
@@ -261,7 +261,7 @@ export function SearchBar() {
               setIsOpen(true);
               setIsFocused(true);
             }}
-            className="pl-12 pr-12 py-5 text-lg border-2 hover:border-primary/50 focus:border-primary transition-all duration-300 rounded-md outline-none"
+            className="md:pl-12 md:pr-12 pl-8 pr-8 py-5 text-lg border-2 border-primary hover:border-primary/50 focus:border-primary transition-all duration-300 rounded-md outline-none"
             aria-label="Search for Biryani, cuisine or a dish"
           />
           {searchTerm && (
@@ -335,7 +335,7 @@ export function SearchBar() {
                     <TabsContent value="categories">
                       {isRecommendedLoading ? (
                         <div className="flex items-center justify-center py-4">
-                          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                          <Loader2 className="h-6 w-6 animate-spin text-primary-text" />
                         </div>
                       ) : recommendedData?.categories ? (
                         <CategoryGrid
@@ -351,7 +351,7 @@ export function SearchBar() {
                     <TabsContent value="cuisines">
                       {isRecommendedLoading ? (
                         <div className="flex items-center justify-center py-4">
-                          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                          <Loader2 className="h-6 w-6 animate-spin text-primary-text" />
                         </div>
                       ) : cuisines ? (
                         <CategoryGrid

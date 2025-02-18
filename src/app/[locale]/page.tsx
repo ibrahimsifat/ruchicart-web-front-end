@@ -9,7 +9,7 @@ import { NearbyBranch } from "@/features/branch/nearbyBranch";
 import { ExploreCategories } from "@/features/home/categories/exploreCategories";
 import { DiscountBanner } from "@/features/home/discountBanner";
 import { FeaturedProducts } from "@/features/home/featuredProducts";
-import HeroSlider from "@/features/home/heroSlider/heroSlider";
+import HeroSliderContainer from "@/features/home/heroSlider/HeroSliderContainer";
 import { TrendingDishes } from "@/features/home/trendingDishes";
 import { getCategories } from "@/lib/api/services/category.service";
 import {
@@ -66,7 +66,7 @@ export default async function Home() {
   return (
     <PageLayout>
       <Suspense fallback={<HeroSkeleton />}>
-        <HeroSlider />
+        <HeroSliderContainer />
       </Suspense>
       <Suspense fallback={<CategorySkeleton />}>
         <ExploreCategories categories={categories} />

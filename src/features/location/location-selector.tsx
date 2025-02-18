@@ -383,7 +383,7 @@ export function LocationSelector({
         <Card className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-md mx-4 bg-white/95 backdrop-blur-sm">
           <div className="p-4">
             <div className="flex items-start gap-3">
-              <Navigation className="h-5 w-5 text-primary mt-1" />
+              <Navigation className="h-5 w-5 text-primary-text mt-1" />
               <div className="flex-1">
                 <h3 className="font-medium mb-1">{t("selectedLocation")}</h3>
                 <p className="text-sm text-muted-foreground">
@@ -399,7 +399,7 @@ export function LocationSelector({
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-md px-4 flex gap-2">
         <Button
           onClick={getCurrentLocation}
-          className="flex-1 bg-white text-black hover:bg-white/90"
+          className="flex-1 bg-white text-primary-text hover:bg-white/90"
           variant="outline"
           disabled={isGettingLocation}
         >

@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -10,11 +8,15 @@ import {
 import { ProductPreviewModal } from "@/features/products/product-preview-modal";
 import { Product } from "@/types/product";
 import { ShoppingBag } from "lucide-react";
-import { useState } from "react";
+import { memo, useState } from "react";
 
-function HeroSliderAction({ product }: { product: Product }) {
+export const SlideAction = memo(function SlideAction({
+  product,
+}: {
+  product: Product;
+}) {
   const [showPreview, setShowPreview] = useState(false);
-  // console.log(product);
+
   return (
     <div>
       <TooltipProvider>
@@ -23,7 +25,7 @@ function HeroSliderAction({ product }: { product: Product }) {
             <Button
               size="default"
               variant="default"
-              className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary transition-colors"
+              className="bg-primary text-primary-text-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary transition-colors"
               onClick={() => setShowPreview(true)}
             >
               Order Now
@@ -36,7 +38,6 @@ function HeroSliderAction({ product }: { product: Product }) {
         </Tooltip>
       </TooltipProvider>
 
-      {/* Product Preview Modal */}
       <ProductPreviewModal
         open={showPreview}
         onOpenChange={setShowPreview}
@@ -44,6 +45,4 @@ function HeroSliderAction({ product }: { product: Product }) {
       />
     </div>
   );
-}
-
-export default HeroSliderAction;
+});

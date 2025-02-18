@@ -101,10 +101,10 @@ export function Navbar() {
           <Link href="/" className="flex-shrink-0">
             <Image
               src={CONSTANT.images.logo}
-              alt="Logo"
+              alt="Logo ruchicart"
               width={160}
               height={60}
-              className="h-10 w-auto"
+              className="h-12 w-auto"
             />
           </Link>
 
@@ -126,9 +126,9 @@ export function Navbar() {
               </Button>
             </div>
 
-            <Link href="/deals" className="text-sm font-medium">
+            {/* <Link href="/deals" className="text-sm font-medium">
               {t("deals")}
-            </Link>
+            </Link> */}
           </div>
 
           {/* Search with Live Results */}
@@ -196,7 +196,7 @@ const UserMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="hidden md:flex items-center gap-2 p-1 px-2 hover:bg-primary/10"
+          className="hidden md:flex items-center gap-2 p-1 px-2 hover:bg-primary/20"
         >
           <Avatar className="h-8 w-8">
             <AvatarImage src="/placeholder.svg" alt={user?.f_name} />

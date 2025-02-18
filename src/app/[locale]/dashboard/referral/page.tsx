@@ -111,7 +111,7 @@ export default function ReferralPage() {
                 </h2>
                 <p className="text-muted-foreground">
                   Refer your code to your friends and get{" "}
-                  <span className="text-primary font-semibold">
+                  <span className="text-primary-text font-semibold">
                     {defaultConfig.currency_symbol}10.00 on joining
                   </span>{" "}
                   for every referral!
@@ -198,7 +198,7 @@ export default function ReferralPage() {
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-primary transform origin-left transition-transform group-hover:scale-x-100" />
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary-text font-semibold">
                         {step.number}
                       </div>
                       <div>

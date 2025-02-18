@@ -30,7 +30,7 @@ const ProductCardAction = ({
       <Link href={`/products/${product.id}`} className="flex-grow">
         <Button
           variant="outline"
-          className="w-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors duration-300"
+          className="w-full bg-primary/20 hover:bg-primary/20 text-primary-text transition-colors duration-300"
         >
           <Eye className="mr-2 h-4 w-4" />
           {t("viewDetails")}
@@ -44,7 +44,7 @@ const ProductCardAction = ({
               <Button
                 size="icon"
                 variant="default"
-                className="h-12 w-12 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors duration-300"
+                className="h-12 w-12 rounded-full bg-primary text-primary-text-foreground hover:bg-primary transition-colors duration-300"
                 onClick={() => setShowPreview(true)}
                 data-add-to-cart
               >
@@ -99,7 +99,7 @@ const ProductCardAction = ({
               <Minus className="h-4 w-4" />
             </Button>
             <div className="relative">
-              <ShoppingCart className="h-6 w-6 text-primary" />
+              <ShoppingCart className="h-6 w-6 text-primary-text" />
               <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 {cartItem.quantity}
               </span>

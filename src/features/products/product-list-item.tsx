@@ -71,7 +71,7 @@ export function ProductListItem({
                   key={i}
                   className={`h-4 w-4 ${
                     i < Math.floor(rating)
-                      ? "fill-primary text-primary"
+                      ? "fill-primary text-primary-text"
                       : "text-muted-foreground"
                   }`}
                 />

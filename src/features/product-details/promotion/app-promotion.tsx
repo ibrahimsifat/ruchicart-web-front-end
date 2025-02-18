@@ -11,7 +11,7 @@ const AppPromotion = () => {
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-0">
-        <div className="relative bg-gradient-to-r from-primary/10 to-primary/20 text-primary-black">
+        <div className="relative bg-gradient-to-r from-primary/10 to-primary/20 text-primary-text-primary-text">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,#000_100%)] opacity-10" />
           <div className="relative p-6 grid gap-6 md:grid-cols-[1fr,120px]">
             <div className="space-y-4">

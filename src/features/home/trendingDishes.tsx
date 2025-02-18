@@ -11,11 +11,6 @@ import { Product, ProductResponse } from "@/types/product";
 import { getTranslations } from "next-intl/server";
 import { ProductCard } from "../products/product-card/product-card";
 
-interface GetPopularOptions {
-  page?: number;
-  limit?: number;
-  search?: string;
-}
 export async function TrendingDishes({
   trendingProductsData,
 }: {
@@ -31,7 +26,7 @@ export async function TrendingDishes({
         action={
           <Link
             href="/products"
-            className="text-primary hover:text-primary/80 font-bold md:text-lg text-xl mb-2"
+            className="text-primary-text hover:text-primary-text/80 font-bold md:text-lg text-xl mb-2"
           >
             {t("viewAll")}
           </Link>

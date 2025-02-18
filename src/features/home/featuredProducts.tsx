@@ -28,7 +28,7 @@ export function FeaturedProducts({
         action={
           <Link
             href="/products"
-            className="text-primary hover:text-primary/80 font-bold md:text-lg text-xl mb-2"
+            className="text-primary-text hover:text-primary-text/80 font-bold md:text-lg text-xl mb-2"
           >
             {t("viewAll")}
           </Link>

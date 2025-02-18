@@ -56,7 +56,7 @@ export function TransactionHistory({
       case "order_place":
         return <ArrowDownRight className="h-4 w-4 text-red-500" />;
       default:
-        return <Gift className="h-4 w-4 text-primary" />;
+        return <Gift className="h-4 w-4 text-primary-text" />;
     }
   };
 

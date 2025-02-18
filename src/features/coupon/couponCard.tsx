@@ -93,7 +93,7 @@ export function CouponCard({ coupon, onApply }: CouponCardProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-primary hover:text-primary/80"
+                  className="h-8 w-8 text-primary-text hover:text-primary-text/80"
                   onClick={handleCopy}
                 >
                   {copied ? (

@@ -147,7 +147,7 @@ export function OrderSummary({
     <Card className="sticky top-4 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 z-0" />
       <CardHeader className="relative z-10 border-b">
-        <CardTitle className="text-2xl font-semibold text-primary">
+        <CardTitle className="text-2xl font-semibold text-primary-text">
           Order Summary
         </CardTitle>
       </CardHeader>
@@ -157,7 +157,7 @@ export function OrderSummary({
           {selectedCoupon ? (
             <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg border border-primary/20">
               <div className="flex items-center gap-2">
-                <Tag className="h-5 w-5 text-primary" />
+                <Tag className="h-5 w-5 text-primary-text" />
                 <div>
                   <p className="font-medium">{selectedCoupon.code}</p>
                   <p className="text-sm text-muted-foreground">
@@ -168,7 +168,7 @@ export function OrderSummary({
                 </div>
               </div>
               <div className="space-y-1 text-right">
-                <p className="text-sm font-medium text-primary">
+                <p className="text-sm font-medium text-primary-text">
                   -${discount.toFixed(2)}
                 </p>
                 <Button
@@ -307,7 +307,7 @@ export function OrderSummary({
             <span>${subtotal.toFixed(2)}</span>
           </div>
           {discount > 0 && (
-            <div className="flex justify-between text-primary">
+            <div className="flex justify-between text-primary-text">
               <span>Discount</span>
               <span>-${discount.toFixed(2)}</span>
             </div>
@@ -350,7 +350,7 @@ export function OrderSummary({
           </div>
           <div className="border-t pt-4 flex justify-between font-semibold text-lg">
             <span>Total</span>
-            <span className="text-primary text-xl">
+            <span className="text-primary-text text-xl">
               ${finalTotal.toFixed(2)}
             </span>
           </div>

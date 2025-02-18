@@ -10,7 +10,7 @@ export async function getFeaturedProducts(): Promise<ProductResponse> {
   });
 }
 export async function getTrendingProducts() {
-  return fetcher<ProductResponse[]>("/products/popular", {
+  return fetcher<ProductResponse>("/products/popular", {
     cache: {
       revalidate: 3600, // Revalidate every hour
       tags: ["trending-products"],

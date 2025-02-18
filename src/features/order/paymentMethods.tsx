@@ -37,7 +37,7 @@ export function PaymentMethods({
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-primary" />
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
-          <CreditCard className="h-5 w-5 text-primary" />
+          <CreditCard className="h-5 w-5 text-primary-text" />
           Payment Methods
         </CardTitle>
       </CardHeader>
@@ -93,7 +93,7 @@ export function PaymentMethods({
               onChange={(e) => setChangeAmount(e.target.value)}
             /> */}
             <button
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded"
+              className="w-full bg-primary text-primary-text-foreground hover:bg-primary/90 py-2 px-4 rounded"
               onClick={handleCashOnDeliverySubmit}
             >
               Confirm Cash on Delivery

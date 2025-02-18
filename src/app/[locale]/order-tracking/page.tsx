@@ -129,7 +129,7 @@ export default function OrderTrackingPage() {
         >
           <Card className="mb-8  duration-300">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-center text-primary">
+              <CardTitle className="text-3xl font-bold text-center text-primary-text">
                 Track Your Order
               </CardTitle>
             </CardHeader>
@@ -171,7 +171,7 @@ export default function OrderTrackingPage() {
                     <span className="text-2xl font-bold">
                       Order #{orderStatus.id}
                     </span>
-                    <Badge className="text-lg px-4 py-2 bg-white text-primary font-bold">
+                    <Badge className="text-lg px-4 py-2 bg-white text-primary-text font-bold">
                       {orderStatus.order_status.toUpperCase()}
                     </Badge>
                   </CardTitle>

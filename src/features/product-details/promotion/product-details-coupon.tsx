@@ -15,7 +15,7 @@ const ProductDetailsCoupon = () => {
     <div className="relative">
       <Button
         variant="outline"
-        className="w-full justify-start gap-2 text-primary"
+        className="w-full justify-start gap-2 text-primary-text"
         onClick={() => setShowCouponInput(!showCouponInput)}
       >
         <Tag className="h-4 w-4" />
@@ -32,7 +32,7 @@ const ProductDetailsCoupon = () => {
             <Card className="mt-2 border-primary/20">
               <CardContent className="p-4">
                 <div className="mt-2 space-y-1">
-                  <div className="flex items-center gap-2 text-sm text-primary">
+                  <div className="flex items-center gap-2 text-sm text-primary-text">
                     <Percent className="h-4 w-4" />
                     <span>Available Coupons:</span>
                   </div>

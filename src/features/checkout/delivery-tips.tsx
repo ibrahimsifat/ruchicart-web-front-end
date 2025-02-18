@@ -36,7 +36,7 @@ export function DeliveryTips({ value, onChange }: DeliveryTipsProps) {
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-primary" />
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Coins className="h-5 w-5 text-primary" />
+          <Coins className="h-5 w-5 text-primary-text" />
           {t("deliveryManTips")}
         </CardTitle>
       </CardHeader>
@@ -57,7 +57,7 @@ export function DeliveryTips({ value, onChange }: DeliveryTipsProps) {
                 className={cn(
                   "h-12 text-lg font-normal transition-all hover:scale-105",
                   value === tip.value &&
-                    "border-2 border-primary bg-primary/5 hover:bg-primary/10"
+                    "border-2 border-primary bg-primary/5 hover:bg-primary/20"
                 )}
                 onClick={() => {
                   setCustomTip(tip.value.toString());

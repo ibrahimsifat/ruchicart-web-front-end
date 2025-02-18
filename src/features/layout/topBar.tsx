@@ -58,10 +58,10 @@ const TopBar = () => {
   };
 
   return (
-    <nav className="w-full bg-primary/10 border-b">
+    <nav className="w-full bg-primary/20 border-b">
       <div className="container mx-auto px-4 py-2 flex items-center justify-between text-sm">
         <div className="flex items-center gap-2">
-          <MapPin className="h-4 w-4 text-primary" />
+          <MapPin className="h-4 w-4 text-primary-text" />
           <span>{t("deliverTo")}: </span>
           <Button
             variant="link"
@@ -84,7 +84,7 @@ const TopBar = () => {
             className="p-0 h-auto font-medium"
             onClick={() => router.push("/select-branch")}
           >
-            <GitBranch className="h-4 w-4 mr-2 text-primary" />
+            <GitBranch className="h-4 w-4 mr-2 text-primary-text" />
             {currentBranch ? currentBranch.name : "Select Branch"}
           </Button>
         </div>

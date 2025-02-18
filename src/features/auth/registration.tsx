@@ -287,7 +287,7 @@ export default function RegistrationForm() {
             {t("alreadyHaveAccount")}
             <Link
               href="/auth/login"
-              className="font-semibold text-primary hover:underline"
+              className="font-semibold text-primary-text hover:underline"
             >
               {t("login")}
             </Link>
