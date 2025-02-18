@@ -2,6 +2,7 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import defaultConfig from "@/config/config";
 import { cn } from "@/lib/utils/utils";
 import { Variation, VariationValue } from "@/types/product";
 
@@ -76,7 +77,8 @@ export function ProductVariations({
                         </div>
                         {Number(option.optionPrice) > 0 && (
                           <span className="text-sm font-medium">
-                            +${option.optionPrice}
+                            +{defaultConfig.currency_symbol}
+                            {option.optionPrice}
                           </span>
                         )}
                       </label>
@@ -115,7 +117,8 @@ export function ProductVariations({
                       </div>
                       {Number(option.optionPrice) > 0 && (
                         <span className="text-sm font-medium">
-                          +${option.optionPrice}
+                          +{defaultConfig.currency_symbol}
+                          {option.optionPrice}
                         </span>
                       )}
                     </label>

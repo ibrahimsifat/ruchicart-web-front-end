@@ -2,13 +2,13 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import type { Product } from "@/types/product";
 
+import defaultConfig from "@/config/config";
 import { getDiscountedPrice } from "@/lib/utils/utils";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import ProductCardAction from "./product-card-action";
 import ProductCardImage from "./product-card-image";
 import ProductCardRating from "./product-card-rating";
-
 const ProductCardTimestamp = dynamic(() => import("./product-card-timestamp"), {
   loading: () => (
     <div className="flex items-center gap-1 text-muted-foreground animate-pulse">
@@ -37,7 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <Badge variant="destructive" className="absolute right-2 bottom-2">
             {product.discount_type === "percent"
               ? `${product.discount}% OFF`
-              : `$${product.discount} OFF`}
+              : `${defaultConfig.currency_symbol}${product.discount} OFF`}
           </Badge>
         )}
         {product.product_type === "veg" && (
@@ -67,7 +67,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <div className="flex items-baseline gap-2">
             <span className="text-lg font-bold">
-              $
+              {defaultConfig.currency_symbol}
               {getDiscountedPrice({
                 price: product.price,
                 discount: product.discount,
@@ -76,7 +76,8 @@ export function ProductCard({ product }: ProductCardProps) {
             </span>
             {product.discount > 0 && (
               <span className="text-sm text-muted-foreground line-through">
-                ${product.price.toFixed(2)}
+                {defaultConfig.currency_symbol}
+                {product.price.toFixed(2)}
               </span>
             )}
           </div>

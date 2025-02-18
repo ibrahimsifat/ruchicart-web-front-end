@@ -1,5 +1,6 @@
 "use client";
 
+import defaultConfig from "@/config/config";
 import { AddressSection } from "@/features/dashboard/addressSection";
 import { PersonalDetails } from "@/features/dashboard/personalDetails";
 import { StatsCard } from "@/features/dashboard/statsCard";
@@ -21,7 +22,7 @@ export default function ProfilePage() {
 
         <StatsCard
           icon={<Wallet className="h-6 w-6 text-primary" />}
-          value={`$${user?.wallet_balance}`}
+          value={`${defaultConfig.currency_symbol} ${user?.wallet_balance}`}
           label="Amount In Wallet"
         />
         <StatsCard

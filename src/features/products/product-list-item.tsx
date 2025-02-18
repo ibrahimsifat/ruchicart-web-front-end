@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardFooter } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import defaultConfig from "@/config/config";
 import { ImageType } from "@/types/image";
 import type { Product } from "@/types/product";
 import { Star } from "lucide-react";
@@ -41,7 +42,7 @@ export function ProductListItem({
             <Badge variant="destructive" className="absolute right-2 top-2">
               {product.discount_type === "percent"
                 ? `${product.discount}% OFF`
-                : `$${product.discount} OFF`}
+                : `${defaultConfig.currency_symbol}${product.discount} OFF`}
             </Badge>
           )}
           {!isAvailable && (
@@ -84,11 +85,13 @@ export function ProductListItem({
           <CardFooter className="flex items-center justify-between px-0">
             <div className="space-x-2">
               <span className="text-2xl font-bold">
-                ${discountedPrice.toFixed(2)}
+                {defaultConfig.currency_symbol}
+                {discountedPrice.toFixed(2)}
               </span>
               {product.discount > 0 && (
                 <span className="text-lg text-muted-foreground line-through">
-                  ${product.price.toFixed(2)}
+                  {defaultConfig.currency_symbol}
+                  {product.price.toFixed(2)}
                 </span>
               )}
             </div>

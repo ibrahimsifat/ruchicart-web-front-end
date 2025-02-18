@@ -64,6 +64,9 @@ export function NearbyBranch() {
     async (branch: BaseBranch) => {
       if (branch.id === currentBranch?.id) return;
 
+      setSelectedBranch(branch);
+      setCurrentBranch(branch as any);
+
       try {
         const res = await api.post("/products/change-branch", {
           from_branch_id: currentBranch?.id,
@@ -72,6 +75,8 @@ export function NearbyBranch() {
             product_id: item.id,
             quantity: item.quantity,
             variations: item.variations,
+            add_ons: item.add_ons,
+            add_ons_ids: item.add_ons_ids,
           })),
           product_ids: items.map((item) => item.id),
         });
@@ -79,9 +84,6 @@ export function NearbyBranch() {
         if (res.status !== 200) {
           throw new Error("Failed to change branch");
         }
-
-        setSelectedBranch(branch);
-        setCurrentBranch(branch as any);
         toast({
           title: "Branch Changed",
           description: `Successfully switched to ${branch.name}`,

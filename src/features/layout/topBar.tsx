@@ -41,6 +41,14 @@ const TopBar = () => {
     return () => window.removeEventListener("offline", handleOffline);
   }, [router]);
 
+  console.log(currentBranch);
+  // if currentBranch is not set, redirect to select-branch page
+  useEffect(() => {
+    if (!currentBranch) {
+      router.push("/select-branch");
+    }
+  }, [currentBranch, router]);
+
   const handleLocationSelect = (location: {
     address: string;
     lat: number;

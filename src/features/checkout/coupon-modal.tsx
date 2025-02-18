@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/components/ui/use-toast";
+import defaultConfig from "@/config/config";
 import { getCoupons } from "@/lib/hooks/coupon/useCoupon";
 import type { Coupon } from "@/types/coupon";
 import { useQuery } from "@tanstack/react-query";
@@ -105,7 +106,7 @@ export function CouponModal({
                             <span className="text-2xl font-bold">
                               {coupon.discount_type === "percent"
                                 ? `${coupon.discount}%`
-                                : `$${coupon.discount}`}
+                                : `${defaultConfig.currency_symbol}${coupon.discount}`}
                             </span>
                             <span className="text-sm font-medium">OFF</span>
                           </div>

@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import defaultConfig from "@/config/config";
 import { CONSTANT } from "@/config/constants";
 import { applyCoupon } from "@/lib/hooks/coupon/useCoupon";
 import { useToast } from "@/lib/hooks/use-toast";
@@ -134,7 +135,7 @@ export function OrderSummary({
     if (subtotal < coupon.min_purchase) {
       toast({
         title: "Invalid coupon",
-        description: `Minimum purchase amount of $${coupon.min_purchase} required`,
+        description: `Minimum purchase amount of ${defaultConfig.currency_symbol}${coupon.min_purchase} required`,
         variant: "destructive",
       });
       return;
@@ -162,7 +163,7 @@ export function OrderSummary({
                   <p className="text-sm text-muted-foreground">
                     {selectedCoupon.discount_type === "percent"
                       ? `${selectedCoupon.discount}% off`
-                      : `$${selectedCoupon.discount} off`}
+                      : `${defaultConfig.currency_symbol}${selectedCoupon.discount} off`}
                   </p>
                 </div>
               </div>
@@ -289,7 +290,8 @@ export function OrderSummary({
                   <div className="flex items-center justify-between mt-1">
                     <p className="text-sm">Qty: {item.quantity}</p>
                     <p className="font-medium">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      {defaultConfig.currency_symbol}
+                      {(item.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
                 </div>

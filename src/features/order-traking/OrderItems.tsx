@@ -1,4 +1,5 @@
 import CustomImage from "@/components/ui/customImage";
+import defaultConfig from "@/config/config";
 import { ImageType } from "@/types/image";
 import { motion } from "framer-motion";
 
@@ -53,7 +54,8 @@ export const OrderItems = ({ orderStatus }) => {
                   Quantity: {item.quantity || "N/A"}
                 </span>
                 <span className="font-semibold">
-                  ${item.price?.toFixed(2) || "0.00"}
+                  {defaultConfig.currency_symbol}
+                  {item.price?.toFixed(2) || "0.00"}
                 </span>
               </div>
             </div>

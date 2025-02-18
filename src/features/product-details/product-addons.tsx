@@ -1,6 +1,7 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import defaultConfig from "@/config/config";
 
 import { cn } from "@/lib/utils/utils";
 import { AddOn } from "@/types/product";
@@ -47,7 +48,8 @@ export function ProductAddOns({
               <span>{addOn.name}</span>
             </div>
             <span className="text-sm font-medium">
-              +${addOn.price.toFixed(2)}
+              +{defaultConfig.currency_symbol}
+              {addOn.price.toFixed(2)}
             </span>
           </label>
         ))}

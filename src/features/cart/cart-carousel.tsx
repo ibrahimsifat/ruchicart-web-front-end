@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import defaultConfig from "@/config/config";
 import {
   useLatestProducts,
   useRelatedProducts,
@@ -170,7 +171,7 @@ const ProductCard = memo(
                 <Badge variant="destructive" className="absolute top-2 right-2">
                   {product.discount_type === "percent"
                     ? `${product.discount}% OFF`
-                    : `$${product.discount} OFF`}
+                    : `${defaultConfig.currency_symbol} ${product.discount} OFF`}
                 </Badge>
               )}
               <ProductPrice

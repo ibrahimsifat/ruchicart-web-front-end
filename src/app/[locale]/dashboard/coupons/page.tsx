@@ -12,8 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { CouponCard } from "@/features/coupon/couponCard";
+import { applyCoupon, getCoupons } from "@/lib/hooks/coupon/useCoupon";
 import { isCouponValid } from "@/lib/utils/date";
-import { applyCoupon, getCoupons, type Coupon } from "@/types/coupon";
+import { type Coupon } from "@/types/coupon";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
@@ -28,7 +29,7 @@ export default function CouponsPage() {
     isLoading,
     error,
     refetch,
-  } = useQuery({
+  } = useQuery<Coupon[]>({
     queryKey: ["coupons"],
     queryFn: getCoupons,
   });
@@ -50,7 +51,7 @@ export default function CouponsPage() {
     }
   };
 
-  const filteredCoupons = coupons?.filter((coupon) => {
+  const filteredCoupons = coupons?.filter((coupon: Coupon) => {
     const matchesSearch =
       coupon.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       coupon.code.toLowerCase().includes(searchQuery.toLowerCase());

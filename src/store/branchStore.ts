@@ -20,10 +20,12 @@ const branchData: BaseBranch = {
   status: 1,
   updated_at: "2025-01-22T15:18:14.000000Z",
 };
+
 interface BranchState {
   currentBranch: BaseBranch | null;
   setCurrentBranch: (branch: BaseBranch) => void;
 }
+
 export const useBranchStore = create<BranchState>()(
   persist(
     (set) => ({

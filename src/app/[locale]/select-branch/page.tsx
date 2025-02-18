@@ -1,33 +1,167 @@
 "use client";
 
-import { NearbyBranch } from "@/features/branch/nearbyBranch";
+import { LoadingList } from "@/components/skeleton/branch-skeleton";
+import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { SectionHeader } from "@/components/ui/section-header";
+import { useToast } from "@/components/ui/use-toast";
+import { BranchListItem } from "@/features/branch/BranchListItem";
+import { Link } from "@/i18n/routing";
+import { api } from "@/lib/api/api";
+import { useConfig } from "@/lib/hooks/queries/config/useConfig";
+import { calculateDistance } from "@/lib/utils/distance";
 import { useBranchStore } from "@/store/branchStore";
+import { useCart } from "@/store/cartStore";
 import { useLocationStore } from "@/store/locationStore";
-import { useRouter } from "next/navigation";
+import { BaseBranch } from "@/types/branch";
+import { useTranslations } from "next-intl";
+import React, { memo, Suspense, useCallback, useMemo, useState } from "react";
 import PageLayout from "../layouts/pageLayout";
+// Separate loading component
+const MapLoadingComponent = memo(() => (
+  <div className="h-full w-full animate-pulse rounded-lg bg-muted" />
+));
 
-export default function SelectBranchPage() {
-  const router = useRouter();
+// Map component with proper lazy loading and prefetching
+const BranchMap = memo(
+  React.lazy(() => {
+    const promise = import("@/features/branch/branch-map").then((mod) => ({
+      default: memo(mod.BranchMap),
+    }));
+    // Trigger prefetch
+    import("@/features/branch/branch-map");
+    return promise;
+  })
+);
+
+function BranchSelect() {
+  const [selectedBranch, setSelectedBranch] = useState<BaseBranch | null>(null);
+  const { toast } = useToast();
   const { currentLocation } = useLocationStore();
-  const { currentBranch } = useBranchStore();
+  const { currentBranch, setCurrentBranch } = useBranchStore();
+  const { data = [], isLoading } = useConfig();
+  const { items } = useCart();
+  const branchesData = data?.branches;
+  console.log(branchesData);
+  const t = useTranslations("home");
 
-  // useEffect(() => {
-  //   if (currentBranch) {
-  //     router.push("/");
-  //   }
-  // }, [currentLocation, router]);
+  // Memoized branches calculation
+  const branches = useMemo(() => {
+    if (!currentLocation || !branchesData?.length) return branchesData;
 
-  // if (!currentLocation || currentBranch) {
-  //   return null;
-  // }
+    return branchesData
+      .map((branch: BaseBranch) => ({
+        ...branch,
+        distance: calculateDistance(
+          currentLocation.lat,
+          currentLocation.lng,
+          Number(branch.latitude),
+          Number(branch.longitude)
+        ),
+      }))
+      .sort(
+        (
+          a: BaseBranch & { distance?: number },
+          b: BaseBranch & { distance?: number }
+        ) => (a.distance || 0) - (b.distance || 0)
+      );
+  }, [branchesData, currentLocation]);
+
+  // branch selection handler
+  const handleBranchSelect = useCallback(
+    async (branch: BaseBranch) => {
+      if (branch.id === currentBranch?.id) return;
+      setSelectedBranch(branch);
+      setCurrentBranch(branch as any);
+      try {
+        const res = await api.post("/products/change-branch", {
+          from_branch_id: currentBranch?.id,
+          to_branch_id: branch.id,
+          products: items.map((item) => ({
+            product_id: item.id,
+            quantity: item.quantity,
+            variations: item.variations || [],
+            add_ons: item.add_ons || [],
+            add_ons_ids: item.add_ons_ids || [],
+          })),
+          product_ids: items.map((item) => item.id),
+        });
+
+        if (res.status !== 200) {
+          throw new Error("Failed to change branch");
+        }
+        toast({
+          title: "Branch Changed",
+          description: `Successfully switched to ${branch.name}`,
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to change branch. Please try again.",
+          variant: "destructive",
+        });
+      }
+      toast({
+        title: t("branchSelected"),
+        description: branch.name,
+      });
+    },
+    [currentBranch?.id, setCurrentBranch, toast]
+  );
 
   return (
     <PageLayout>
-      <div className="min-h-screen bg-background">
-        <main>
-          <NearbyBranch />
-        </main>
-      </div>
+      <section className="container py-8">
+        <SectionHeader
+          title={t("selectBranch")}
+          description={t("selectBranchDescription")}
+          action={
+            <Link
+              href="/select-branch"
+              className="text-primary hover:text-primary/80 font-bold md:text-lg text-xl mb-2"
+            >
+              {t("viewAll")}
+            </Link>
+          }
+        />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[400px_1fr] xl:grid-cols-[450px_1fr]">
+          <Card className="h-[calc(100vh-14rem)] overflow-hidden">
+            <ScrollArea className="h-full">
+              <div className="space-y-2 p-4">
+                {isLoading ? (
+                  <LoadingList />
+                ) : (
+                  branches.map((branch: BaseBranch) => (
+                    <BranchListItem
+                      key={branch.id}
+                      branch={branch}
+                      isSelected={
+                        selectedBranch?.id === branch.id ||
+                        currentBranch?.id === branch.id
+                      }
+                      currentLocation={currentLocation}
+                      onSelect={handleBranchSelect}
+                    />
+                  ))
+                )}
+              </div>
+            </ScrollArea>
+          </Card>
+
+          <Card className="h-[calc(100vh-14rem)] overflow-hidden">
+            <Suspense fallback={<MapLoadingComponent />}>
+              <BranchMap
+                branches={branches}
+                selectedBranch={selectedBranch || currentBranch}
+                onBranchSelect={handleBranchSelect}
+                currentLocation={currentLocation}
+              />
+            </Suspense>
+          </Card>
+        </div>
+      </section>
     </PageLayout>
   );
 }
+
+export default BranchSelect;

@@ -19,6 +19,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import defaultConfig from "@/config/config";
 
 interface ProductFiltersProps {
   categories: Array<{ id: number; name: string }>;
@@ -206,7 +207,9 @@ export function ProductFilters({
                 <div className="flex flex-wrap gap-2">
                   {(priceRange[0] > 0 || priceRange[1] < maxPrice) && (
                     <Badge variant="secondary">
-                      ${priceRange[0]} - ${priceRange[1]}
+                      {defaultConfig.currency_symbol}
+                      {priceRange[0]} - {defaultConfig.currency_symbol}
+                      {priceRange[1]}
                       <X
                         className="ml-1 h-3 w-3"
                         onClick={() => handlePriceChange([0, maxPrice])}

@@ -9,6 +9,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import defaultConfig from "@/config/config";
 import { useCart } from "@/store/cartStore";
 import { ImageType } from "@/types/image";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
@@ -94,13 +95,15 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                         <div className="flex items-center justify-between mt-1">
                           <p className="text-sm">Qty: {item.quantity}</p>
                           <p className="font-medium">
-                            ${(item.price * item.quantity)?.toFixed(2)}
+                            {defaultConfig.currency_symbol}
+                            {(item.price * item.quantity)?.toFixed(2)}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary" className="font-medium">
-                          ${item.price}
+                          {defaultConfig.currency_symbol}
+                          {item.price}
                         </Badge>
                         <div className="flex items-center gap-1">
                           <Button

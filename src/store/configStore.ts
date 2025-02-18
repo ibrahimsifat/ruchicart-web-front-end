@@ -1,22 +1,22 @@
-// lib/config/client-config-store.ts
-import defaultConfig from "@/config/config";
-import { useConfig } from "@/lib/hooks/queries/config/useConfig";
 import { ConfigType } from "@/types/config";
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-interface ConfigStore {
+interface ConfigState {
   config: ConfigType | null;
-  initialized: boolean;
-  initialize: (config: ConfigType) => void;
-  refreshConfig: () => Promise<void>;
+  setConfig: (config: ConfigType) => void;
 }
 
-export const useConfigStore = create<ConfigStore>((set) => ({
-  config: defaultConfig,
-  initialized: false,
-  initialize: (config) => set({ config, initialized: true }),
-  refreshConfig: async () => {
-    const { config } = useConfig();
-    set({ config });
-  },
-}));
+export const useConfigStore = create<ConfigState>()(
+  persist(
+    (set) => ({
+      config: null,
+      setConfig: (config) => set({ config }),
+    }),
+    {
+      name: "config-storage",
+      storage: createJSONStorage(() => localStorage),
+      version: 1,
+    }
+  )
+);

@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import defaultConfig from "@/config/config";
 import { getDiscountedPrice } from "@/lib/utils/utils";
 import { ImageType } from "@/types/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -164,7 +165,7 @@ export const CartProductCard = memo(
                 <Badge variant="destructive" className="absolute top-2 right-2">
                   {product.discount_type === "percent"
                     ? `${product.discount}% OFF`
-                    : `$${product.discount} OFF`}
+                    : `${defaultConfig.currency_symbol}${product.discount} OFF`}
                 </Badge>
               )}
               <ProductPrice

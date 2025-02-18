@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import defaultConfig from "@/config/config";
 import { useAuthStore } from "@/store/authStore";
 import { motion } from "framer-motion";
 import { Copy, Linkedin, Share2, Twitter } from "lucide-react";
@@ -111,7 +112,7 @@ export default function ReferralPage() {
                 <p className="text-muted-foreground">
                   Refer your code to your friends and get{" "}
                   <span className="text-primary font-semibold">
-                    $10.00 on joining
+                    {defaultConfig.currency_symbol}10.00 on joining
                   </span>{" "}
                   for every referral!
                 </p>

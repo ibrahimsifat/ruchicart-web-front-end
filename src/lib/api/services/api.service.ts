@@ -30,9 +30,10 @@ export async function fetcher<T>(
     }
 
     // Get authentication token and branch ID
-    const token = useAuthStore.getState().token; // Implement this based on your auth system
-    const currentBranch = useBranchStore.getState().currentBranch; // Implement this based on your store
-    const locale = Cookies.get("NEXT_LOCALE") || "en"; // Implement this based on your i18n system
+    const token = useAuthStore.getState().token;
+    const currentBranch = useBranchStore.getState().currentBranch;
+    console.log(currentBranch);
+    const locale = Cookies.get("NEXT_LOCALE") || "en";
 
     const res = await fetch(url.toString(), {
       ...options,

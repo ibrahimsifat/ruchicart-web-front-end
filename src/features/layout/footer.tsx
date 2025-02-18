@@ -1,6 +1,8 @@
+"use client";
 import { CONSTANT } from "@/config/constants";
 import { Link } from "@/i18n/routing";
-import { getServerConfig } from "@/lib/api/config";
+import { useConfig } from "@/lib/hooks/queries/config/useConfig";
+// import { getServerConfig } from "@/lib/api/config";
 import {
   Facebook,
   Instagram,
@@ -10,12 +12,14 @@ import {
   Phone,
   X,
 } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-export async function Footer() {
-  const config = await getServerConfig();
+export function Footer() {
+  // const config = await loadServerConfig();
+  const { data } = useConfig();
+  const config = data;
   console.log(config);
-  const t = await getTranslations("footer");
+  const t = useTranslations("footer");
   return (
     <footer className="bg-[#1A1A1A] text-white py-12">
       {/* Social Media Icons */}

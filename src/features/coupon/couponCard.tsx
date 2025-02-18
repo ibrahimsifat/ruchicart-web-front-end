@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import defaultConfig from "@/config/config";
 import { formatDateRange, isCouponValid } from "@/lib/utils/date";
 import type { Coupon } from "@/types/coupon";
 import { motion } from "framer-motion";
@@ -41,12 +42,10 @@ export function CouponCard({ coupon, onApply }: CouponCardProps) {
 
   const getDiscountText = () => {
     switch (coupon.discount_type) {
-      case "percentage":
+      case "percent":
         return `${coupon.discount}% OFF`;
       case "amount":
-        return `$${coupon.discount} OFF`;
-      case "free_delivery":
-        return "Free Delivery";
+        return `${defaultConfig.currency_symbol} ${coupon.discount} OFF`;
       default:
         return "";
     }
@@ -71,16 +70,16 @@ export function CouponCard({ coupon, onApply }: CouponCardProps) {
           {/* Left Section - Discount Display */}
           <div
             className={`w-1/3 p-6 flex items-center justify-center bg-gradient-to-br ${
-              coupon.discount_type === "free_delivery"
-                ? "from-green-500 to-green-600"
-                : "from-primary to-primary-dark"
+              coupon.discount_type === "percent"
+                ? "from-primary to-primary-dark"
+                : "from-green-500 to-green-600"
             }`}
           >
             <div className="text-center text-white">
-              {coupon.discount_type === "free_delivery" ? (
-                <Truck className="w-12 h-12 mb-2 mx-auto" />
-              ) : (
+              {coupon.discount_type === "percent" ? (
                 <Tag className="w-12 h-12 mb-2 mx-auto" />
+              ) : (
+                <Truck className="w-12 h-12 mb-2 mx-auto" />
               )}
               <h3 className="text-2xl font-bold">{getDiscountText()}</h3>
             </div>

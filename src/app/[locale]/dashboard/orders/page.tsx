@@ -7,6 +7,7 @@ import CustomImage from "@/components/ui/customImage";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
+import defaultConfig from "@/config/config";
 import { api } from "@/lib/api/api";
 import { ImageType } from "@/types/image";
 import type { Order, OrderListResponse } from "@/types/order";
@@ -117,7 +118,7 @@ export default function OrdersPage() {
           <div>
             <p className="text-sm text-muted-foreground">Total Spent</p>
             <p className="text-2xl font-bold">
-              $
+              {defaultConfig.currency_symbol}
               {orders?.orders
                 ?.reduce(
                   (acc: number, order: Order) => acc + order.order_amount,
@@ -223,7 +224,8 @@ export default function OrdersPage() {
                               <div className="flex items-center gap-2">
                                 <DollarSign className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-sm">
-                                  ${order.order_amount.toFixed(2)}
+                                  {defaultConfig.currency_symbol}
+                                  {order.order_amount.toFixed(2)}
                                 </span>
                               </div>
                               <div className="flex items-center gap-2">

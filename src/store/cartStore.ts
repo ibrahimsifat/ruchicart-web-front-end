@@ -18,6 +18,7 @@ export interface CartItem {
     };
   }[];
   add_ons?: AddOn[];
+  add_ons_ids?: number[];
   variations?: Record<string, FormattedVariation[]>;
 }
 

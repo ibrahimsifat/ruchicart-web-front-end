@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
+import defaultConfig from "@/config/config";
 import { useRelatedProducts } from "@/lib/hooks/queries/product/useProducts";
 import { cn, getDiscountedPrice } from "@/lib/utils/utils";
 import { useCart } from "@/store/cartStore";
@@ -127,11 +128,13 @@ export function FrequentlyBought({ currentProduct }: FrequentlyBoughtProps) {
             >
               <div className="flex items-baseline gap-2">
                 <span className="text-lg font-bold">
-                  ${formatPrice(discountedPrice)}
+                  {defaultConfig.currency_symbol}
+                  {formatPrice(discountedPrice)}
                 </span>
                 {product.discount > 0 && (
                   <span className="text-sm text-muted-foreground line-through">
-                    ${formatPrice(product.price)}
+                    {defaultConfig.currency_symbol}
+                    {formatPrice(product.price)}
                   </span>
                 )}
               </div>
@@ -167,13 +170,19 @@ export function FrequentlyBought({ currentProduct }: FrequentlyBoughtProps) {
               {selectedProductsData.map((product) => (
                 <div key={product.id} className="flex justify-between text-sm">
                   <span>{product.name}</span>
-                  <span>${formatPrice(calculateDiscountedPrice(product))}</span>
+                  <span>
+                    {defaultConfig.currency_symbol}
+                    {formatPrice(calculateDiscountedPrice(product))}
+                  </span>
                 </div>
               ))}
               <div className="border-t pt-2 flex justify-between font-medium">
                 <span>Total Price</span>
                 <div className="text-right">
-                  <div className="text-lg">${formatPrice(totalPrice)}</div>
+                  <div className="text-lg">
+                    {defaultConfig.currency_symbol}
+                    {formatPrice(totalPrice)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -183,7 +192,8 @@ export function FrequentlyBought({ currentProduct }: FrequentlyBoughtProps) {
               onClick={handleAddToCart}
               disabled={selectedProductsData.length === 1}
             >
-              Buy {selectedProductsData.length} items together for $
+              Buy {selectedProductsData.length} items together for{" "}
+              {defaultConfig.currency_symbol}
               {formatPrice(totalPrice)}
             </Button>
           </div>

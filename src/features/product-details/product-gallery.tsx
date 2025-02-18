@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import CustomImage from "@/components/ui/customImage";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import defaultConfig from "@/config/config";
 import { ImageType } from "@/types/image";
 import { Product } from "@/types/product";
 import { AnimatePresence, motion } from "framer-motion";
@@ -29,7 +30,7 @@ export function ProductGallery({ product }: { product: Product }) {
           >
             {product.discount_type === "percent"
               ? `${product.discount}% OFF`
-              : `$${product.discount} OFF`}
+              : `${defaultConfig.currency_symbol}${product.discount} OFF`}
           </Badge>
         )}
 

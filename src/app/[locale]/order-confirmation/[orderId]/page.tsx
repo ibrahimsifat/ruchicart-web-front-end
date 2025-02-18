@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import defaultConfig from "@/config/config";
 import { useOrderTrack } from "@/lib/hooks/queries/order/useOrders";
 import { useAuthStore } from "@/store/authStore";
 import { CheckCircle } from "lucide-react";
@@ -52,7 +53,9 @@ export default function OrderConfirmationPage() {
 
             <p>
               Total Amount:{" "}
-              <span className="font-semibold">${orderTrack.order_amount}</span>
+              <span className="font-semibold">
+                {defaultConfig.currency_symbol}${orderTrack.order_amount}
+              </span>
             </p>
             <p>
               Status:{" "}
