@@ -86,7 +86,7 @@ export function BranchInfo({ branchId }: BranchInfoProps) {
             </div>
           )}
           <div className="flex items-center">
-            <Star className="w-5 h-5 mr-2 text-primary-text" />
+            <Star className="w-5 h-5 mr-2 text-primary-text bg-primary/50" />
             <span>
               {branch.branch_promotion_status === 1
                 ? "Promoted"

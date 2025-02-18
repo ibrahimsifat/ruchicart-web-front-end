@@ -21,7 +21,7 @@ export function BranchCard({ branch }: BranchCardProps) {
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
           {branch.branch_promotion_status === BranchPromotionStatus.ENABLED && (
-            <Badge className="absolute top-4 right-4 bg-primary">
+            <Badge className="absolute top-4 right-4 bg-primary/50 text-primary-text">
               Promoted
             </Badge>
           )}

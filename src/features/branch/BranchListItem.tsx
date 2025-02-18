@@ -37,7 +37,7 @@ export const BranchListItem = React.memo(
       <div className="col-span-9 space-y-1 ">
         <div className="flex items-center gap-2">
           <h3 className="font-semibold text-lg mb-2 truncate">{branch.name}</h3>
-          <Badge variant="outline" className="text-primary-text">
+          <Badge variant="outline" className="text-primary-text bg-primary/50">
             {branch.branch_promotion_status === BranchPromotionStatus.ENABLED
               ? "Promoted"
               : ""}

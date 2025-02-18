@@ -5,7 +5,7 @@ export default async function HeroSliderContainer() {
   const slides = await getBanners();
 
   return (
-    <div className="relative overflow-hidden rounded-xl h-[400px] md:h-[500px]">
+    <div className="relative overflow-hidden rounded-b-xl h-[400px] md:h-[500px]">
       <HeroSlider slides={slides} />
     </div>
   );
