@@ -43,7 +43,7 @@ export default function LanguageSwitcher() {
     <button
       onClick={toggleLanguage}
       disabled={isPending}
-      className="px-4 py-2 rounded-md bg-white hover:bg-primary/10 text-gray-800 transition-colors font-bold border"
+      className="px-4 py-2 rounded-md hover:bg-primary/10 text-gray-800 transition-colors font-bold border border-primary/30"
     >
       <div className="flex items-center gap-2">
         <Image

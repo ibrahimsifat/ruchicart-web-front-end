@@ -3,7 +3,7 @@ import { fetcher } from "./api.service";
 
 export async function getFeaturedProducts(): Promise<ProductResponse> {
   return fetcher<ProductResponse>("/products/latest", {
-    cacheConfig: {
+    cache: {
       revalidate: 3600, // Revalidate every hour
       tags: ["featured-products"],
     },
@@ -11,7 +11,7 @@ export async function getFeaturedProducts(): Promise<ProductResponse> {
 }
 export async function getTrendingProducts() {
   return fetcher<ProductResponse[]>("/products/popular", {
-    cacheConfig: {
+    cache: {
       revalidate: 3600, // Revalidate every hour
       tags: ["trending-products"],
     },
@@ -34,7 +34,7 @@ export async function getRelatedProducts({
     params: {
       limit,
     },
-    cacheConfig: {
+    cache: {
       revalidate: 3600, // Revalidate every hour
       tags: [`related-products:${currentProductId}`],
     },

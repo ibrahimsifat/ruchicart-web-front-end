@@ -19,7 +19,7 @@ interface GetPopularOptions {
 export async function TrendingDishes({
   trendingProductsData,
 }: {
-  trendingProductsData: ProductResponse[];
+  trendingProductsData: ProductResponse;
 }) {
   const products = trendingProductsData?.products;
   const t = await getTranslations("home");

@@ -23,7 +23,7 @@ function HeroSliderAction({ product }: { product: Product }) {
             <Button
               size="default"
               variant="default"
-              className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary/90 transition-colors"
+              className="bg-primary text-primary-foreground px-6 py-3 rounded-full text-lg font-semibold hover:bg-primary transition-colors"
               onClick={() => setShowPreview(true)}
             >
               Order Now

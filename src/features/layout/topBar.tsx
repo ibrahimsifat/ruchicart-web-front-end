@@ -58,7 +58,7 @@ const TopBar = () => {
   };
 
   return (
-    <nav className="w-full bg-primary/5 border-b">
+    <nav className="w-full bg-primary/10 border-b">
       <div className="container mx-auto px-4 py-2 flex items-center justify-between text-sm">
         <div className="flex items-center gap-2">
           <MapPin className="h-4 w-4 text-primary" />

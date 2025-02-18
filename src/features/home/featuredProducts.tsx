@@ -15,7 +15,7 @@ import { useTranslations } from "next-intl";
 export function FeaturedProducts({
   featuredProductsData,
 }: {
-  featuredProductsData: ProductResponse[];
+  featuredProductsData: ProductResponse;
 }) {
   const products = featuredProductsData?.products;
   // console.log(products);
