@@ -1,3 +1,4 @@
+import { useConfig } from "@/lib/hooks/queries/config/useConfig";
 import { ConfigType } from "@/types/config";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
@@ -11,7 +12,15 @@ export const useConfigStore = create<ConfigState>()(
   persist(
     (set) => ({
       config: null,
-      setConfig: (config) => set({ config }),
+      // fetch config if not set
+      setConfig: async (config) => {
+        if (!config) {
+          const { data } = await useConfig();
+          set({ config: data });
+        } else {
+          set({ config });
+        }
+      },
     }),
     {
       name: "config-storage",

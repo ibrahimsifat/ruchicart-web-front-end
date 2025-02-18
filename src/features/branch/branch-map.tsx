@@ -97,7 +97,7 @@ export function BranchMap({
         />
       )}
 
-      {branches.map((branch) => (
+      {branches?.map((branch) => (
         <Marker
           key={branch.id}
           position={{

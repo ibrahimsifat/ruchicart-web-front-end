@@ -75,7 +75,6 @@ export function NearbyBranch() {
             product_id: item.id,
             quantity: item.quantity,
             variations: item.variations,
-            add_ons: item.add_ons,
             add_ons_ids: item.add_ons_ids,
           })),
           product_ids: items.map((item) => item.id),

@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { BranchListItem } from "@/features/branch/BranchListItem";
 import { Link } from "@/i18n/routing";
 import { api } from "@/lib/api/api";
-import { useConfig } from "@/lib/hooks/queries/config/useConfig";
+import { useBranch } from "@/lib/hooks/queries/Branch/useBranch";
 import { calculateDistance } from "@/lib/utils/distance";
 import { useBranchStore } from "@/store/branchStore";
 import { useCart } from "@/store/cartStore";
@@ -39,9 +39,9 @@ function BranchSelect() {
   const { toast } = useToast();
   const { currentLocation } = useLocationStore();
   const { currentBranch, setCurrentBranch } = useBranchStore();
-  const { data = [], isLoading } = useConfig();
+  // const { data = [], isLoading } = useConfig();
+  const { data: branchesData, isLoading } = useBranch();
   const { items } = useCart();
-  const branchesData = data?.branches;
   console.log(branchesData);
   const t = useTranslations("home");
 
@@ -49,7 +49,7 @@ function BranchSelect() {
   const branches = useMemo(() => {
     if (!currentLocation || !branchesData?.length) return branchesData;
 
-    return branchesData
+    return [...branchesData]
       .map((branch: BaseBranch) => ({
         ...branch,
         distance: calculateDistance(
@@ -131,7 +131,7 @@ function BranchSelect() {
                 {isLoading ? (
                   <LoadingList />
                 ) : (
-                  branches.map((branch: BaseBranch) => (
+                  branches?.map((branch: BaseBranch) => (
                     <BranchListItem
                       key={branch.id}
                       branch={branch}
@@ -151,7 +151,7 @@ function BranchSelect() {
           <Card className="h-[calc(100vh-14rem)] overflow-hidden">
             <Suspense fallback={<MapLoadingComponent />}>
               <BranchMap
-                branches={branches}
+                branches={branches || []}
                 selectedBranch={selectedBranch || currentBranch}
                 onBranchSelect={handleBranchSelect}
                 currentLocation={currentLocation}
