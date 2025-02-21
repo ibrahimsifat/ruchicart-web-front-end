@@ -134,7 +134,11 @@ export default function Checkout() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <CheckoutSkeleton />
+      </div>
+    );
   }
 
   if (itemCount === 0) {

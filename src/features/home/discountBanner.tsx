@@ -36,7 +36,7 @@ const TimerUnit = memo(
 
 TimerUnit.displayName = "TimerUnit";
 
-// Separate ProductInfo component
+// ProductInfo component
 const ProductInfo = memo(({ product }: { product?: Product }) => (
   <div className="space-y-4 text-center md:text-left z-10">
     <motion.h2
@@ -102,6 +102,7 @@ export function DiscountBanner() {
     ));
   }, [timeLeft]);
 
+  const [showPreview, setShowPreview] = useState(false);
   const handleOrderClick = useCallback(() => {
     // Handle order click logic here
   }, []);

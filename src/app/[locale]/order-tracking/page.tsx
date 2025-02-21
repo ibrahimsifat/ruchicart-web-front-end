@@ -10,10 +10,7 @@ import { DeliveryInfo } from "@/features/order-traking/DeliveryInfo";
 import { OrderDetails } from "@/features/order-traking/OrderDetails";
 import { OrderItems } from "@/features/order-traking/OrderItems";
 import { NoOrderFound } from "@/features/order-traking/OrderNotFound";
-import {
-  OrderTimeline,
-  StatusStep,
-} from "@/features/order-traking/OrderTimeline";
+import { OrderTimeline } from "@/features/order-traking/OrderTimeline";
 import { api } from "@/lib/api/api";
 import { queryKeys } from "@/lib/api/queries";
 import { useAuthStore } from "@/store/authStore";
@@ -21,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { StatusStep } from "@/types/order";
 import { AxiosError } from "axios";
 import { CheckCircle, Clock, Package, Search, Truck } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -60,9 +58,7 @@ export const statusSteps: StatusStep[] = [
     color: "bg-green-500",
   },
 ];
-// Loading Spinner
 
-// Main Component
 export default function OrderTrackingPage() {
   const router = useRouter();
   const searchParams = useSearchParams();

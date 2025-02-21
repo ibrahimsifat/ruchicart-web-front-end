@@ -15,7 +15,7 @@ export default function WalletPage() {
   const [showTransferPoints, setShowTransferPoints] = useState(false);
   const [transactionType, setTransactionType] = useState<string>("");
 
-  const { data: transactions } = useQuery({
+  const { data: transactions, refetch: refetchTransactions } = useQuery({
     queryKey: ["wallet-transactions", transactionType],
     queryFn: () =>
       getWalletTransactions({
@@ -29,6 +29,10 @@ export default function WalletPage() {
     queryKey: ["wallet-bonuses"],
     queryFn: getWalletBonuses,
   });
+
+  const handleTransferPointsSuccess = () => {
+    refetchTransactions();
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -60,6 +64,8 @@ export default function WalletPage() {
       <TransferPointsModal
         open={showTransferPoints}
         onClose={() => setShowTransferPoints(false)}
+        currentPoints={100} // You need to fetch this value from the backend
+        onSuccess={handleTransferPointsSuccess}
       />
     </div>
   );

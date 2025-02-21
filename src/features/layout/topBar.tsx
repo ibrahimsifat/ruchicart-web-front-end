@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { LocationModal } from "@/features/location/location-modal";
-import { useRouter } from "@/i18n/routing";
 import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { GitBranch, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const TopBar = () => {

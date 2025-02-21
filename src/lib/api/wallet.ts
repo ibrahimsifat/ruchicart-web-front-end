@@ -11,21 +11,13 @@ export async function getWalletTransactions(params: {
 }
 
 export async function getWalletBonuses(): Promise<WalletBonus[]> {
-  const { data } = await api.get("/customer/bonus/list");
+  const { data } = await api.get("/customer/wallet-bonus-list");
   return data;
 }
 
 export async function transferPointsToWallet(point: number) {
   const { data } = await api.post("/customer/transfer-point-to-wallet", {
     point,
-  });
-  return data;
-}
-
-export async function addFundsToWallet(amount: number, paymentMethod: string) {
-  const { data } = await api.post("/customer/add-fund", {
-    amount,
-    payment_method: paymentMethod,
   });
   return data;
 }

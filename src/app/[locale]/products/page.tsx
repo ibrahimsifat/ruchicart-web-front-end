@@ -1,4 +1,5 @@
 import { ProductsLoading } from "@/components/skeleton/products-loading";
+import { HeroSkeleton } from "@/components/ui/skeletons";
 import { CategoryBanners } from "@/features/products/category-banners";
 import { ProductFilters } from "@/features/products/product-filters";
 import { ProductGrid } from "@/features/products/product-grid";
@@ -33,7 +34,7 @@ const ProductsPageWrapper = async ({
 
   return (
     <PageLayout>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<HeroSkeleton />}>
         <CategoryBanners categories={recommendedData.categories.slice(1, 4)} />
       </Suspense>
 
