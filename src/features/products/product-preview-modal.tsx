@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Product } from "@/types/product";
 import { AnimatePresence } from "framer-motion";
@@ -21,7 +21,11 @@ export function ProductPreviewModal({
 }: ProductPreviewModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl p-0 overflow-hidden">
+      <DialogContent
+        className="max-w-3xl p-0 overflow-hidden"
+        aria-describedby="product-preview-modal"
+        aria-labelledby="product-preview-modal-title"
+      >
         <AnimatePresence>
           {open && (
             <div className="grid md:grid-cols-2 gap-8 lg:p-6 p-4">
@@ -34,7 +38,9 @@ export function ProductPreviewModal({
               <div>
                 <div className=" mb-4">
                   <div className="flex items-center justify-between mb-2">
-                    <h1 className="text-3xl font-bold">{product.name}</h1>
+                    <DialogTitle className="text-3xl font-bold">
+                      {product.name}
+                    </DialogTitle>
                     <div className="flex items-center gap-1">
                       <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
                       <span className="font-medium">

@@ -7,55 +7,69 @@ import { useBranchStore } from "@/store/branchStore";
 import { useLocationStore } from "@/store/locationStore";
 import { GitBranch, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const TopBar = () => {
   const { currentLocation } = useLocationStore();
-  const [showLocationModal, setShowLocationModal] = useState(false);
   const { currentBranch } = useBranchStore();
   const router = useRouter();
   const t = useTranslations("home");
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  console.log(currentLocation);
 
+  // location check logic
+  const checkAndRequestLocation = useCallback(() => {
+    if (!currentLocation?.address && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        () => setShowLocationModal(true),
+        () => setShowLocationModal(true)
+      );
+    } else if (!currentLocation?.address) {
+      setShowLocationModal(true);
+    }
+  }, [currentLocation]);
+
+  // Combine initialization effects
   useEffect(() => {
-    // wait for 1 second before checking if currentLocation is set
-    const timeout = setTimeout(() => {
-      if (!currentLocation && "geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          () => setShowLocationModal(true),
-          (error) => {
-            console.error("Error getting location:", error);
-            setShowLocationModal(true);
-          }
-        );
-      } else if (!currentLocation) {
-        setShowLocationModal(true);
-      }
-    }, 1000);
+    const timeout = setTimeout(checkAndRequestLocation, 1000);
 
-    return () => clearTimeout(timeout);
-  }, [currentLocation, router]);
-
-  useEffect(() => {
     const handleOffline = () => router.push("/no-internet");
     window.addEventListener("offline", handleOffline);
-    return () => window.removeEventListener("offline", handleOffline);
-  }, [router]);
 
-  console.log(currentBranch);
-  // if currentBranch is not set, redirect to select-branch page
-  useEffect(() => {
     if (!currentBranch) {
       router.push("/select-branch");
     }
-  }, [currentBranch, router]);
 
-  const handleLocationSelect = (location: {
-    address: string;
-    lat: number;
-    lng: number;
-  }) => {
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  // location display
+  const locationDisplay = useMemo(() => {
+    return currentLocation?.address || "Select Location";
+  }, [currentLocation?.address]);
+
+  // branch display
+  const branchDisplay = useMemo(() => {
+    return currentBranch ? currentBranch.name : "Select Branch";
+  }, [currentBranch?.name]);
+
+  const handleLocationSelect = useCallback(
+    (location: { address: string; lat: number; lng: number }) => {
+      setShowLocationModal(false);
+    },
+    []
+  );
+
+  const handleShowLocationModal = useCallback(() => {
+    setShowLocationModal(true);
+  }, []);
+
+  const handleCloseLocationModal = useCallback(() => {
     setShowLocationModal(false);
-  };
+  }, []);
 
   return (
     <nav className="w-full bg-primary/20 border-b">
@@ -66,9 +80,9 @@ const TopBar = () => {
           <Button
             variant="link"
             className="p-0 h-auto font-medium max-w-[200px] truncate"
-            onClick={() => setShowLocationModal(true)}
+            onClick={handleShowLocationModal}
           >
-            {currentLocation?.address || "Select Location"}
+            {locationDisplay}
           </Button>
         </div>
 
@@ -85,13 +99,13 @@ const TopBar = () => {
             onClick={() => router.push("/select-branch")}
           >
             <GitBranch className="h-4 w-4 mr-2 text-primary-text" />
-            {currentBranch ? currentBranch.name : "Select Branch"}
+            {branchDisplay}
           </Button>
         </div>
 
         <LocationModal
           isOpen={showLocationModal}
-          onClose={() => setShowLocationModal(false)}
+          onClose={handleCloseLocationModal}
           onLocationSelect={handleLocationSelect}
         />
       </div>

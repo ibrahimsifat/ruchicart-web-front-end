@@ -10,7 +10,7 @@ import {
   Mail,
   MapPin,
   Phone,
-  X,
+  Twitter,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -32,7 +32,7 @@ export function Footer() {
             <Facebook className="h-6 w-6" />
           </Link>
           <Link href="#" className="hover:text-primary-text transition-colors">
-            <X className="h-6 w-6" />
+            <Twitter className="h-6 w-6" />
           </Link>
           <Link href="#" className="hover:text-primary-text transition-colors">
             <Linkedin className="h-6 w-6" />

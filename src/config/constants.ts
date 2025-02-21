@@ -1,5 +1,5 @@
 export const CONSTANT = {
-  privatePages: ["/profile", "/checkout"],
+  privatePages: ["/dashboard"],
   locales: ["en", "bn"],
   defaultLocale: "en",
   cashOnDeliveryChangeAmount: 20,

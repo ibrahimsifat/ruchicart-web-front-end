@@ -28,7 +28,7 @@ import { auth } from "@/lib/utils/firebase";
 import { useAuthStore } from "@/store/authStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, User } from "lucide-react";
+import { Copy, Eye, EyeOff, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,6 +54,12 @@ export default function LoginForm() {
     googleLogin,
     existingAccountCheck,
   } = useAuthStore();
+
+  // Demo credentials
+  const DEMO_CREDENTIALS = {
+    email: "ibrahimsifat@gmail.com",
+    password: "pass123123",
+  };
 
   const emailLoginSchema = z.object({
     email: z.string().email(t("errors.invalidEmail")),
@@ -93,6 +99,10 @@ export default function LoginForm() {
     }
   };
 
+  const copyDemoCredentials = () => {
+    emailForm.setValue("email", DEMO_CREDENTIALS.email);
+    emailForm.setValue("password", DEMO_CREDENTIALS.password);
+  };
   useEffect(() => {
     // clear any from error if exist
     clearError();
@@ -172,13 +182,13 @@ export default function LoginForm() {
     <div className=" min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10">
       <Card className="w-full max-w-md">
         <motion.div
-          className="bg-gradient-to-r from-primary/50 to-secondary p-4 flex items-center justify-center gap-2 cursor-pointer"
+          className="bg-gradient-to-r from-primary to-primary/50 p-4 flex items-center justify-center gap-2 cursor-pointer"
           whileHover={{ y: -2 }}
           whileTap={{ y: 0 }}
           transition={{ duration: 0.2 }}
         >
           <Link
-            href="/checkout"
+            href="/guest-checkout"
             className="flex items-center gap-2 text-white hover:text-white/90 transition-colors"
           >
             <User className="h-5 w-5" />
@@ -274,6 +284,18 @@ export default function LoginForm() {
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? t("common.loading") : t("common.login")}
                   </Button>
+                  <div className="flex justify-between items-center">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={copyDemoCredentials}
+                      className="text-xs flex items-center gap-1"
+                    >
+                      <Copy className="h-3 w-3" />
+                      Copy Demo Credentials
+                    </Button>
+                  </div>
                 </form>
               </Form>
             </TabsContent>

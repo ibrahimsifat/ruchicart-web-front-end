@@ -25,6 +25,7 @@
     "backToLogin": "Back to Login"
   },
   "checkout": {
+    "signIn": "Sign In",
     "addNewAddress": "Add New Address",
     "orderDetails": "Order Details",
     "deliveryOptions": "Delivery Options",

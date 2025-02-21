@@ -1,11 +1,13 @@
 "use client";
 import CustomImage from "@/components/ui/customImage";
+import { useRouter } from "@/i18n/routing";
 import {
   useAddToWishlist,
   useDeleteFromWishlist,
   useGetWishlist,
 } from "@/lib/hooks/queries/wishlist/usewishlist";
 import { cn } from "@/lib/utils/utils";
+import { useAuthStore } from "@/store/authStore";
 import { ImageType } from "@/types/image";
 import { Product } from "@/types/product";
 import { Heart } from "lucide-react";
@@ -15,10 +17,16 @@ import { ProductPreviewModal } from "../product-preview-modal";
 const ProductCardImage = ({ product }: { product: Product }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [isWishListed, setIsWishListed] = useState(false);
-
+  const { user } = useAuthStore();
   const { mutate: addToWishlist } = useAddToWishlist(product.id);
   const { mutate: deleteFromWishlist } = useDeleteFromWishlist(product.id);
-  const { data: wishlist } = useGetWishlist({ pageParam: 1 });
+
+  // Only fetch wishlist data if user is authenticated
+  const { data: wishlist } = useGetWishlist({
+    pageParam: 1,
+    enabled: !!user, // This will prevent the query from running if user is not authenticated
+  });
+  const router = useRouter();
 
   useEffect(() => {
     if (wishlist?.products.some((item) => item.id === product.id)) {
@@ -27,6 +35,10 @@ const ProductCardImage = ({ product }: { product: Product }) => {
   }, [wishlist]);
 
   const handleWishlistClick = (e: React.MouseEvent) => {
+    if (!user) {
+      router.push("/auth/login");
+      return;
+    }
     e.stopPropagation();
     setIsWishListed(!isWishListed);
     if (isWishListed) {

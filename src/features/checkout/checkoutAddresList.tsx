@@ -10,7 +10,7 @@ import { Pencil, Trash2 } from "lucide-react";
 
 interface CheckoutAddressProps {
   handleEditAddress: (address: any) => void;
-  handleDeleteAddress: (addressId: string) => void;
+  handleDeleteAddress: (addressId: number) => void;
   addresses: Address[];
 }
 
@@ -19,9 +19,10 @@ const CheckoutAddressList = ({
   handleDeleteAddress,
   addresses,
 }: CheckoutAddressProps) => {
+  console.log(addresses);
   return (
     <AnimatePresence>
-      {addresses.map((address) => (
+      {addresses?.map((address) => (
         <motion.div
           key={address.id}
           initial={{ opacity: 0, height: 0 }}
@@ -57,7 +58,7 @@ const CheckoutAddressList = ({
                 className="h-8 w-8 p-0"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleDeleteAddress(String(address.id));
+                  handleDeleteAddress(address.id);
                 }}
               >
                 <Trash2 className="h-4 w-4" />

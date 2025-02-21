@@ -12,7 +12,7 @@ export const useAddressList = () => {
     queryKey: ["addresses", userId],
     queryFn: async () => {
       const { data } = await api.get(`customer/address/list`, {
-        params: { guest_id: token ? undefined : userId },
+        params: { guest_id: userId },
       });
 
       return data;
@@ -31,7 +31,7 @@ export const useAddAddress = () => {
     mutationFn: async (address: Address) => {
       const { data } = await api.post(`customer/address/add`, {
         ...address,
-        guest_id: userId,
+        guest_id: !token ? getGuestId() : undefined,
       });
       return data;
     },
@@ -51,7 +51,7 @@ export const useUpdateAddress = () => {
     mutationFn: async (address: Address) => {
       const { data } = await api.put(`customer/address/update/${address.id}`, {
         ...address,
-        guest_id: userId,
+        guest_id: !token ? getGuestId() : undefined,
       });
       return data;
     },
@@ -67,9 +67,9 @@ export const useDeleteAddress = () => {
   const userId = token ? useAuthStore.getState().user?.id : getGuestId();
 
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (id: number) => {
       const { data } = await api.delete(`customer/address/delete`, {
-        data: { address_id: id, guest_id: userId },
+        data: { address_id: id, guest_id: !token ? getGuestId() : undefined },
       });
       return data;
     },
@@ -78,26 +78,4 @@ export const useDeleteAddress = () => {
       queryClient.invalidateQueries({ queryKey: ["addresses", userId] });
     },
   });
-};
-
-export const getAddresses = async () => {
-  const response = await api.get("/customer/address/list");
-  return response.data;
-};
-
-export const addAddress = async (data: any) => {
-  const response = await api.post("/customer/address/add", data);
-  return response.data;
-};
-
-export const updateAddress = async (id: string, data: any) => {
-  const response = await api.put(`/customer/address/update/${id}`, data);
-  return response.data;
-};
-
-export const deleteAddress = async (addressId: string) => {
-  const response = await api.delete("/customer/address/delete", {
-    data: { address_id: addressId },
-  });
-  return response.data;
 };

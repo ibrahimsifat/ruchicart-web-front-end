@@ -3,16 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/ui/use-toast";
 import { ProductCard } from "@/features/products/product-card/product-card";
-import { api } from "@/lib/api/api";
-import { useCart } from "@/store/cartStore";
+import { useGetWishlist } from "@/lib/hooks/queries/wishlist/usewishlist";
+import { useAuthStore } from "@/store/authStore";
 import { Product } from "@/types/product";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface WishlistItem {
   total_size: number;
@@ -24,51 +22,12 @@ interface WishlistItem {
 
 export default function WishlistPage() {
   const [page, setPage] = useState(1);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const { addItem } = useCart();
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["wishlist", page],
-    queryFn: async () => {
-      const response = await api.get(
-        `/customer/wish-list?limit=10&offset=${page}`
-      );
-      return response.data;
-    },
-  });
-
-  const removeFromWishlist = useMutation({
-    mutationFn: (productId: number) =>
-      api.delete("/customer/wish-list/remove", {
-        data: { product_id: productId, type: "single" },
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
-      toast({
-        title: "Item removed from wishlist",
-        description:
-          "The item has been successfully removed from your wishlist.",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to remove item from wishlist. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  useEffect(() => {
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch wishlist items. Please try again.",
-        variant: "destructive",
-      });
-    }
-  }, [error, toast]);
+  const { user } = useAuthStore();
+  const { data: wishlist = { products: [], total_size: 0 }, isLoading } =
+    useGetWishlist({
+      pageParam: 1,
+      enabled: !!user,
+    });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -107,7 +66,7 @@ export default function WishlistPage() {
             </Card>
           ))}
         </div>
-      ) : data?.products?.length > 0 ? (
+      ) : wishlist?.products?.length > 0 ? (
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -115,7 +74,7 @@ export default function WishlistPage() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           <AnimatePresence>
-            {data.products.map((item: Product) => (
+            {wishlist?.products.map((item: Product) => (
               <motion.div
                 key={item.id}
                 variants={itemVariants}
@@ -139,7 +98,7 @@ export default function WishlistPage() {
           </Link>
         </div>
       )}
-      {data?.total_size > 10 && (
+      {wishlist?.total_size > 10 && (
         <div className="flex justify-center mt-8">
           <Button
             onClick={() => setPage((prev) => Math.max(1, prev - 1))}
@@ -150,7 +109,7 @@ export default function WishlistPage() {
           </Button>
           <Button
             onClick={() => setPage((prev) => prev + 1)}
-            disabled={page * 10 >= data.total_size}
+            disabled={page * 10 >= wishlist?.total_size}
           >
             Next
           </Button>

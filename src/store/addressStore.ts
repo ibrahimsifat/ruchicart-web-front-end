@@ -6,7 +6,7 @@ interface AddressState {
   addresses: Address[];
   addAddress: (address: Address) => void;
   updateAddress: (address: Address) => void;
-  deleteAddress: (id: string) => void;
+  deleteAddress: (id: number) => void;
   setAddresses: (addresses: Address[]) => void;
 }
 

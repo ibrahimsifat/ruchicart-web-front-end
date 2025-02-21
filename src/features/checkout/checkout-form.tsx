@@ -19,7 +19,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
-import CheckoutAddress from "@/features/checkout/checkoutAddresList";
+import CheckoutAddressList from "@/features/checkout/checkoutAddresList";
 import CheckoutAddressForm from "@/features/checkout/checkoutAddressForm";
 import { DeliveryTips } from "@/features/checkout/delivery-tips";
 import TakeAwayOrderSection from "@/features/checkout/takeAwayOrderSection";
@@ -35,6 +35,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useBranchStore } from "@/store/branchStore";
 import { useCart } from "@/store/cartStore";
 import { useLocationStore } from "@/store/locationStore";
+import { Address } from "@/types/address";
 import { BaseBranch } from "@/types/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapPin, Plus, ShoppingBag } from "lucide-react";
@@ -55,7 +56,6 @@ const formSchema = z.object({
   is_partial: z.number(),
   delivery_tip: z.number().optional(),
   stripe_payment_intent_id: z.string().optional(),
-  guest_id: z.union([z.string(), z.number()]).optional(),
   cart: z.array(
     z.object({
       product_id: z.string(),
@@ -84,6 +84,7 @@ interface CheckoutFormProps {
   deliveryTip: number;
   setDeliveryTip: React.Dispatch<React.SetStateAction<number>>;
   setIsCashOnDelivery: React.Dispatch<React.SetStateAction<boolean>>;
+  isGuest: boolean;
 }
 
 export function CheckoutForm({
@@ -92,6 +93,7 @@ export function CheckoutForm({
   deliveryTip,
   setDeliveryTip,
   setIsCashOnDelivery,
+  isGuest,
 }: CheckoutFormProps) {
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
@@ -109,6 +111,7 @@ export function CheckoutForm({
   const { toast } = useToast();
   const deliveryDate = new Date();
   const formattedDate = deliveryDate.toISOString().slice(0, 10);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -152,23 +155,23 @@ export function CheckoutForm({
     try {
       const newAddress = {
         ...values,
-        id: editingAddressId || Date.now().toString(),
+        id: editingAddressId || Date.now(),
         latitude: currentLocation?.lat || 0,
         longitude: currentLocation?.lng || 0,
         is_default: values.is_default ? 1 : 0,
-        is_guest: 0,
+        is_guest: isGuest ? 1 : 0,
       };
 
       if (editingAddressId) {
-        await updateAddressMutation.mutateAsync(newAddress);
-        updateAddress(newAddress);
+        await updateAddressMutation.mutateAsync(newAddress as Address);
+        updateAddress(newAddress as Address);
         toast({
           title: "Address Updated",
           description: "Your address has been updated successfully.",
         });
       } else {
-        await addAddressMutation.mutateAsync(newAddress);
-        addAddress(newAddress);
+        await addAddressMutation.mutateAsync(newAddress as Address);
+        addAddress(newAddress as Address);
         toast({
           title: "Address Added",
           description: "Your address has been added successfully.",
@@ -187,7 +190,7 @@ export function CheckoutForm({
     }
   };
 
-  const handleDeleteAddress = async (id: string) => {
+  const handleDeleteAddress = async (id: number) => {
     try {
       await deleteAddressMutation.mutateAsync(id);
       deleteAddress(id);
@@ -237,7 +240,6 @@ export function CheckoutForm({
       ...form.getValues(),
       payment_method: "cash_on_delivery",
       is_partial: 0,
-      guest_id: !token ? getGuestId() : undefined,
     };
     onSubmit(orderData);
   };
@@ -249,14 +251,13 @@ export function CheckoutForm({
     const orderData = {
       ...form.getValues(),
       delivery_address_id: 0,
-      guest_id: !token ? getGuestId() : undefined,
     };
     onSubmit(orderData);
   };
+
   const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
     const orderData = {
       ...values,
-      guest_id: !token && getGuestId() ? String(getGuestId()) : undefined,
     };
     if (
       values.payment_method === "stripe" &&
@@ -283,7 +284,7 @@ export function CheckoutForm({
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-primary" />
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-primary-text" />
+              <MapPin className="h-5 w-5 text-primary" />
               {t("orderDetails")}
             </CardTitle>
           </CardHeader>
@@ -369,13 +370,15 @@ export function CheckoutForm({
                       <FormItem>
                         <FormControl>
                           <RadioGroup
-                            onValueChange={field.onChange}
+                            onValueChange={(value) =>
+                              field.onChange(Number(value))
+                            }
                             value={field.value?.toString() || ""}
                             className="space-y-2"
                             required
                           >
                             {/* address list */}
-                            <CheckoutAddress
+                            <CheckoutAddressList
                               handleEditAddress={handleEditAddress}
                               handleDeleteAddress={handleDeleteAddress}
                               addresses={addresses}

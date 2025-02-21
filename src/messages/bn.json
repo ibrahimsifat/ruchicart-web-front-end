@@ -47,6 +47,7 @@
     "cuisine": "খাবার"
   },
   "checkout": {
+    "signIn": "লগইন করুন",
     "addNewAddress": "নতুন ঠিকানা যোগ করুন",
     "orderDetails": "অর্ডারের বিবরণ",
     "deliveryOptions": "ডেলিভারি অপশন",

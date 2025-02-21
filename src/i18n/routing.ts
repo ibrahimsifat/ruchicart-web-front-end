@@ -24,7 +24,9 @@ export const routing = defineRouting({
     "/cancellation-policy": "/cancellation-policy",
     "/dashboard": "/dashboard",
     "/become-a-delivery-man": "/become-a-delivery-man",
+    "/guest-checkout": "/guest-checkout",
     "#": "#",
+    "/auth/login": "/auth/login",
     "/pathnames": {
       en: "/pathnames",
       bn: "/pfadnamen",

@@ -3,13 +3,21 @@ import {
   addToWishlist,
   getWishlist,
   removeFromWishlist,
+  WishlistResponse,
 } from "@/lib/api/wishlist";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export const useGetWishlist = ({ pageParam = 1 }: { pageParam?: number }) => {
-  return useQuery({
+export const useGetWishlist = ({
+  pageParam = 1,
+  enabled = true,
+}: {
+  pageParam?: number;
+  enabled?: boolean;
+}) => {
+  return useQuery<WishlistResponse>({
     queryKey: queryKeys.wishlist.all,
     queryFn: () => getWishlist({ pageParam }),
+    enabled,
   });
 };
 

@@ -23,7 +23,6 @@ export default function middleware(req: NextRequest) {
 
   // Extract locale using regex test instead of split/replace
   const localeMatch = pathname.match(LOCALE_REGEX);
-  const locale = localeMatch ? localeMatch[1] : CONSTANT.defaultLocale;
   const pathWithoutLocale = localeMatch
     ? pathname.slice(localeMatch[0].length)
     : pathname;

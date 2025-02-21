@@ -32,3 +32,16 @@ export const formatTime = (time: string) => {
   startDate.setHours(hour, minute, 0, 0);
   return format(startDate, "hh:mm a");
 };
+
+export const calculateTimeLeft = (targetDate: string) => {
+  const difference = +new Date(targetDate) - +new Date();
+
+  if (difference <= 0) return null;
+
+  return {
+    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((difference / 1000 / 60) % 60),
+    seconds: Math.floor((difference / 1000) % 60),
+  };
+};

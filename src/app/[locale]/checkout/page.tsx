@@ -1,4 +1,4 @@
-import Checkout from "@/features/checkout";
+import Checkout from "@/features/checkout/checkout";
 import PageLayout from "../layouts/pageLayout";
 
 export default function CheckoutPage() {

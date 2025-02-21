@@ -1,6 +1,5 @@
 import { CONSTANT } from "@/config/constants";
 import { api } from "@/lib/api/api";
-import { useUserInfo } from "@/lib/hooks/queries/user/useUsers";
 import { auth, googleProvider } from "@/lib/utils/firebase";
 import { formatFirebaseAuthError } from "@/lib/utils/firebase-errors";
 import { getAxiosErrorMessage } from "@/lib/utils/getAxiosErrorMessage";
@@ -181,7 +180,7 @@ export const useAuthStore = create<AuthState>()(
           return null;
         }
 
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null, token });
         Cookies.set("auth-token", token, { path: "/" });
         try {
           const response = await api.get("/customer/info");
@@ -204,8 +203,8 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await api.post("/auth/login", loginData);
           const data = response.data;
-          const { data: user } = useUserInfo();
-          set({ token: data.token, user, isLoading: false });
+          // const { data: user } = useUserInfo();
+          set({ token: data.token, isLoading: false });
           Cookies.set("auth-token", data.token, { path: "/" });
         } catch (error) {
           const errorMessage = getAxiosErrorMessage(
@@ -254,10 +253,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         console.log(userData);
         try {
-          const response = await api.post(
-            `/api/v1/auth/registration`,
-            userData
-          );
+          const response = await api.post(`/auth/registration`, userData);
           if (response.status !== 200) throw new Error("Registration failed");
           set({ isLoading: false });
         } catch (error) {
@@ -296,7 +292,7 @@ export const useAuthStore = create<AuthState>()(
       verifyRegistrationOtp_manual: async (phone: string, otp: string) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await api.post(`/api/v1/auth/verify-phone`, {
+          const response = await api.post(`/auth/verify-phone`, {
             phone,
             token: otp,
           });
@@ -483,7 +479,7 @@ export const useAuthStore = create<AuthState>()(
       getGuestId: () => {
         let guestId = Cookies.get("guestId");
         if (!guestId) {
-          guestId = "guest_" + Math.random().toString(36).slice(2, 18);
+          guestId = String(Math.floor(Math.random() * 9000000000) + 1000000000);
           Cookies.set("guestId", guestId, { path: "/" });
         }
         return guestId;

@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export interface Address {
-  id: number | string;
+  id: number;
   address_type: string;
   label?: string;
   address: string;
@@ -21,7 +21,6 @@ export const addressZodSchema = z.object({
   road: z.string().min(1, "Road is required"),
   floor: z.string().min(1, "Floor is required"),
   house: z.string().min(1, "House is required"),
-
   contact_person_name: z.string().min(1, "Contact person name is required"),
   contact_person_number: z.string().min(1, "Phone number is required"),
   is_default: z.boolean().optional(),
