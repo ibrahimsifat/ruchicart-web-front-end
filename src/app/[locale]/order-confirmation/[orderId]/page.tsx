@@ -1,5 +1,6 @@
 "use client";
 
+import PageLayout from "@/app/[locale]/layouts/pageLayout";
 import OrderConfirmationSkeleton from "@/components/skeleton/confirm-order";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,6 @@ import { useOrderTrack } from "@/lib/hooks/queries/order/useOrders";
 import { useAuthStore } from "@/store/authStore";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
-import PageLayout from "../../layouts/pageLayout";
 import { statusSteps } from "../../order-tracking/page";
 
 interface CheckmarkProps {

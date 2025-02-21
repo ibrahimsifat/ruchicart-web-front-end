@@ -1,3 +1,4 @@
+import PageLayout from "@/app/[locale]/layouts/pageLayout";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BranchInfo } from "@/features/product-details/branch-info";
@@ -9,7 +10,6 @@ import { RelatedProducts } from "@/features/product-details/related-products";
 import { getProductDetails } from "@/lib/api/services/product.service";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import PageLayout from "../../layouts/pageLayout";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const { id } = await params;
