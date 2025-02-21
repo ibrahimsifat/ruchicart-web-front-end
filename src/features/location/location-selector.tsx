@@ -12,8 +12,6 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MapStatus } from "./mapStatus";
 
-const libraries: ("places" | "geometry")[] = ["places", "geometry"];
-
 // Default center (Bangladesh)
 const defaultCenter = {
   lat: 23.8103,

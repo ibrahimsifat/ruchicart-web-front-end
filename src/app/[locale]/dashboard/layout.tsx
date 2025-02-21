@@ -2,9 +2,9 @@
 import { DashboardSidebar } from "@/features/dashboard/dashboardSidebar";
 import { useRouter } from "@/i18n/routing";
 
+import PageLayout from "@/app/[locale]/layouts/pageLayout";
 import { useAuthStore } from "@/store/authStore";
 import { useEffect } from "react";
-import PageLayout from "../layouts/pageLayout";
 
 export default function DashboardLayout({
   children,

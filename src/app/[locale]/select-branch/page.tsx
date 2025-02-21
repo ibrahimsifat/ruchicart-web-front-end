@@ -1,5 +1,6 @@
 "use client";
 
+import PageLayout from "@/app/[locale]/layouts/pageLayout";
 import { LoadingList } from "@/components/skeleton/branch-skeleton";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,8 +17,8 @@ import { useLocationStore } from "@/store/locationStore";
 import { BaseBranch } from "@/types/branch";
 import { useTranslations } from "next-intl";
 import React, { memo, Suspense, useCallback, useMemo, useState } from "react";
-import PageLayout from "../layouts/pageLayout";
-// Separate loading component
+
+//  loading component
 const MapLoadingComponent = memo(() => (
   <div className="h-full w-full animate-pulse rounded-lg bg-muted" />
 ));
