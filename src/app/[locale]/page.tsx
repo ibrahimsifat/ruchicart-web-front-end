@@ -21,8 +21,8 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
-// Separate metadata generation
-async function generateMetadata({
+//  metadata generation
+export async function generateMetadata({
   params,
 }: {
   params: { locale: string };
@@ -58,7 +58,6 @@ async function generateMetadata({
   };
 }
 
-// Main page component
 export default async function Home() {
   const featuredProducts = await getFeaturedProducts();
   const trendingProducts = await getTrendingProducts();

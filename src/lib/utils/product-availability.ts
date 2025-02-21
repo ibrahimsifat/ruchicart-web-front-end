@@ -1,3 +1,4 @@
+"use client";
 import { addDays, isWithinInterval, set } from "date-fns";
 
 export function isProductAvailable(

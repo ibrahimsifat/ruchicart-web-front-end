@@ -2,11 +2,7 @@ import { api } from "./api";
 import { fetcher } from "./services/api.service";
 
 export async function getPages() {
-  const response = await fetcher(`/pages`, {
-    cacheConfig: {
-      revalidate: 60 * 60 * 24, // 24 hours
-    },
-  });
+  const response = await fetcher(`/pages`);
 
   return response as {
     about_us: string;
