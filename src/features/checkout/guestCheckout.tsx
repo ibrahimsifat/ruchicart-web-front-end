@@ -10,7 +10,6 @@ import { isProductAvailable } from "@/lib/utils/product-availability";
 import { formSchema } from "@/lib/utils/schema";
 import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cartStore";
-import { useLocationStore } from "@/store/locationStore";
 import { LogIn } from "lucide-react";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
@@ -42,17 +41,20 @@ export default function GuestCheckout() {
   const t = useTranslations("checkout");
   const { toast } = useToast();
   const { items, total, itemCount, clearCart } = useCart();
-  const { currentLocation, addSavedLocation } = useLocationStore();
+  const { token } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [unavailableItems, setUnavailableItems] = useState<string[]>([]);
   const [deliveryTip, setDeliveryTip] = useState(0);
   const [isCashOnDelivery, setIsCashOnDelivery] = useState(false);
-  const { token, getGuestId } = useAuthStore();
+  const { getGuestId } = useAuthStore();
 
   useEffect(() => {
     // if (itemCount === 0) {
     //   router.push("/");
     // }
+    if (token) {
+      router.push("/checkout");
+    }
 
     const checkAvailability = () => {
       const unavailable = items
@@ -74,6 +76,14 @@ export default function GuestCheckout() {
   }, [itemCount, router, items]);
 
   const handlePlaceOrder = async (orderData: z.infer<typeof formSchema>) => {
+    if (unavailableItems.length > 0) {
+      toast({
+        title: "Error",
+        description: "Please remove unavailable items from your cart",
+        variant: "destructive",
+      });
+      return;
+    }
     setIsLoading(true);
     try {
       // Add cart data from the cart state

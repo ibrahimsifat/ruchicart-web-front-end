@@ -6,6 +6,7 @@ import CheckoutSkeleton from "@/components/skeleton/checkout-skeleton";
 import OrderSummarySkeleton from "@/components/skeleton/orderSummary-skeleton";
 import { placeOrder } from "@/lib/api/order";
 import { formatVariations } from "@/lib/utils/cart";
+import { isProductAvailable } from "@/lib/utils/product-availability";
 import { formSchema } from "@/lib/utils/schema";
 import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cartStore";
@@ -36,12 +37,35 @@ export default function Checkout() {
   const router = useRouter();
   const { toast } = useToast();
   const { items, total, itemCount, clearCart } = useCart();
-
+  const [unavailableItems, setUnavailableItems] = useState<string[]>([]);
   const [deliveryTip, setDeliveryTip] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isCashOnDelivery, setIsCashOnDelivery] = useState(false);
   const { token } = useAuthStore();
 
+  useEffect(() => {
+    // if (itemCount === 0) {
+    //   router.push("/");
+    // }
+
+    const checkAvailability = () => {
+      const unavailable = items
+        .filter(
+          (item) =>
+            !isProductAvailable(
+              item.available_time_starts || "",
+              item.available_time_ends || ""
+            )
+        )
+        .map((item) => item.name);
+      setUnavailableItems(unavailable);
+    };
+
+    checkAvailability();
+    const interval = setInterval(checkAvailability, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, [itemCount, router, items]);
   // redirect to guest checkout if user is not authenticated
   useEffect(() => {
     if (!token) {
@@ -54,9 +78,17 @@ export default function Checkout() {
     if (itemCount === 0) {
       router.push("/");
     }
-  }, [itemCount, router]);
+  }, [itemCount, router, token]);
 
   const handlePlaceOrder = async (orderData: z.infer<typeof formSchema>) => {
+    if (unavailableItems.length > 0) {
+      toast({
+        title: "Error",
+        description: "Please remove unavailable items from your cart",
+        variant: "destructive",
+      });
+      return;
+    }
     setIsLoading(true);
     try {
       // Add cart data from the cart state

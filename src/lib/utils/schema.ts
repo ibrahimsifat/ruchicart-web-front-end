@@ -5,7 +5,7 @@ export const formSchema = z.object({
   payment_method: z.string().min(1, "Please select a payment method"),
   order_type: z.enum(["delivery", "take_away"]),
   delivery_address_id: z.number().optional(),
-  branch_id: z.string(),
+  branch_id: z.number().optional(),
   delivery_time: z.string(),
   delivery_date: z.string(),
   distance: z.number(),
