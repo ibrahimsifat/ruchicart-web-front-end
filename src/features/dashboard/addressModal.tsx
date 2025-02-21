@@ -23,18 +23,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
 import { LocationSelector } from "@/features/location/location-selector";
-import { getQueryClient } from "@/lib/api/queries";
 import {
-  addAddress,
-  updateAddress,
+  useAddAddress,
+  useUpdateAddress,
 } from "@/lib/hooks/queries/address/useAddress";
+import { Address } from "@/types/address";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
 
 const addressSchema = z.object({
@@ -50,12 +48,13 @@ export function AddressModal({
   isOpen,
   onClose,
   address,
+  setSelectedAddress,
 }: {
   isOpen: boolean;
   onClose: () => void;
   address: any;
+  setSelectedAddress: (address: any) => void;
 }) {
-  const queryClient = getQueryClient();
   const isEditing = !!address;
   const [showMap, setShowMap] = useState(false);
   const t = useTranslations("address");
@@ -81,52 +80,17 @@ export function AddressModal({
     }
   }, [address, form]);
 
-  const addAddressMutation = useMutation({
-    mutationFn: addAddress,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["addresses"] });
-      toast({
-        title: t("addressAdded"),
-        description: t("yourAddressHasBeenSuccessfullyAdded"),
-      });
+  const addAddressMutation = useAddAddress();
+  const updateAddressMutation = useUpdateAddress();
 
-      onClose();
-    },
-    onError: () => {
-      toast({
-        title: t("error"),
-        description: t("failedToAddAddressPleaseTryAgain"),
-        variant: "destructive",
-      });
-    },
-  });
-
-  const updateAddressMutation = useMutation({
-    mutationFn: (data: any) => updateAddress(address.id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["addresses"] });
-
-      toast({
-        title: t("addressUpdated"),
-        description: t("yourAddressHasBeenSuccessfullyUpdated"),
-      });
-      onClose();
-    },
-    onError: () => {
-      toast({
-        title: t("error"),
-        description: t("failedToUpdateAddressPleaseTryAgain"),
-        variant: "destructive",
-      });
-    },
-  });
-
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: z.infer<typeof addressSchema>) => {
     if (isEditing) {
-      updateAddressMutation.mutate(data);
+      console.log(data);
+      updateAddressMutation.mutateAsync(data as Address);
     } else {
-      addAddressMutation.mutate(data);
+      addAddressMutation.mutateAsync(data as Address);
     }
+    // onClose();
   };
 
   const handleLocationSelect = (location: any) => {
@@ -146,7 +110,10 @@ export function AddressModal({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit as SubmitHandler<any>)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="contact_person_name"

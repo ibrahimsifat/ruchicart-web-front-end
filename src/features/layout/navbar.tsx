@@ -214,11 +214,11 @@ const UserMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer">
           <User className="mr-2 h-4 w-4" />
-          <Link href="/dashboard">{t("profile")}</Link>
+          <Link href="/dashboard">{t("dashboard")}</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer">
           <ShoppingBag className="mr-2 h-4 w-4" />
           <Link href="/dashboard/orders">{t("orders")}</Link>
         </DropdownMenuItem>

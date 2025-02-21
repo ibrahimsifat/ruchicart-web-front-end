@@ -165,6 +165,8 @@
     "apply": "Apply"
   },
   "address": {
+    "addNewAddress": "Add New Address",
+    "address": "Address",
     "addressAdded": "Address added",
     "yourAddressHasBeenSuccessfullyAdded": "Your address has been successfully added.",
     "failedToAddAddressPleaseTryAgain": "Failed to add address. Please try again.",
@@ -213,6 +215,7 @@
     "logout": "Logout"
   },
   "home": {
+    "dashboard": "Dashboard",
     "heroTitle": "Delicious Meals, Delivered Fast",
     "heroSubtitle": "Enjoy 20% off on your first order",
     "orderNow": "Order Now",

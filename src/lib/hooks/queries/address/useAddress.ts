@@ -12,7 +12,7 @@ export const useAddressList = () => {
     queryKey: ["addresses", userId],
     queryFn: async () => {
       const { data } = await api.get(`customer/address/list`, {
-        params: { guest_id: userId },
+        params: { guest_id: !token ? getGuestId() : undefined },
       });
 
       return data;

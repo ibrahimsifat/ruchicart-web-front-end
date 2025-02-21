@@ -170,6 +170,8 @@
     "apply": "প্রয়োগ করুন"
   },
   "address": {
+    "addNewAddress": "নতুন ঠিকানা যোগ করুন",
+    "address": "ঠিকানা",
     "addressAdded": "ঠিকানা যোগ করা হয়েছে",
     "yourAddressHasBeenSuccessfullyAdded": "আপনার ঠিকানা সফলভাবে যোগ করা হয়েছে",
     "failedToAddAddressPleaseTryAgain": "ঠিকানা যোগ করা সম্ভব নয়। দুঃখিত, আবার চেষ্টা করুন",
@@ -230,6 +232,7 @@
     "logout": "লগআউট"
   },
   "home": {
+    "dashboard": "ড্যাশবোর্ড",
     "heroTitle": "সুস্বাদু খাবার, দ্রুত ডেলিভারি",
     "heroSubtitle": "আপনার প্রথম অর্ডারে ২০% ছাড় উপভোগ করুন",
     "orderNow": "এখনই অর্ডার করুন",

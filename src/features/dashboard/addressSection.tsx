@@ -2,13 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "@/components/ui/use-toast";
-import { getQueryClient } from "@/lib/api/queries";
 import {
-  deleteAddress,
-  getAddresses,
+  useAddressList,
+  useDeleteAddress,
 } from "@/lib/hooks/queries/address/useAddress";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { Briefcase, Building2, Home, MapPin, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -16,38 +13,13 @@ import { AddressModal } from "./addressModal";
 import { DeleteConfirmationModal } from "./deleteConfirmationModal";
 
 export function AddressSection() {
-  const queryClient = getQueryClient();
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
   const t = useTranslations("dashboard");
-  const {
-    data: addresses,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["addresses"],
-    queryFn: getAddresses,
-  });
-
-  const deleteAddressMutation = useMutation({
-    mutationFn: deleteAddress,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["addresses"] });
-      toast({
-        title: t("addressDeleted"),
-        description: t("addressDeletedDescription"),
-      });
-    },
-    onError: () => {
-      toast({
-        title: t("error"),
-        description: t("failedToDeleteAddress"),
-        variant: "destructive",
-      });
-    },
-  });
+  const { data: addresses, isLoading, error } = useAddressList();
+  const deleteAddressMutation = useDeleteAddress();
 
   const handleAddAddress = () => {
     setSelectedAddress(null);
@@ -90,7 +62,9 @@ export function AddressSection() {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>{t("myAddresses")}</CardTitle>
-        <Button onClick={handleAddAddress}>{t("addNewAddress")}</Button>
+        <Button variant="outline" onClick={handleAddAddress}>
+          {t("addNewAddress")}
+        </Button>
       </CardHeader>
       <CardContent>
         {addresses.length === 0 ? (
@@ -143,6 +117,7 @@ export function AddressSection() {
         isOpen={isAddressModalOpen}
         onClose={() => setIsAddressModalOpen(false)}
         address={selectedAddress}
+        setIsAddressModalOpen={setIsAddressModalOpen}
       />
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
