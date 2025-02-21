@@ -67,7 +67,7 @@ export const useDeleteAddress = () => {
   const userId = token ? useAuthStore.getState().user?.id : getGuestId();
 
   return useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       const { data } = await api.delete(`customer/address/delete`, {
         data: { address_id: id, guest_id: !token ? getGuestId() : undefined },
       });

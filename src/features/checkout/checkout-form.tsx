@@ -27,10 +27,11 @@ import { LocationSelector } from "@/features/location/location-selector";
 import { PaymentMethods } from "@/features/order/paymentMethods";
 import {
   useAddAddress,
+  useAddressList,
   useDeleteAddress,
   useUpdateAddress,
 } from "@/lib/hooks/queries/address/useAddress";
-import { useAddressStore } from "@/store/addressStore";
+import { formSchema } from "@/lib/utils/schema";
 import { useAuthStore } from "@/store/authStore";
 import { useBranchStore } from "@/store/branchStore";
 import { useCart } from "@/store/cartStore";
@@ -43,29 +44,6 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
-const formSchema = z.object({
-  order_amount: z.number(),
-  payment_method: z.string(),
-  order_type: z.enum(["delivery", "take_away"]),
-  delivery_address_id: z.number().optional(),
-  branch_id: z.number(),
-  delivery_time: z.string(),
-  delivery_date: z.string(),
-  distance: z.number(),
-  is_partial: z.number(),
-  delivery_tip: z.number().optional(),
-  stripe_payment_intent_id: z.string().optional(),
-  cart: z.array(
-    z.object({
-      product_id: z.string(),
-      quantity: z.number(),
-      variant: z.array(z.any()),
-      add_on_ids: z.array(z.any()),
-      add_on_qtys: z.array(z.any()),
-    })
-  ),
-});
 
 const addressSchema = z.object({
   address_type: z.enum(["home", "work", "other"]),
@@ -84,7 +62,6 @@ interface CheckoutFormProps {
   deliveryTip: number;
   setDeliveryTip: React.Dispatch<React.SetStateAction<number>>;
   setIsCashOnDelivery: React.Dispatch<React.SetStateAction<boolean>>;
-  isGuest: boolean;
 }
 
 export function CheckoutForm({
@@ -93,7 +70,6 @@ export function CheckoutForm({
   deliveryTip,
   setDeliveryTip,
   setIsCashOnDelivery,
-  isGuest,
 }: CheckoutFormProps) {
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
@@ -102,8 +78,9 @@ export function CheckoutForm({
   const { items, total } = useCart();
   const t = useTranslations("checkout");
   const { token, getGuestId } = useAuthStore();
-  const { addresses, addAddress, updateAddress, deleteAddress } =
-    useAddressStore();
+  // const { addresses, addAddress, updateAddress, deleteAddress } =
+  //   useAddressStore();
+  const { data: addresses } = useAddressList();
   const addAddressMutation = useAddAddress();
   const updateAddressMutation = useUpdateAddress();
   const deleteAddressMutation = useDeleteAddress();
@@ -127,6 +104,7 @@ export function CheckoutForm({
       delivery_tip: deliveryTip,
     },
   });
+
   useEffect(() => {
     if (form.watch("payment_method") === "cash_on_delivery") {
       setIsCashOnDelivery(true);
@@ -159,19 +137,19 @@ export function CheckoutForm({
         latitude: currentLocation?.lat || 0,
         longitude: currentLocation?.lng || 0,
         is_default: values.is_default ? 1 : 0,
-        is_guest: isGuest ? 1 : 0,
+        is_guest: token ? 0 : 1,
       };
 
       if (editingAddressId) {
         await updateAddressMutation.mutateAsync(newAddress as Address);
-        updateAddress(newAddress as Address);
+        // updateAddress(newAddress as Address);
         toast({
           title: "Address Updated",
           description: "Your address has been updated successfully.",
         });
       } else {
         await addAddressMutation.mutateAsync(newAddress as Address);
-        addAddress(newAddress as Address);
+        // addAddress(newAddress as Address);
         toast({
           title: "Address Added",
           description: "Your address has been added successfully.",
@@ -190,10 +168,11 @@ export function CheckoutForm({
     }
   };
 
-  const handleDeleteAddress = async (id: number) => {
+  const handleDeleteAddress = async (id: string) => {
     try {
+      console.log("delete address", id);
       await deleteAddressMutation.mutateAsync(id);
-      deleteAddress(id);
+      // deleteAddress(id);
       toast({
         title: "Address Deleted",
         description: "The address has been successfully deleted.",

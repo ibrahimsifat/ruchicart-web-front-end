@@ -10,7 +10,7 @@ import { Pencil, Trash2 } from "lucide-react";
 
 interface CheckoutAddressProps {
   handleEditAddress: (address: any) => void;
-  handleDeleteAddress: (addressId: number) => void;
+  handleDeleteAddress: (addressId: string) => void;
   addresses: Address[];
 }
 
@@ -58,7 +58,7 @@ const CheckoutAddressList = ({
                 className="h-8 w-8 p-0"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleDeleteAddress(address.id);
+                  handleDeleteAddress(String(address.id));
                 }}
               >
                 <Trash2 className="h-4 w-4" />

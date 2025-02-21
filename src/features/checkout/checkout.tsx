@@ -6,12 +6,14 @@ import CheckoutSkeleton from "@/components/skeleton/checkout-skeleton";
 import OrderSummarySkeleton from "@/components/skeleton/orderSummary-skeleton";
 import { placeOrder } from "@/lib/api/order";
 import { formatVariations } from "@/lib/utils/cart";
+import { formSchema } from "@/lib/utils/schema";
 import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cartStore";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import * as z from "zod";
+
 // lazy loading
 const OrderSummary = dynamic(
   () => import("@/features/order/orderSummary").then((mod) => mod.OrderSummary),
@@ -53,40 +55,6 @@ export default function Checkout() {
       router.push("/");
     }
   }, [itemCount, router]);
-
-  const formSchema = z.object({
-    order_amount: z.number(),
-    payment_method: z.string().min(1, "Please select a payment method"),
-    order_type: z.enum(["delivery", "take_away"]),
-    delivery_address_id: z.number().optional(),
-    branch_id: z.string(),
-    delivery_time: z.string(),
-    delivery_date: z.string(),
-    distance: z.number(),
-    is_partial: z.number(),
-    delivery_tip: z.number().optional(),
-    stripe_payment_intent_id: z.string().optional(),
-    cart: z.array(
-      z.object({
-        product_id: z.string(),
-        quantity: z.number(),
-        variant: z.array(
-          z.object({
-            name: z.string(),
-            values: z.array(
-              z.object({
-                label: z.array(z.string()),
-                optionPrice: z.number(),
-              })
-            ),
-          })
-        ),
-        add_on_ids: z.array(z.number()),
-        add_on_qtys: z.array(z.number()),
-      })
-    ),
-    change_amount: z.string().optional(),
-  });
 
   const handlePlaceOrder = async (orderData: z.infer<typeof formSchema>) => {
     setIsLoading(true);
