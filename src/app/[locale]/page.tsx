@@ -11,6 +11,7 @@ import { DiscountBanner } from "@/features/home/discountBanner";
 import { FeaturedProducts } from "@/features/home/featuredProducts";
 import HeroSliderContainer from "@/features/home/heroSlider/HeroSliderContainer";
 import { TrendingDishes } from "@/features/home/trendingDishes";
+import PageLayout from "@/layouts/pageLayout";
 import { getCategories } from "@/lib/api/services/category.service";
 import {
   getFeaturedProducts,
@@ -19,7 +20,6 @@ import {
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import PageLayout from "./layouts/pageLayout";
 
 // Separate metadata generation
 async function generateMetadata({

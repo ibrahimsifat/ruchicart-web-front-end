@@ -1,6 +1,5 @@
 "use client";
 
-import PageLayout from "@/app/[locale]/layouts/pageLayout";
 import { LoadingList } from "@/components/skeleton/branch-skeleton";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,6 +7,7 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { useToast } from "@/components/ui/use-toast";
 import { BranchListItem } from "@/features/branch/BranchListItem";
 import { Link } from "@/i18n/routing";
+import PageLayout from "@/layouts/pageLayout";
 import { api } from "@/lib/api/api";
 import { useBranch } from "@/lib/hooks/queries/Branch/useBranch";
 import { calculateDistance } from "@/lib/utils/distance";

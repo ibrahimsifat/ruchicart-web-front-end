@@ -1,4 +1,3 @@
-import PageLayout from "@/app/[locale]/layouts/pageLayout";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BranchInfo } from "@/features/product-details/branch-info";
@@ -7,6 +6,7 @@ import { ProductGallery } from "@/features/product-details/product-gallery";
 import { PaymentPromotions } from "@/features/product-details/promotion/payment-promotions";
 import TrustBadges from "@/features/product-details/promotion/trust-badges";
 import { RelatedProducts } from "@/features/product-details/related-products";
+import PageLayout from "@/layouts/pageLayout";
 import { getProductDetails } from "@/lib/api/services/product.service";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";

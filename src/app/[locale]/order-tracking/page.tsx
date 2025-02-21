@@ -17,8 +17,8 @@ import { useAuthStore } from "@/store/authStore";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 
-import PageLayout from "@/app/[locale]/layouts/pageLayout";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import PageLayout from "@/layouts/pageLayout";
 import { StatusStep } from "@/types/order";
 import { AxiosError } from "axios";
 import { CheckCircle, Clock, Package, Search, Truck } from "lucide-react";

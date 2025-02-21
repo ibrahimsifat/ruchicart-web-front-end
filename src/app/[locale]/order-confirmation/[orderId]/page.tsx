@@ -1,6 +1,5 @@
 "use client";
 
-import PageLayout from "@/app/[locale]/layouts/pageLayout";
 import OrderConfirmationSkeleton from "@/components/skeleton/confirm-order";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { OrderDetails } from "@/features/order-traking/OrderDetails";
 import { OrderItems } from "@/features/order-traking/OrderItems";
 import { OrderTimeline } from "@/features/order-traking/OrderTimeline";
 import { useRouter } from "@/i18n/routing";
+import PageLayout from "@/layouts/pageLayout";
 import { useOrderTrack } from "@/lib/hooks/queries/order/useOrders";
 import { useAuthStore } from "@/store/authStore";
 import { motion } from "framer-motion";

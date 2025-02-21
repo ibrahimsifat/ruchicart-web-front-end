@@ -1,7 +1,7 @@
 import { getPages } from "@/lib/api/pages";
 import { cleanContent } from "@/lib/utils/utils";
 import type { Metadata } from "next";
-import { StaticPageLayout } from "../layouts/staticPageLayout";
+import { StaticPageLayout } from "../../../layouts/staticPageLayout";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | RuchiCart",
