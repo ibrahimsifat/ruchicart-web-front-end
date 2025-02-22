@@ -56,10 +56,10 @@ export function TransferPointsModal({
       await transferPointsToWallet(Number(values.points));
       toast({
         title: "Success",
-        description: `${values.points} points transferred to your wallet.`,
+        description: `${values.points} points have been transferred to your wallet.`,
       });
-      onClose();
       onSuccess();
+      onClose();
     } catch (error) {
       toast({
         title: "Error",
@@ -93,14 +93,13 @@ export function TransferPointsModal({
                       max={currentPoints}
                     />
                   </FormControl>
-                  <p className="text-sm text-muted-foreground">
-                    Available points: {currentPoints}
-                  </p>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
+            <p className="text-sm text-muted-foreground">
+              You have {currentPoints} points available to transfer.
+            </p>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Transferring..." : "Transfer Points"}
             </Button>

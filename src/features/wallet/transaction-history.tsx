@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -31,11 +32,15 @@ import { useState } from "react";
 interface TransactionHistoryProps {
   transactions: WalletTransaction[];
   onFilterChange: (type: string) => void;
+  onLoadMore: () => void;
+  hasMore: boolean;
 }
 
 export function TransactionHistory({
   transactions,
   onFilterChange,
+  onLoadMore,
+  hasMore,
 }: TransactionHistoryProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -56,7 +61,7 @@ export function TransactionHistory({
       case "order_place":
         return <ArrowDownRight className="h-4 w-4 text-red-500" />;
       default:
-        return <Gift className="h-4 w-4 text-primary-text" />;
+        return <Gift className="h-4 w-4 text-primary" />;
     }
   };
 
@@ -148,6 +153,11 @@ export function TransactionHistory({
             </TableBody>
           </Table>
         </div>
+        {hasMore && (
+          <div className="mt-4 text-center">
+            <Button onClick={onLoadMore}>Load More</Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

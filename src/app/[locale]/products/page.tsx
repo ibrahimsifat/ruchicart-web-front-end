@@ -1,3 +1,4 @@
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ProductsLoading } from "@/components/skeleton/products-loading";
 import { HeroSkeleton } from "@/components/ui/skeletons";
 import { CategoryBanners } from "@/features/products/category-banners";
@@ -13,7 +14,7 @@ export default async function ProductsPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   return (
-    <Suspense fallback={<div>Loading category...</div>}>
+    <Suspense fallback={<LoadingSpinner />}>
       <ProductsPageWrapper searchParams={searchParams} />
     </Suspense>
   );

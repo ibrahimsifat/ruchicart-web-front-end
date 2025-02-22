@@ -1,4 +1,3 @@
-import ErrorBoundary from "@/components/error-boundary";
 import { routing } from "@/i18n/routing";
 import BaseLayout from "@/layouts/baseLayout";
 import "@/styles/globals.css";
@@ -7,14 +6,17 @@ import { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
+
 type SupportedLocale = (typeof routing.locales)[number];
 type Props = {
   children: ReactNode;
   params: { locale: string };
 };
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
+
 export async function generateMetadata({
   params,
 }: Omit<Props, "children">): Promise<Metadata> {
@@ -55,11 +57,12 @@ export default async function RootLayout({ children, params }: Props) {
 
   // Enable static rendering
   setRequestLocale(locale);
+
   return (
-    <ErrorBoundary>
+    <>
       <BaseLayout locale={locale}>{children}</BaseLayout>
       <SpeedInsights />
-    </ErrorBoundary>
+    </>
   );
 }
 function isValidLocale(locale: string): locale is SupportedLocale {

@@ -14,14 +14,16 @@ export default function WalletPage() {
   const [showAddFunds, setShowAddFunds] = useState(false);
   const [showTransferPoints, setShowTransferPoints] = useState(false);
   const [transactionType, setTransactionType] = useState<string>("");
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   const { data: transactions, refetch: refetchTransactions } = useQuery({
-    queryKey: ["wallet-transactions", transactionType],
+    queryKey: ["wallet-transactions", transactionType, page],
     queryFn: () =>
       getWalletTransactions({
-        limit: 10,
-        offset: 0,
-        transaction_type: transactionType,
+        limit,
+        offset: (page - 1) * limit,
+        transaction_type: transactionType || undefined,
       }),
   });
 
@@ -30,7 +32,11 @@ export default function WalletPage() {
     queryFn: getWalletBonuses,
   });
 
-  const handleTransferPointsSuccess = () => {
+  const handleLoadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const handleSuccess = () => {
     refetchTransactions();
   };
 
@@ -51,7 +57,12 @@ export default function WalletPage() {
 
         <TransactionHistory
           transactions={transactions?.data || []}
-          onFilterChange={setTransactionType}
+          onFilterChange={(type) => {
+            setTransactionType(type === "all" ? "" : type);
+            setPage(1);
+          }}
+          onLoadMore={handleLoadMore}
+          hasMore={(transactions?.total_size || 0) > page * limit}
         />
       </motion.div>
 
@@ -59,13 +70,14 @@ export default function WalletPage() {
         open={showAddFunds}
         onClose={() => setShowAddFunds(false)}
         bonuses={bonuses || []}
+        onSuccess={handleSuccess}
       />
 
       <TransferPointsModal
         open={showTransferPoints}
         onClose={() => setShowTransferPoints(false)}
         currentPoints={100} // You need to fetch this value from the backend
-        onSuccess={handleTransferPointsSuccess}
+        onSuccess={handleSuccess}
       />
     </div>
   );

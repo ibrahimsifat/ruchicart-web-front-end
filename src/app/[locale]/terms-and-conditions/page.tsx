@@ -4,6 +4,9 @@ import { cleanContent } from "@/lib/utils/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://ruchicart.com"
+  ),
   title: "Terms and Conditions | RuchiCart",
   description: "Read our terms and conditions for using RuchiCart services.",
 };
