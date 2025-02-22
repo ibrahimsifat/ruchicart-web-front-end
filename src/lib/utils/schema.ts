@@ -32,4 +32,5 @@ export const formSchema = z.object({
     })
   ),
   change_amount: z.string().optional(),
+  wallet_amount: z.number().optional(),
 });

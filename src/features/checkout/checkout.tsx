@@ -5,6 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import CheckoutSkeleton from "@/components/skeleton/checkout-skeleton";
 import OrderSummarySkeleton from "@/components/skeleton/orderSummary-skeleton";
 import { placeOrder } from "@/lib/api/order";
+import { useWalletTransactions } from "@/lib/hooks/queries/wallet/useWallet";
 import { formatVariations } from "@/lib/utils/cart";
 import { isProductAvailable } from "@/lib/utils/product-availability";
 import { formSchema } from "@/lib/utils/schema";
@@ -42,7 +43,12 @@ export default function Checkout() {
   const [isLoading, setIsLoading] = useState(false);
   const [isCashOnDelivery, setIsCashOnDelivery] = useState(false);
   const { token } = useAuthStore();
+  const [transactionType, setTransactionType] = useState<string>("");
+  const [finalTotal, setFinalTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
+  console.log("finalTotal", finalTotal);
   useEffect(() => {
     // if (itemCount === 0) {
     //   router.push("/");
@@ -80,6 +86,13 @@ export default function Checkout() {
     }
   }, [itemCount, router, token]);
 
+  const { data: transactions } = useWalletTransactions(
+    transactionType,
+    page,
+    limit
+  );
+  const walletBalance = transactions?.data[0]?.balance || 0;
+
   const handlePlaceOrder = async (orderData: z.infer<typeof formSchema>) => {
     if (unavailableItems.length > 0) {
       toast({
@@ -89,11 +102,41 @@ export default function Checkout() {
       });
       return;
     }
+
+    if (orderData.payment_method === "wallet") {
+      console.log("walletBalance", walletBalance);
+
+      if (finalTotal > walletBalance) {
+        toast({
+          title: "Error",
+          description: "Insufficient wallet balance",
+          variant: "destructive",
+        });
+        console.log("Insufficient wallet balance");
+        return;
+      }
+
+      console.log(walletBalance);
+      console.log(finalTotal);
+
+      //TODO: handle partial payment
+      // If partial payment, handle the remaining amount
+      // if (walletBalance < total) {
+      //   const remainingAmount = total - walletBalance;
+      // Here you would typically redirect to a payment gateway for the remaining amount
+      // For this example, we'll just show a message
+      // toast({
+      //   title: "Partial Payment",
+      //   description: `Please pay the remaining ${remainingAmount} through another method.`,
+      // });
+    }
+
     setIsLoading(true);
     try {
       // Add cart data from the cart state
       const orderDataWithCart = {
         ...orderData,
+        order_amount: finalTotal,
         cart: items.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
@@ -112,6 +155,7 @@ export default function Checkout() {
       const data = response.data;
       //TODO:: clearCart
       // clearCart();
+
       router.push(`/order-confirmation/${data.order_id}`);
 
       toast({
@@ -160,6 +204,7 @@ export default function Checkout() {
           </div>
           <div className="lg:col-span-1">
             <OrderSummary
+              setFinalTotal={setFinalTotal}
               items={items}
               total={total}
               deliveryTip={deliveryTip}

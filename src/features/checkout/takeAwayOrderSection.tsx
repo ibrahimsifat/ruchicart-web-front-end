@@ -36,7 +36,7 @@ const TakeAwayOrderSection = ({
           <div className="relative w-full sm:w-2/5 h-48 sm:h-auto">
             <CustomImage
               type={ImageType.BRANCH}
-              src={branch?.image || "/placeholder-branch.jpg"}
+              src={branch?.cover_image || "/placeholder-branch.jpg"}
               alt={branch?.name || ""}
               fill
             />

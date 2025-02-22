@@ -4,6 +4,7 @@ import OrderConfirmationSkeleton from "@/components/skeleton/confirm-order";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkmark } from "@/components/ui/Checkmark";
 import { BranchInfo } from "@/features/order-traking/BranchInfo";
 import { DeliveryInfo } from "@/features/order-traking/DeliveryInfo";
 import { OrderDetails } from "@/features/order-traking/OrderDetails";
@@ -17,76 +18,6 @@ import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { statusSteps } from "../../order-tracking/page";
 
-interface CheckmarkProps {
-  size?: number;
-  strokeWidth?: number;
-  color?: string;
-  className?: string;
-}
-
-const draw = {
-  hidden: { pathLength: 0, opacity: 0 },
-  visible: (i: number) => ({
-    pathLength: 1,
-    opacity: 1,
-    transition: {
-      pathLength: {
-        delay: i * 0.2,
-        type: "spring",
-        duration: 1.5,
-        bounce: 0.2,
-        ease: "easeInOut",
-      },
-      opacity: { delay: i * 0.2, duration: 0.2 },
-    },
-  }),
-};
-
-export function Checkmark({
-  size = 100,
-  strokeWidth = 2,
-  color = "currentColor",
-  className = "",
-}: CheckmarkProps) {
-  return (
-    <motion.svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      initial="hidden"
-      animate="visible"
-      className={className}
-    >
-      <title>Animated Checkmark</title>
-      <motion.circle
-        cx="50"
-        cy="50"
-        r="40"
-        stroke={color}
-        variants={draw}
-        custom={0}
-        style={{
-          strokeWidth,
-          strokeLinecap: "round",
-          fill: "transparent",
-        }}
-      />
-      <motion.path
-        d="M30 50L45 65L70 35"
-        stroke={color}
-        variants={draw}
-        custom={1}
-        style={{
-          strokeWidth,
-          strokeLinecap: "round",
-          strokeLinejoin: "round",
-          fill: "transparent",
-        }}
-      />
-    </motion.svg>
-  );
-}
-
 export default function OrderConfirmationPage() {
   const params = useParams<{ orderId: string }>();
   const { token, getGuestId } = useAuthStore();
@@ -95,7 +26,7 @@ export default function OrderConfirmationPage() {
     order_id: params.orderId,
     guest_id: !token ? getGuestId() : "",
   });
-
+  console.log("orderTrack", orderTrack);
   if (isLoading) {
     return <OrderConfirmationSkeleton />;
   }
@@ -108,7 +39,7 @@ export default function OrderConfirmationPage() {
     <PageLayout>
       <div className="bg-gradient-to-br from-primary/10 via-background to-secondary/10">
         <div className="container mx-auto px-4 py-8 ">
-          <Card className="max-w-2xl mx-auto">
+          <Card className="w-full mx-auto">
             <CardHeader>
               <CardTitle className="flex items-center justify-center text-2xl">
                 <div className="relative">
@@ -156,7 +87,10 @@ export default function OrderConfirmationPage() {
                     />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-between">
                       <OrderDetails orderStatus={orderTrack} />
-                      <DeliveryInfo orderStatus={orderTrack} />
+                      <DeliveryInfo
+                        orderAddress={orderTrack?.delivery_address?.address}
+                        orderStatus={orderTrack}
+                      />
                     </div>
                     <OrderItems orderStatus={orderTrack} />
                     <BranchInfo orderStatus={orderTrack} />

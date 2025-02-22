@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +32,7 @@ import {
   useDeleteAddress,
   useUpdateAddress,
 } from "@/lib/hooks/queries/address/useAddress";
+import { useWalletTransactions } from "@/lib/hooks/queries/wallet/useWallet";
 import { formSchema } from "@/lib/utils/schema";
 import { useAuthStore } from "@/store/authStore";
 import { useBranchStore } from "@/store/branchStore";
@@ -39,10 +41,11 @@ import { useLocationStore } from "@/store/locationStore";
 import { Address } from "@/types/address";
 import { BaseBranch } from "@/types/branch";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MapPin, Plus, ShoppingBag } from "lucide-react";
+import { Coins, MapPin, Plus, ShoppingBag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+
 import * as z from "zod";
 
 const addressSchema = z.object({
@@ -75,7 +78,7 @@ export function CheckoutForm({
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
   const { currentLocation } = useLocationStore();
   const { currentBranch: branch } = useBranchStore();
-  const { items, total } = useCart();
+  const { total } = useCart();
   const t = useTranslations("checkout");
   const { token, getGuestId } = useAuthStore();
   // const { addresses, addAddress, updateAddress, deleteAddress } =
@@ -85,9 +88,13 @@ export function CheckoutForm({
   const updateAddressMutation = useUpdateAddress();
   const deleteAddressMutation = useDeleteAddress();
   const [showMap, setShowMap] = useState(false);
+  const [transactionType, setTransactionType] = useState<string>("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const { toast } = useToast();
   const deliveryDate = new Date();
   const formattedDate = deliveryDate.toISOString().slice(0, 10);
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -113,6 +120,14 @@ export function CheckoutForm({
     }
   }, [form.watch("payment_method")]);
 
+  const { data: transactions } = useWalletTransactions(
+    transactionType,
+    page,
+    limit
+  );
+
+  const walletBalance = transactions?.data[0]?.balance || 0;
+  console.log(walletBalance);
   const addressForm = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
@@ -128,7 +143,7 @@ export function CheckoutForm({
   });
 
   const orderType = form.watch("order_type");
-
+  const paymentMethod = form.watch("payment_method");
   const handleAddressSubmit = async (values: z.infer<typeof addressSchema>) => {
     try {
       const newAddress = {
@@ -208,6 +223,17 @@ export function CheckoutForm({
       payment_method: "stripe",
       stripe_payment_intent_id: paymentIntentId,
       guest_id: !token ? getGuestId() : undefined,
+    };
+    onSubmit(orderData);
+  };
+
+  const handleWalletPaymentSubmit = () => {
+    form.setValue("payment_method", "wallet");
+    form.setValue("is_partial", 0);
+    const orderData = {
+      ...form.getValues(),
+      payment_method: "wallet",
+      wallet_amount: walletBalance,
     };
     onSubmit(orderData);
   };
@@ -385,11 +411,47 @@ export function CheckoutForm({
                 />
 
                 <PaymentMethods
+                  walletBalance={walletBalance}
                   value={form.watch("payment_method")}
                   onChange={(value) => form.setValue("payment_method", value)}
                   onStripePaymentSuccess={handleStripePaymentSuccess}
                   onCashOnDeliverySubmit={handleCashOnDeliverySubmit}
                 />
+
+                {paymentMethod === "wallet" && (
+                  <>
+                    <div className="flex items-start gap-2">
+                      <Checkbox
+                        id="terms"
+                        checked={acceptTerms}
+                        onCheckedChange={(checked) =>
+                          setAcceptTerms(checked as boolean)
+                        }
+                      />
+                      <label htmlFor="terms" className="text-sm leading-none">
+                        {t("iAgreeThatPlacingTheOrderPlacesMeUnder")}{" "}
+                        <Button variant="link" className="h-auto p-0">
+                          {t("termsAndConditions")}
+                        </Button>{" "}
+                        &
+                        <Button variant="link" className="h-auto p-0">
+                          {t("privacyPolicy")}
+                        </Button>
+                      </label>
+                    </div>
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleWalletPaymentSubmit();
+                      }}
+                      className="w-full"
+                      disabled={isLoading || !acceptTerms}
+                    >
+                      <Coins className="mr-2 h-4 w-4" />
+                      {isLoading ? t("processing") : t("payWithWallet")}
+                    </Button>
+                  </>
+                )}
               </>
             )}
 

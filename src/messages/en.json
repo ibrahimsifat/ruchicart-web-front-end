@@ -25,6 +25,10 @@
     "backToLogin": "Back to Login"
   },
   "checkout": {
+    "insufficientWalletBalance": "Insufficient wallet balance",
+    "insufficientWalletBalanceDescription": "Please add more balance to your wallet",
+    "insufficientWalletBalanceButton": "Add Balance",
+    "payWithWallet": "Pay with Wallet",
     "signIn": "Sign In",
     "addNewAddress": "Add New Address",
     "orderDetails": "Order Details",

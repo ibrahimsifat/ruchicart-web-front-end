@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { CreditCard } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface StripePaymentFormProps {
@@ -14,6 +17,8 @@ export function StripePaymentForm({
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const t = useTranslations("checkout");
 
   const handlePayment = async () => {
     if (!stripe || !elements) {
@@ -79,12 +84,32 @@ export function StripePaymentForm({
       <div className="p-4 border rounded-md">
         <CardElement options={cardElementOptions} />
       </div>
+      <div className="flex items-start gap-2">
+        <Checkbox
+          id="terms"
+          checked={acceptTerms}
+          onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
+        />
+        <label htmlFor="terms" className="text-sm leading-none">
+          {t("iAgreeThatPlacingTheOrderPlacesMeUnder")}{" "}
+          <Button variant="link" className="h-auto p-0">
+            {t("termsAndConditions")}
+          </Button>{" "}
+          &
+          <Button variant="link" className="h-auto p-0">
+            {t("privacyPolicy")}
+          </Button>
+        </label>
+      </div>
       <Button
-        type="button"
-        onClick={handlePayment}
-        disabled={!stripe || isLoading}
+        onClick={(e) => {
+          e.preventDefault();
+          handlePayment();
+        }}
         className="w-full"
+        disabled={!acceptTerms || !stripe || isLoading}
       >
+        <CreditCard className="mr-2 h-4 w-4" />
         {isLoading ? "Processing..." : "Pay Now"}
       </Button>
     </div>

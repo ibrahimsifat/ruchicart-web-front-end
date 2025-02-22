@@ -30,6 +30,7 @@ interface OrderSummaryProps {
   total: number;
   deliveryTip: number;
   isCashOnDelivery: boolean;
+  setFinalTotal: (total: number) => void;
 }
 
 export function OrderSummary({
@@ -37,6 +38,7 @@ export function OrderSummary({
   total,
   deliveryTip,
   isCashOnDelivery,
+  setFinalTotal,
 }: OrderSummaryProps) {
   const subtotal = total;
   let discount = 0;
@@ -50,7 +52,7 @@ export function OrderSummary({
   const router = useRouter();
   const { itemCount, removeItem, updateQuantity } = useCart();
   const { token, getGuestId } = useAuthStore();
-
+  const { currency_symbol } = defaultConfig;
   // Check availability of items
   const [unavailableItems, setUnavailableItems] = useState<
     {
@@ -130,12 +132,12 @@ export function OrderSummary({
     deliveryTip -
     discount +
     (isCashOnDelivery ? cashOnDeliveryFee : 0);
-
+  setFinalTotal(finalTotal);
   const handleCouponSelect = (coupon: Coupon) => {
     if (subtotal < coupon.min_purchase) {
       toast({
         title: "Invalid coupon",
-        description: `Minimum purchase amount of ${defaultConfig.currency_symbol}${coupon.min_purchase} required`,
+        description: `Minimum purchase amount of ${currency_symbol}${coupon.min_purchase} required`,
         variant: "destructive",
       });
       return;
@@ -163,13 +165,14 @@ export function OrderSummary({
                   <p className="text-sm text-muted-foreground">
                     {selectedCoupon.discount_type === "percent"
                       ? `${selectedCoupon.discount}% off`
-                      : `${defaultConfig.currency_symbol}${selectedCoupon.discount} off`}
+                      : `${currency_symbol}${selectedCoupon.discount} off`}
                   </p>
                 </div>
               </div>
               <div className="space-y-1 text-right">
                 <p className="text-sm font-medium text-primary-text">
-                  -${discount.toFixed(2)}
+                  -{currency_symbol}
+                  {discount.toFixed(2)}
                 </p>
                 <Button
                   variant="ghost"
@@ -290,7 +293,7 @@ export function OrderSummary({
                   <div className="flex items-center justify-between mt-1">
                     <p className="text-sm">Qty: {item.quantity}</p>
                     <p className="font-medium">
-                      {defaultConfig.currency_symbol}
+                      {currency_symbol}
                       {(item.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
@@ -304,24 +307,36 @@ export function OrderSummary({
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>
+              {currency_symbol}
+              {subtotal.toFixed(2)}
+            </span>
           </div>
           {discount > 0 && (
             <div className="flex justify-between text-primary-text">
               <span>Discount</span>
-              <span>-${discount.toFixed(2)}</span>
+              <span>
+                -{currency_symbol}
+                {discount.toFixed(2)}
+              </span>
             </div>
           )}
           {deliveryTip > 0 && (
             <div className="flex justify-between text-green-500">
               <span>Delivery Tip</span>
-              <span>${deliveryTip.toFixed(2)}</span>
+              <span>
+                {currency_symbol}
+                {deliveryTip.toFixed(2)}
+              </span>
             </div>
           )}
           {isCashOnDelivery && (
             <div className="flex justify-between text-red-500">
               <span>Additional Amount (Cash on Delivery)</span>
-              <span>${cashOnDeliveryFee.toFixed(2)}</span>
+              <span>
+                {currency_symbol}
+                {cashOnDeliveryFee.toFixed(2)}
+              </span>
             </div>
           )}
           <div className="flex justify-between items-center">
@@ -338,20 +353,30 @@ export function OrderSummary({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <span>${vat.toFixed(2)}</span>
+            <span>
+              {currency_symbol}
+              {vat.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between">
             <span>Service Charge</span>
-            <span>${serviceCharge.toFixed(2)}</span>
+            <span>
+              {currency_symbol}
+              {serviceCharge.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between">
             <span>Delivery fee</span>
-            <span>${deliveryFee.toFixed(2)}</span>
+            <span>
+              {currency_symbol}
+              {deliveryFee.toFixed(2)}
+            </span>
           </div>
           <div className="border-t pt-4 flex justify-between font-semibold text-lg">
             <span>Total</span>
             <span className="text-primary-text text-xl">
-              ${finalTotal.toFixed(2)}
+              {currency_symbol}
+              {finalTotal.toFixed(2)}
             </span>
           </div>
         </div>

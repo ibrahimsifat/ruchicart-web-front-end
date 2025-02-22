@@ -20,6 +20,8 @@ export const CONSTANT = {
     mobileDownload: "/images/mobile-download.webp",
     appQRCode: "/images/app-qr-code.png",
     bankBankLogo: "/images/visa-master-logo.webp",
+    visaMasterLogo: "/images/visa.svg",
+    masterCardLogo: "/images/mastercard.svg",
   },
   API_CACHE_TIMES: {
     SHORT: 60, // 1 minute

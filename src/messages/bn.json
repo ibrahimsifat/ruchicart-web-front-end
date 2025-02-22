@@ -47,6 +47,10 @@
     "cuisine": "খাবার"
   },
   "checkout": {
+    "insufficientWalletBalance": "আপনার ওয়ালেটে সম্পদ অপূর্ণ",
+    "insufficientWalletBalanceDescription": "আপনার ওয়ালেটে সম্পদ অপূর্ণ। আপনার ওয়ালেটে সম্পদ যোগ করুন",
+    "insufficientWalletBalanceButton": "সম্পদ যোগ করুন",
+    "payWithWallet": "ওয়ালেটে পেমেন্ট করুন",
     "signIn": "লগইন করুন",
     "addNewAddress": "নতুন ঠিকানা যোগ করুন",
     "orderDetails": "অর্ডারের বিবরণ",
