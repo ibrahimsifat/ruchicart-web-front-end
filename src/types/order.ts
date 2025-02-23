@@ -315,3 +315,20 @@ export interface StatusStep {
   icon: React.ElementType;
   label: string;
 }
+
+export interface OrderPlaceHolderData {
+  id?: number;
+  order_amount: number;
+  payment_method: string;
+  order_type: string;
+  delivery_address_id?: number;
+  branch_id?: number;
+  delivery_time: string;
+  delivery_date: string;
+  distance: number;
+  is_partial: boolean;
+  cart: any[];
+  guest_id?: number;
+  change_amount?: string;
+  stripe_payment_intent_id?: string;
+}

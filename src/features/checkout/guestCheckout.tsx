@@ -10,6 +10,7 @@ import { isProductAvailable } from "@/lib/utils/product-availability";
 import { formSchema } from "@/lib/utils/schema";
 import { useAuthStore } from "@/store/authStore";
 import { useCart } from "@/store/cartStore";
+import { OrderPlaceHolderData } from "@/types/order";
 import { LogIn } from "lucide-react";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
@@ -44,6 +45,7 @@ export default function GuestCheckout() {
   const { token } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [unavailableItems, setUnavailableItems] = useState<string[]>([]);
+  const [finalTotal, setFinalTotal] = useState(0);
   const [deliveryTip, setDeliveryTip] = useState(0);
   const [isCashOnDelivery, setIsCashOnDelivery] = useState(false);
   const { getGuestId } = useAuthStore();
@@ -99,7 +101,9 @@ export default function GuestCheckout() {
           add_on_qtys: item.add_ons?.length ? [item.add_ons.length] : [],
         })),
       };
-      const response = await placeOrder(orderDataWithCart);
+      const response = await placeOrder(
+        orderDataWithCart as unknown as OrderPlaceHolderData
+      );
 
       if (response.status !== 200) {
         throw new Error("Failed to place order");
@@ -152,6 +156,7 @@ export default function GuestCheckout() {
             isLoading={isLoading}
             deliveryTip={deliveryTip}
             setDeliveryTip={setDeliveryTip}
+            isGuestCheckout={true}
           />
         </div>
         <div className="lg:col-span-1">
@@ -160,6 +165,7 @@ export default function GuestCheckout() {
             total={total}
             deliveryTip={deliveryTip}
             isCashOnDelivery={isCashOnDelivery}
+            setFinalTotal={setFinalTotal}
           />
         </div>
       </div>

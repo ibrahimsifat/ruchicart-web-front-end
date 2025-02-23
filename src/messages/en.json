@@ -24,6 +24,13 @@
     "verifying": "Verifying...",
     "backToLogin": "Back to Login"
   },
+  "notFound": {
+    "description": "The page you are looking for does not exist.",
+    "title": "Page Not Found",
+    "goBackHome": "Go Back Home",
+    "browseCategory": "Browse Categories",
+    "needHelp": " Need Help"
+  },
   "checkout": {
     "insufficientWalletBalance": "Insufficient wallet balance",
     "insufficientWalletBalanceDescription": "Please add more balance to your wallet",

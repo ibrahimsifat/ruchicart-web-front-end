@@ -24,6 +24,7 @@ interface PaymentMethodsProps {
   onStripePaymentSuccess: (paymentIntentId: string) => void;
   onCashOnDeliverySubmit: () => void;
   walletBalance?: number;
+  isGuestCheckout?: boolean;
 }
 
 export function PaymentMethods({
@@ -32,6 +33,7 @@ export function PaymentMethods({
   onChange,
   onStripePaymentSuccess,
   onCashOnDeliverySubmit,
+  isGuestCheckout,
 }: PaymentMethodsProps) {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const t = useTranslations("checkout");
@@ -79,30 +81,33 @@ export function PaymentMethods({
               </div>
             </Label>
           </div>
-          <div className="relative">
-            <RadioGroupItem
-              value="wallet"
-              id="wallet"
-              className="peer sr-only"
-            />
-            <Label
-              htmlFor="wallet"
-              className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
-            >
-              <div className="flex items-center justify-between w-full space-x-5">
-                <div className="flex items-center gap-2">
-                  <Wallet className="h-4 w-4" />
-                  Wallet
-                </div>
-                <span className="text-muted-foreground">
-                  Available Balance:{" "}
-                  <span className="font-bold text-primary">
-                    {walletBalance}
+          {!isGuestCheckout && walletBalance && (
+            <div className="relative">
+              <RadioGroupItem
+                value="wallet"
+                id="wallet"
+                className="peer sr-only"
+              />
+              <Label
+                htmlFor="wallet"
+                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+              >
+                <div className="flex items-center justify-between w-full space-x-5">
+                  <div className="flex items-center gap-2">
+                    <Wallet className="h-4 w-4" />
+                    Wallet
+                  </div>
+                  <span className="text-muted-foreground">
+                    Available Balance:{" "}
+                    <span className="font-bold text-primary">
+                      {walletBalance}
+                    </span>
                   </span>
-                </span>
-              </div>
-            </Label>
-          </div>
+                </div>
+              </Label>
+            </div>
+          )}
+
           <div className="relative">
             <RadioGroupItem
               value="stripe"

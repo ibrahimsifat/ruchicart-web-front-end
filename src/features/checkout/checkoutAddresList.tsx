@@ -19,7 +19,6 @@ const CheckoutAddressList = ({
   handleDeleteAddress,
   addresses,
 }: CheckoutAddressProps) => {
-  console.log(addresses);
   return (
     <AnimatePresence>
       {addresses?.map((address) => (
@@ -30,17 +29,26 @@ const CheckoutAddressList = ({
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <FormItem className="flex items-center space-x-3 space-y-0 rounded-lg border p-4 cursor-pointer hover:bg-accent transition-colors">
+          <FormItem className="flex items-center space-x-3 space-y-0 rounded-lg border p-4 relative">
             <FormControl>
-              <RadioGroupItem value={String(address.id)} />
+              <RadioGroupItem
+                value={String(address.id)}
+                id={`address-${address.id}`}
+              />
             </FormControl>
-            <Label className="flex-1 cursor-pointer">
+            <Label
+              htmlFor={`address-${address.id}`}
+              className="flex-1 cursor-pointer"
+            >
               <div className="font-medium">{address.label}</div>
               <div className="text-sm text-muted-foreground">
                 {address.address}
               </div>
             </Label>
-            <div className="flex space-x-2">
+            <div
+              className="flex space-x-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Button
                 variant="ghost"
                 size="sm"

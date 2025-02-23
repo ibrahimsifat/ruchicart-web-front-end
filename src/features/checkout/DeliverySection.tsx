@@ -16,6 +16,7 @@ export const DeliverySection = React.memo(
     isLoading,
     paymentMethod,
     t,
+    isGuestCheckout,
   }: {
     form: any;
     addressManager: any;
@@ -25,6 +26,7 @@ export const DeliverySection = React.memo(
     isLoading: boolean;
     paymentMethod: string;
     t: any;
+    isGuestCheckout: boolean;
   }) => {
     const {
       addresses,
@@ -70,8 +72,9 @@ export const DeliverySection = React.memo(
           onChange={(value) => form.setValue("payment_method", value)}
           onStripePaymentSuccess={paymentHandler.handleStripePaymentSuccess}
           onCashOnDeliverySubmit={paymentHandler.handleCashOnDeliverySubmit}
+          isGuestCheckout={isGuestCheckout}
         />
-        {paymentMethod === "wallet" && (
+        {!isGuestCheckout && paymentMethod === "wallet" && (
           <WalletPaymentSection
             acceptTerms={paymentHandler.acceptTerms}
             setAcceptTerms={paymentHandler.setAcceptTerms}

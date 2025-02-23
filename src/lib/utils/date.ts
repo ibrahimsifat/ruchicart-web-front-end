@@ -1,4 +1,3 @@
-"use client";
 import { format, isAfter, isBefore } from "date-fns";
 
 export const formatDateRange = (startDate: string, endDate: string) => {

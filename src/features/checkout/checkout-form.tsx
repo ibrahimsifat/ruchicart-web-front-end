@@ -1,4 +1,3 @@
-// CheckoutForm.tsx
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -9,7 +8,6 @@ import * as z from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
-
 import { useAddressManager } from "@/lib/hooks/checkout/useAddressManager";
 import { usePaymentHandler } from "@/lib/hooks/checkout/usePaymentHandler";
 import { formSchema } from "@/lib/utils/schema";
@@ -26,6 +24,7 @@ interface CheckoutFormProps {
   deliveryTip: number;
   setDeliveryTip: React.Dispatch<React.SetStateAction<number>>;
   setIsCashOnDelivery: React.Dispatch<React.SetStateAction<boolean>>;
+  isGuestCheckout?: boolean;
 }
 
 export const CheckoutForm = React.memo(
@@ -35,6 +34,7 @@ export const CheckoutForm = React.memo(
     deliveryTip,
     setDeliveryTip,
     setIsCashOnDelivery,
+    isGuestCheckout = false,
   }: CheckoutFormProps) => {
     const t = useTranslations("checkout");
     const { toast } = useToast();
@@ -130,6 +130,7 @@ export const CheckoutForm = React.memo(
                   setDeliveryTip={setDeliveryTip}
                   isLoading={isLoading}
                   paymentMethod={paymentMethod}
+                  isGuestCheckout={isGuestCheckout}
                   t={t}
                 />
               ) : (

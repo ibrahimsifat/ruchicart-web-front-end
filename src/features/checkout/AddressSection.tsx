@@ -1,14 +1,12 @@
 import { memo } from "react";
 
-import { FormMessage } from "@/components/ui/form";
-
-import { FormControl } from "@/components/ui/form";
-
-import { FormItem } from "@/components/ui/form";
-
-import { FormField } from "@/components/ui/form";
-
 import { Button } from "@/components/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Address } from "@/types/address";
 import { Plus } from "lucide-react";
@@ -43,10 +41,10 @@ export const AddressSection = memo(
         control={form.control}
         name="delivery_address_id"
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="space-y-4">
             <FormControl>
               <RadioGroup
-                onValueChange={(value) => field.onChange(Number(value))}
+                onValueChange={field.onChange}
                 value={field.value?.toString() || ""}
                 className="space-y-2"
                 required

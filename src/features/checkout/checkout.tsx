@@ -80,11 +80,11 @@ export default function Checkout() {
   }, [token, router]);
 
   // redirect to home if cart is empty
-  useEffect(() => {
-    if (itemCount === 0) {
-      router.push("/");
-    }
-  }, [itemCount, router, token]);
+  // useEffect(() => {
+  //   if (itemCount === 0) {
+  //     router.push("/");
+  //   }
+  // }, [itemCount, router, token]);
 
   const { data: transactions } = useWalletTransactions(
     transactionType,

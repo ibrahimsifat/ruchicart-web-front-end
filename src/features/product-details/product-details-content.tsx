@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatTimeRange } from "@/lib/utils/date";
 import { Product } from "@/types/product";
 import { AlertCircle, Clock, Leaf, Star } from "lucide-react";
 import { Suspense } from "react";
@@ -40,8 +41,13 @@ export const ProductDetailsContent = async ({
         <div className="flex items-center text-muted-foreground text-sm">
           <Clock className="w-4 h-4 mr-2" />
           <span>
-            Available: {product.available_time_starts} -{" "}
-            {product.available_time_ends}
+            Available:{" "}
+            <Suspense fallback={<Skeleton className="h-[20px]" />}>
+              {formatTimeRange(
+                product.available_time_starts,
+                product.available_time_ends
+              )}
+            </Suspense>
           </span>
         </div>
       </div>

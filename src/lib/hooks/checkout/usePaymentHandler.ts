@@ -16,7 +16,7 @@ export const usePaymentHandler = ({
   const { token, getGuestId } = useAuthStore();
   const limit = 10;
 
-  const { data: transactions } = useWalletTransactions("", page, limit);
+  const { data: transactions } = useWalletTransactions("all", page, limit);
   const walletBalance = transactions?.data[0]?.balance || 0;
 
   const handleStripePaymentSuccess = (paymentIntentId: string) => {
