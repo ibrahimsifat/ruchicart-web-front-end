@@ -7,7 +7,7 @@ import { ImageType } from "@/types/image";
 import type { Product } from "@/types/product";
 import { Star } from "lucide-react";
 import Link from "next/link";
-import ProductCardAction from "./product-card/product-card-action";
+import { ProductCardAction } from "./product-card/product-card-action";
 import ProductCartWishlist from "./product-card/product-cart-wishlist";
 
 interface ProductListItemProps {

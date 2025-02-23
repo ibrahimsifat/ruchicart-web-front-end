@@ -1,4 +1,4 @@
-import ProductQuickView from "@/features/products/product-preview-modal";
+import ProductQuickView from "@/features/products/product-preview/product-preview-modal";
 import { FC, Suspense } from "react";
 
 type ProductDetailsPageProps = {

@@ -5,7 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ProductPreviewModal } from "@/features/products/product-preview-modal";
+import { ProductPreviewModal } from "@/features/products/product-preview/product-preview-modal";
 import { Product } from "@/types/product";
 import { ShoppingBag } from "lucide-react";
 import { memo, useState } from "react";

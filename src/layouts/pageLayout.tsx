@@ -2,43 +2,26 @@ import { AppDownload } from "@/features/home/appDownload";
 import { Footer } from "@/features/layout/footer";
 import { Navbar } from "@/features/layout/navbar";
 import TopBar from "@/features/layout/topBar";
-import { ReactNode, Suspense } from "react";
+import { memo, ReactNode } from "react";
 
 type Props = {
   children?: ReactNode;
 };
-function NavbarLoading() {
-  return <div className="h-16 bg-gray-100 animate-pulse" />;
-}
-
-function TopBarLoading() {
-  return <div className="h-8 bg-gray-100 animate-pulse" />;
-}
-
-function FooterLoading() {
-  return <div className="h-40 bg-gray-100 animate-pulse" />;
-}
-
+const MemoizedNavbar = memo(Navbar);
+const MemoizedFooter = memo(Footer);
+const MemoizedTopBar = memo(TopBar);
 export default function PageLayout({ children }: Props) {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Suspense fallback={<TopBarLoading />}>
-        <TopBar />
-      </Suspense>
-
-      <Suspense fallback={<NavbarLoading />}>
-        <Navbar />
-      </Suspense>
-
+      <MemoizedTopBar />
+      <MemoizedNavbar />
       <main>
         <div className="container mx-auto px-4">{children}</div>
       </main>
       <div className="container mx-auto px-4">
         <AppDownload />
       </div>
-      <Suspense fallback={<FooterLoading />}>
-        <Footer />
-      </Suspense>
+      <MemoizedFooter />
     </div>
   );
 }

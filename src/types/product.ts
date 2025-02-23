@@ -86,3 +86,8 @@ export interface AddOn {
   updated_at: string;
   translations: any[];
 }
+
+export interface ProductCardProps {
+  product: Product;
+  showAddToCart?: boolean;
+}

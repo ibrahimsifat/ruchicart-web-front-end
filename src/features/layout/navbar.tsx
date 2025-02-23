@@ -28,7 +28,7 @@ import {
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import LocaleSwitcher from "../../components/LocaleSwitcher";
 import {
   Avatar,
@@ -44,14 +44,15 @@ import {
 } from "../../components/ui/dropdown-menu";
 import { CONSTANT } from "../../config/constants";
 import MegaMenu from "./megaMenu";
+
 export function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
   const { data: categories } = useCategories();
-  const { itemCount } = useCart();
   const { token } = useAuthStore();
   const t = useTranslations("home");
+  const itemCount = useCart((state) => state.items.length);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,6 +61,8 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const memoizedCategories = useMemo(() => categories || [], [categories]);
 
   return (
     <>
@@ -84,9 +87,9 @@ export function Navbar() {
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <div className="mt-4 space-y-4">
-                {categories?.map((category) => (
+                {memoizedCategories.map((category) => (
                   <Link
-                    key={category.name}
+                    key={category.id}
                     href={`/categories/${category.id}`}
                     className="flex items-center gap-2 py-2"
                   >
@@ -105,30 +108,25 @@ export function Navbar() {
               width={160}
               height={60}
               className="h-12 w-auto"
+              priority // Prioritize logo loading
             />
           </Link>
 
           {/* Desktop Navigation with Mega Menu */}
-          <div className="hidden md:flex items-center gap-2 relative group">
-            <div className="hidden md:flex items-center gap-2 relative">
-              <Button
-                variant="ghost"
-                className={`group ${isMegaMenuOpen && "bg-primary text-white"}`}
-                onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
-              >
-                {t("categories")}
-                <ChevronDown
-                  className={cn(
-                    "ml-1 h-4 w-4 transition-transform",
-                    isMegaMenuOpen && "rotate-180"
-                  )}
-                />
-              </Button>
-            </div>
-
-            {/* <Link href="/deals" className="text-sm font-medium">
-              {t("deals")}
-            </Link> */}
+          <div className="hidden md:flex items-center gap-2 relative">
+            <Button
+              variant="ghost"
+              className={cn("group", isMegaMenuOpen && "bg-primary text-white")}
+              onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
+            >
+              {t("categories")}
+              <ChevronDown
+                className={cn(
+                  "ml-1 h-4 w-4 transition-transform",
+                  isMegaMenuOpen && "rotate-180"
+                )}
+              />
+            </Button>
           </div>
 
           {/* Search with Live Results */}
@@ -138,9 +136,7 @@ export function Navbar() {
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
-            {/* Language Switcher */}
             <LocaleSwitcher />
-            {/* wishlist */}
             <Link href="/dashboard/wishlist">
               <Button variant="ghost" size="icon">
                 <Heart className="h-6 w-6" />
@@ -154,16 +150,10 @@ export function Navbar() {
               className="relative"
               onClick={() => setShowCartDrawer(true)}
             >
-              <AnimatedCartIcon />
-              {/* {itemCount > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center"
-                >
-                  {itemCount}
-                </Badge>
-              )} */}
+              <AnimatedCartIcon itemCount={itemCount} />
+              {/* Pass itemCount to the icon */}
             </Button>
+
             {/* Sign In */}
             {token ? (
               <Suspense fallback={<Loader2 className="h-5 w-5" />}>
@@ -180,13 +170,13 @@ export function Navbar() {
           </div>
         </div>
       </nav>
-      {/* Category Mega Menu */}
-      {isMegaMenuOpen && <MegaMenu categories={categories || []} />}
-
+      {isMegaMenuOpen && <MegaMenu categories={memoizedCategories} />}{" "}
+      {/* Use categories */}
       <CartDrawer open={showCartDrawer} onOpenChange={setShowCartDrawer} />
     </>
   );
 }
+
 const UserMenu = () => {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);

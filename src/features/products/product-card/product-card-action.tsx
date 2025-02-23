@@ -1,135 +1,56 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
 
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Product } from "@/types/product";
+import { useModalState } from "@/lib/hooks/product/useModalState";
+import type { Product } from "@/types/product";
 import { Eye, ShoppingCart } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useState } from "react";
-import { ProductPreviewModal } from "../product-preview-modal";
+import { memo } from "react";
+import { ProductPreviewModal } from "../product-preview/product-preview-modal";
 
-const ProductCardAction = ({
-  product,
-  showAddToCart = true,
-}: {
+interface ProductCardActionProps {
   product: Product;
   showAddToCart?: boolean;
-}) => {
-  const [showPreview, setShowPreview] = useState(false);
+}
 
-  const t = useTranslations("home");
+export const ProductCardAction = memo(
+  ({ product, showAddToCart = true }: ProductCardActionProps) => {
+    const { isOpen, onOpen, onClose } = useModalState();
+    const t = useTranslations("home");
 
-  return (
-    <div className="pt-2 flex justify-between items-center gap-2">
-      <Link href={`/products/${product.id}`} className="flex-grow">
-        <Button
-          variant="outline"
-          className="w-full bg-primary/20 hover:bg-primary/20 text-primary-text transition-colors duration-300"
-        >
-          <Eye className="mr-2 h-4 w-4" />
-          {t("viewDetails")}
-        </Button>
-      </Link>
-
-      {showAddToCart && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="default"
-                className="h-12 w-12 rounded-full bg-primary text-primary-text-foreground hover:bg-primary transition-colors duration-300"
-                onClick={() => setShowPreview(true)}
-                data-add-to-cart
-              >
-                <ShoppingCart className="h-6 w-6" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Add to cart</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
-
-      {/* <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              size="icon"
-              variant="default"
-              className="h-10 w-10 bg-primary text-white hover:bg-primary/90 transition-colors duration-300"
-              onClick={handleAddToCart}
-            >
-              <Plus className="h-5 w-5" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Add to cart</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider> */}
-      {/* <div className="">
-        {cartItem ? (
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            className="flex items-center space-x-2"
+    return (
+      <>
+        <div className="pt-2 flex justify-between items-center gap-2">
+          <Link
+            href={`/products/${product.id}`}
+            className="flex-grow"
+            prefetch={false}
           >
             <Button
-              size="icon"
               variant="outline"
-              className="h-10 w-10 rounded-full"
-              onClick={() => {
-                if (cartItem.quantity > 1) {
-                  updateQuantity(product.id, cartItem.quantity - 1);
-                } else {
-                  removeItem(product.id);
-                }
-              }}
+              className="w-full bg-primary/20 hover:bg-primary/20 text-primary-text transition-colors duration-300"
             >
-              <Minus className="h-4 w-4" />
+              <Eye className="mr-2 h-4 w-4" />
+              {t("viewDetails")}
             </Button>
-            <div className="relative">
-              <ShoppingCart className="h-6 w-6 text-primary-text" />
-              <span className="absolute -top-2 -right-2 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {cartItem.quantity}
-              </span>
-            </div>
-            <Button
-              size="icon"
-              variant="outline"
-              className="h-10 w-10 rounded-full"
-              onClick={() => {
-                updateQuantity(product.id, cartItem.quantity + 1);
-              }}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          >
+          </Link>
+
+          {showAddToCart && (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     size="icon"
                     variant="default"
-                    className="h-12 w-12 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors duration-300"
-                    onClick={handleAddToCart}
+                    className="h-12 w-12 rounded-full bg-primary text-primary-text-foreground hover:bg-primary transition-colors duration-300"
+                    onClick={onOpen}
                     data-add-to-cart
                   >
                     <ShoppingCart className="h-6 w-6" />
@@ -140,19 +61,17 @@ const ProductCardAction = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </motion.div>
-        )}
-      </div> */}
+          )}
+        </div>
 
-      <ProductPreviewModal
-        open={showPreview}
-        onOpenChange={setShowPreview}
-        product={product}
-      />
-    </div>
-  );
-};
-
-export default ProductCardAction;
+        <ProductPreviewModal
+          open={isOpen}
+          onOpenChange={onClose}
+          product={product}
+        />
+      </>
+    );
+  }
+);
 
 ProductCardAction.displayName = "ProductCardAction";
