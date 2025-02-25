@@ -42,7 +42,6 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
       )}-${JSON.stringify(item.add_ons)}`;
       return (
         <div key={itemKey} className="flex items-center gap-4 pb-4 border-b">
-          {/* ... (rest of the item JSX remains the same) */}
           <div className="relative h-20 w-20 rounded-lg overflow-hidden bg-muted">
             <CustomImage
               type={ImageType.PRODUCT}
@@ -50,7 +49,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
               alt={item.name}
               fill
               className="object-cover"
-              priority // Prioritize image loading
+              priority
             />
           </div>
           <div className="flex-1 space-y-1">
@@ -149,7 +148,6 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                   {memoizedItems.length <= 3 && (
                     <div className="mt-6">
                       <CartCarousel productId={memoizedItems[0]?.id} />{" "}
-                      {/* Optional chaining */}
                     </div>
                   )}
                 </div>

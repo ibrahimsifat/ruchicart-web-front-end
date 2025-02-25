@@ -58,54 +58,17 @@ interface OrderDetail {
   variation: any[];
 }
 
-// export interface Order {
-//   id: number;
-//   user_id: number;
-//   is_guest: string;
-//   order_amount: number;
-//   coupon_discount_amount: number;
-//   coupon_discount_title: string | null;
-//   created_at: string;
-//   delivery_address: DeliveryAddress;
-//   delivery_address_id: number;
-//   delivery_charge: number;
-//   delivery_date: string;
-//   delivery_man: any;
-//   delivery_man_id: any;
-//   delivery_time: string;
-//   deliveryman_review: any;
-//   details: OrderDetail[];
-//   extra_discount: string;
-//   is_cutlery_required: number;
-//   is_product_available: number;
-//   number_of_people: any;
-//   offline_payment: any;
-//   offline_payment_information: any;
-//   order_note: string | null;
-//   order_partial_payments: any[];
-//   order_status: string;
-//   order_type: string;
-//   payment_method: string;
-//   payment_status: string;
-//   preparation_time: string;
-//   table_id: any;
-//   table_order_id: any;
-//   total_tax_amount: number;
-//   transaction_reference: string | null;
-//   updated_at: string;
-// }
-
 export interface TrackOrderItem {
   add_on_ids: number[] | null;
   branch: BaseBranch;
-  branch_id: string;
+  branch_id: number;
   callback: any;
-  checked: string;
+  checked: number;
   coupon_code: string | null;
   coupon_discount_amount: number;
   coupon_discount_title: string | null;
   created_at: string;
-  delivery_address: DeliveryAddress;
+  delivery_address?: DeliveryAddress | null;
   delivery_address_id: number;
   delivery_charge: number;
   delivery_date: string;
@@ -116,7 +79,7 @@ export interface TrackOrderItem {
   extra_discount: string;
   id: number;
   is_cutlery_required: number;
-  is_guest: string;
+  is_guest: number;
   is_product_available: number;
   number_of_people: any;
   offline_payment: any;
@@ -125,11 +88,17 @@ export interface TrackOrderItem {
   order_amount: number;
   order_note: string | null;
   order_partial_payments: any[];
-  order_status: string;
-  order_type: string;
+  order_status:
+    | "pending"
+    | "confirmed"
+    | "processing"
+    | "out_for_delivery"
+    | "delivered"
+    | "canceled";
+  order_type: "delivery" | "take_away";
   payment_method: string;
-  payment_status: string;
-  preparation_time: string;
+  payment_status: "paid" | "unpaid";
+  preparation_time: number;
   table_id: any;
   table_order_id: any;
   total_tax_amount: number;
@@ -249,11 +218,11 @@ export interface Order {
   updated_at: string;
   checked: number;
   delivery_man_id: null | number;
-  delivery_man: null | DeliveryMan;
+  delivery_man?: null | DeliveryMan;
   delivery_charge: number;
   order_note: null | string;
-  product_images: string[];
-  total_quantity: number;
+  product_images?: string[];
+  total_quantity?: number;
   coupon_code: null | string;
   branch_id: number;
   branch: BaseBranch;
@@ -261,15 +230,15 @@ export interface Order {
   delivery_date: string;
   delivery_time: string;
   extra_discount: string;
-  delivery_address: null; // Or define a type for delivery address
+  delivery_address?: DeliveryAddress | null;
   preparation_time: number;
   table_id: null | number;
   number_of_people: null | number;
   table_order_id: null | number;
   is_cutlery_required: number;
-  order_partial_payments: []; // Or define a type for order partial payments
-  offline_payment: null; // Or define a type for offline payment
-  deliveryman_review: null; // Or define a type for deliveryman review
+  order_partial_payments: any[];
+  offline_payment: null;
+  deliveryman_review?: null;
 }
 
 export interface OrderItem {
@@ -278,18 +247,18 @@ export interface OrderItem {
   order_id: number;
   price: number;
   product_details: ProductDetails;
-  variation: []; // Or define a type for variation
+  variation: [];
   discount_on_product: number;
   discount_type: string;
   quantity: number;
   tax_amount: number;
   created_at: string;
   updated_at: string;
-  add_on_ids: []; // Or define a type for add-on IDs
-  variant: []; // Or define a type for variant
-  add_on_qtys: []; // Or define a type for add-on quantities
-  add_on_taxes: []; // Or define a type for add-on taxes
-  add_on_prices: []; // Or define a type for add-on prices
+  add_on_ids: [];
+  variant: [];
+  add_on_qtys: [];
+  add_on_taxes: [];
+  add_on_prices: [];
   add_on_tax_amount: number;
   reviews_count: number;
   is_product_available: number;

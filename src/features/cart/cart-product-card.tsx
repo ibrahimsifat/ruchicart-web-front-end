@@ -13,26 +13,13 @@ import {
 import defaultConfig from "@/config/config";
 import { getDiscountedPrice } from "@/lib/utils/utils";
 import { ImageType } from "@/types/image";
+import { Product } from "@/types/product";
 import { AnimatePresence, motion } from "framer-motion";
 import { Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { memo, useCallback, useMemo } from "react";
 
-interface Product {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  rating: number;
-  discount?: number;
-  discount_type?: string;
-}
-
-interface CartCarouselProps {
-  productId: number;
-}
-
-// Memoized Price Component
+//  Price Component
 const ProductPrice = memo(
   ({
     price,
@@ -73,7 +60,7 @@ const ProductPrice = memo(
 
 ProductPrice.displayName = "ProductPrice";
 
-// Memoized Cart Controls Component
+//  Cart Controls Component
 const CartControls = memo(
   ({
     cartItem,
@@ -228,4 +215,4 @@ export const CartProductCard = memo(
   }
 );
 
-CartProductCard.displayName = "CartProductCard"; // Memoized Product Card Component
+CartProductCard.displayName = "CartProductCard"; //  Product Card Component
