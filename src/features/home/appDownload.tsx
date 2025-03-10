@@ -19,8 +19,8 @@ export function AppDownload() {
           {t("new")}
         </div>
       </div>
-      <div className="space-y-6 order-1 md:order-2">
-        <div className="space-y-4">
+      <div className="space-y-6 order-1 md:order-2 p-8">
+        <div className="space-y-4 ">
           <h2 className="text-4xl font-bold text-gray-800 leading-tight">
             {t("experienceConvenience")} <br />
             {t("atYourFingertips")}

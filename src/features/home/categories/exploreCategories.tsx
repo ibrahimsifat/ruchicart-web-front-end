@@ -1,7 +1,6 @@
 "use client";
 
 import SectionHeaderSkeleton from "@/components/skeleton/SectionHeaderSkeleton";
-import { Card } from "@/components/ui/card";
 import CustomImage from "@/components/ui/customImage";
 import { SectionHeader } from "@/components/ui/section-header";
 import { getCategoryBGGradient } from "@/components/utils/getCategoryBGGradient";
@@ -14,11 +13,10 @@ import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 export function ExploreCategories({ categories }: { categories: Category[] }) {
-  const gridRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
   const t = useTranslations("home");
-
+  //TODO: in small screen don't need sticky
   useEffect(() => {
     const handleScroll = debounce(() => {
       if (!containerRef.current) return;
@@ -52,11 +50,11 @@ export function ExploreCategories({ categories }: { categories: Category[] }) {
         </Suspense>
         {
           <div
-            ref={gridRef}
+            // ref={gridRef}
             className={cn(
-              "grid grid-cols-6 lg:grid-cols-6 gap-4 transition-all duration-500 ease-in-out",
+              "grid md:grid-cols-4 grid-cols-3 lg:grid-cols-6 gap-4 transition-all duration-500 ease-in-out",
               isSticky &&
-                "fixed lg:top-6 top-10 left-0 right-0 z-40 gap-0 bg-background/70 backdrop-blur-sm mx-auto max-w-7xl rounded-lg lg:h-44 h-26"
+                "lg:flex d-none lg:fixed static lg:top-6 top-8 left-0 right-0 z-40 bg-background/70 backdrop-blur-sm mx-auto max-w-7xl rounded-lg lg:h-36 h-24 "
             )}
           >
             {categories?.map((category: Category) => (
@@ -65,18 +63,18 @@ export function ExploreCategories({ categories }: { categories: Category[] }) {
                 href={`/products?category_id=${category.id}`}
                 prefetch
               >
-                <Card
+                <div
                   key={category.name}
                   className={cn(
                     "group transition-all duration-500 cursor-pointer overflow-hidden",
                     getCategoryBGGradient(),
-                    isSticky ? "rounded-full scale-50" : "rounded-lg"
+                    isSticky ? "lg:rounded-full scale-50" : "rounded-lg"
                   )}
                 >
                   <div
                     className={cn(
                       "p-4 flex flex-col items-center justify-center aspect-square transition-all duration-500",
-                      isSticky && "scale-100 p-0"
+                      isSticky && "lg:scale-100 p-0"
                     )}
                   >
                     <CustomImage
@@ -100,7 +98,7 @@ export function ExploreCategories({ categories }: { categories: Category[] }) {
                       </span>
                     )}
                   </div>
-                </Card>
+                </div>
               </Link>
             ))}
           </div>

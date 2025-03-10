@@ -1,49 +1,22 @@
 "use client";
 
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { AnimatedCartIcon } from "@/components/ui/animated-cart-icon";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { CartDrawer } from "@/features/cart/cart-drawer";
 import { SearchBar } from "@/features/search/searchBar";
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import { cn } from "@/lib/utils/utils";
 import { useAuthStore } from "@/store/authStore";
-import { useCart } from "@/store/cartStore";
-import {
-  ChevronDown,
-  Heart,
-  Loader2,
-  LogIn,
-  LogOut,
-  MenuIcon,
-  ShoppingBag,
-  User,
-} from "lucide-react";
+import { ChevronDown, Heart, Loader2, LogIn } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
-import LocaleSwitcher from "../../components/LocaleSwitcher";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../../components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu";
 import { CONSTANT } from "../../config/constants";
 import MegaMenu from "./megaMenu";
+import { MobileMenu } from "./mobileMenu";
+import { UserMenu } from "./UserMenu";
 
 export function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
@@ -52,7 +25,6 @@ export function Navbar() {
   const { data: categories } = useCategories();
   const { token } = useAuthStore();
   const t = useTranslations("home");
-  const itemCount = useCart((state) => state.items.length);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,32 +48,10 @@ export function Navbar() {
       >
         <div className="container mx-auto px-2 h-16 flex items-center justify-between gap-3">
           {/* Mobile Menu */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <MenuIcon className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left">
-              <SheetHeader>
-                <SheetTitle>Menu</SheetTitle>
-              </SheetHeader>
-              <div className="mt-4 space-y-4">
-                {memoizedCategories.map((category) => (
-                  <Link
-                    key={category.id}
-                    href={`/categories/${category.id}`}
-                    className="flex items-center gap-2 py-2"
-                  >
-                    <span>{category.name}</span>
-                  </Link>
-                ))}
-              </div>
-            </SheetContent>
-          </Sheet>
+          <MobileMenu categories={memoizedCategories} />
 
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/" className="md:flex-shrink-0 sm:block hidden">
             <Image
               src={CONSTANT.images.logo}
               alt="Logo ruchicart"
@@ -113,7 +63,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation with Mega Menu */}
-          <div className="hidden md:flex items-center gap-2 relative">
+          <div className="hidden lg:flex items-center gap-2 relative">
             <Button
               variant="ghost"
               className={cn("group", isMegaMenuOpen && "bg-primary text-white")}
@@ -135,14 +85,15 @@ export function Navbar() {
           </Suspense>
 
           {/* Right Section */}
-          <div className="flex items-center gap-4">
-            <LocaleSwitcher />
-            <Link href="/dashboard/wishlist">
-              <Button variant="ghost" size="icon">
-                <Heart className="h-6 w-6" />
-              </Button>
-            </Link>
-
+          <div className="flex items-center gap-2 ">
+            <div className="lg:flex hidden">
+              <LocaleSwitcher />
+              <Link href="/dashboard/wishlist">
+                <Button variant="ghost" size="icon">
+                  <Heart className="h-8 w-8" />
+                </Button>
+              </Link>
+            </div>
             {/* Cart */}
             <Button
               variant="ghost"
@@ -150,7 +101,7 @@ export function Navbar() {
               className="relative"
               onClick={() => setShowCartDrawer(true)}
             >
-              <AnimatedCartIcon itemCount={itemCount} />
+              <AnimatedCartIcon />
               {/* Pass itemCount to the icon */}
             </Button>
 
@@ -170,57 +121,9 @@ export function Navbar() {
           </div>
         </div>
       </nav>
-      {isMegaMenuOpen && <MegaMenu categories={memoizedCategories} />}{" "}
+      {isMegaMenuOpen && <MegaMenu categories={memoizedCategories} />}
       {/* Use categories */}
       <CartDrawer open={showCartDrawer} onOpenChange={setShowCartDrawer} />
     </>
   );
 }
-
-const UserMenu = () => {
-  const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
-  const t = useTranslations("home");
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="hidden md:flex items-center gap-2 p-1 px-2 hover:bg-primary/20"
-        >
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder.svg" alt={user?.f_name} />
-            <AvatarFallback>{user?.f_name?.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col items-start">
-            <span className="text-sm font-medium leading-none">
-              {user?.f_name}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {t("personal")}
-            </span>
-          </div>
-          <ChevronDown className="h-4 w-4 ml-2 text-muted-foreground" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuItem className="cursor-pointer">
-          <User className="mr-2 h-4 w-4" />
-          <Link href="/dashboard">{t("dashboard")}</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
-          <ShoppingBag className="mr-2 h-4 w-4" />
-          <Link href="/dashboard/orders">{t("orders")}</Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={logout}
-          className="text-destructive cursor-pointer"
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          {t("logout")}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};

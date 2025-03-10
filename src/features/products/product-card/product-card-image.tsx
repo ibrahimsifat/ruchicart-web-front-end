@@ -11,7 +11,7 @@ export const ProductCardImage = memo(({ product }: { product: Product }) => {
   const { isWishListed, toggleWishlist } = useWishlist(product.id);
 
   return (
-    <div className="relative group aspect-square w-full max-h-[320px]">
+    <div className="relative group aspect-square w-full">
       <WishlistButton isWishListed={isWishListed} onClick={toggleWishlist} />
       <ProductImage
         product={product}

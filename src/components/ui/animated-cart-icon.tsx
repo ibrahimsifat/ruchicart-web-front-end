@@ -20,7 +20,7 @@ export function AnimatedCartIcon() {
 
   return (
     <div className="relative">
-      <ShoppingCartIcon className="h-7 w-7 font-bold" />
+      <ShoppingCartIcon className="h-8 w-8 font-bold" />
       <AnimatePresence>
         {itemCount > 0 && (
           <motion.div
