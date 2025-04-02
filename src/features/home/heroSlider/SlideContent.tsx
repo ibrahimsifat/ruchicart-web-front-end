@@ -7,15 +7,17 @@ import { SlideImage } from "./SlideImage";
 export const SlideContent = memo(function SlideContent({
   slide,
   isActive,
+  priority = false,
 }: {
   slide: BannerItem;
   isActive: boolean;
+  priority?: boolean;
 }) {
   return (
     <div
       className={cn(
-        "absolute inset-0 transition-opacity duration-500 ease-in-out",
-        isActive ? "opacity-100" : "opacity-0 pointer-events-none"
+        "absolute inset-0 transition-opacity duration-700 ease-in-out", // Reduced animation time
+        isActive ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
       )}
     >
       <div className="w-full h-full bg-blue-100">
@@ -33,6 +35,7 @@ export const SlideContent = memo(function SlideContent({
             src={slide.product.image}
             alt={slide.title}
             isActive={isActive}
+            priority={priority}
           />
         </div>
       </div>

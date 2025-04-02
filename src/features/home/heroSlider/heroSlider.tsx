@@ -19,41 +19,55 @@ export const HeroSlider = memo(function HeroSlider({
     setCurrentSlide((prev) => (prev + 1) % slidesCount);
   }, [slidesCount]);
 
-  // More efficient timer management
+  // Reset the timer when slide changes to ensure consistent timing
   useEffect(() => {
     if (!slidesCount) return;
 
-    // Clear previous timer before setting a new one
+    // Clear existing timer
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
 
+    // Set new timer
     timerRef.current = setInterval(nextSlide, SLIDE_DURATION);
 
+    // Cleanup on unmount
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
-        timerRef.current = null;
       }
     };
-  }, [nextSlide, slidesCount]);
+  }, [nextSlide, slidesCount, currentSlide]);
 
   if (!slides?.length) return null;
 
+  // Preload next slide image
+  const nextSlideIndex = (currentSlide + 1) % slidesCount;
+
   return (
     <div className="relative w-full h-full">
-      {slides.map((slide, index) => {
-        // Only render slides that are currently visible or will be next
-        const shouldRender =
-          index === currentSlide || index === (currentSlide + 1) % slidesCount;
+      {/* Preload next image */}
+      {slides[nextSlideIndex] && (
+        <link
+          rel="preload"
+          href={slides[nextSlideIndex].product.image}
+          as="image"
+        />
+      )}
 
-        return shouldRender ? (
+      {/* Only render current and next slide for better performance */}
+      {slides.map((slide, index) => {
+        // Only render current slide and the next one to reduce DOM elements
+        if (index !== currentSlide && index !== nextSlideIndex) return null;
+
+        return (
           <SlideContent
             key={slide.title}
             slide={slide}
             isActive={index === currentSlide}
+            priority={index === currentSlide}
           />
-        ) : null;
+        );
       })}
     </div>
   );

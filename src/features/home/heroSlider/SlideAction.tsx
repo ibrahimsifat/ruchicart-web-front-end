@@ -38,11 +38,14 @@ export const SlideAction = memo(function SlideAction({
         </Tooltip>
       </TooltipProvider>
 
-      <ProductPreviewModal
-        open={showPreview}
-        onOpenChange={setShowPreview}
-        product={product}
-      />
+      {/* Only render modal when needed */}
+      {showPreview && (
+        <ProductPreviewModal
+          open={showPreview}
+          onOpenChange={setShowPreview}
+          product={product}
+        />
+      )}
     </div>
   );
 });
