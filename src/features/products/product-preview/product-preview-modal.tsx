@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import type { Product } from "@/types/product";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { memo } from "react";
 import {
   ProductDetailsSection,
@@ -15,20 +15,14 @@ interface ProductPreviewModalProps {
   product: Product;
 }
 
-const MotionDialogContent = motion(DialogContent);
-
 export const ProductPreviewModal = memo(
   ({ open, onOpenChange, product }: ProductPreviewModalProps) => {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <MotionDialogContent
+        <DialogContent
           className="max-w-3xl p-0 overflow-hidden"
           aria-describedby="product-preview-modal"
           aria-labelledby="product-preview-modal-title"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.2 }}
         >
           <AnimatePresence mode="wait">
             {open && (
@@ -38,7 +32,7 @@ export const ProductPreviewModal = memo(
               </div>
             )}
           </AnimatePresence>
-        </MotionDialogContent>
+        </DialogContent>
       </Dialog>
     );
   }
