@@ -14,7 +14,7 @@ export const SlideContent = memo(function SlideContent({
   return (
     <div
       className={cn(
-        "absolute inset-0 transition-opacity duration-1000 ease-in-out",
+        "absolute inset-0 transition-opacity duration-500 ease-in-out",
         isActive ? "opacity-100" : "opacity-0 pointer-events-none"
       )}
     >

@@ -9,7 +9,7 @@ const locale = Cookies.get("NEXT_LOCALE") || "en";
 
 const api = axios.create({
   baseURL: API_V1,
-  timeout: 30000,
+  timeout: 60000,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",

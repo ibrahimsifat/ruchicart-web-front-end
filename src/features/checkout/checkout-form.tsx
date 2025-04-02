@@ -16,7 +16,7 @@ import { useCart } from "@/store/cartStore";
 import { BaseBranch } from "@/types/branch";
 import { DeliverySection } from "./DeliverySection";
 import { OrderTypeSelector } from "./OrderTypeSelector";
-import { TakeAwaySection } from "./TakeAwaySection";
+import TakeAwayOrderSection from "./takeAwayOrderSection";
 
 interface CheckoutFormProps {
   onSubmit: (data: z.infer<typeof formSchema>) => void;
@@ -134,7 +134,7 @@ export const CheckoutForm = React.memo(
                   t={t}
                 />
               ) : (
-                <TakeAwaySection
+                <TakeAwayOrderSection
                   branch={branch as BaseBranch}
                   onSubmit={paymentHandler.handleTakeAwaySubmit}
                   isLoading={isLoading}

@@ -18,11 +18,9 @@ export const SlideImage = memo(function SlideImage({
         alt={alt}
         type={ImageType.PRODUCT}
         fill
-        className="object-contain opacity-0 transition-opacity duration-500 ease-in-out"
-        onLoad={(event) => {
-          const img = event.target as HTMLImageElement;
-          img.classList.remove("opacity-0");
-        }}
+        className="object-contain transition-opacity duration-300 ease-in-out"
+        style={{ opacity: isActive ? 1 : 0 }}
+        priority={isActive}
         loading={isActive ? "eager" : "lazy"}
         sizes="(max-width: 768px) 100vw, 50vw"
       />
