@@ -16,7 +16,6 @@ type Props = {
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
-
 export async function generateMetadata({
   params,
 }: Omit<Props, "children">): Promise<Metadata> {
@@ -24,6 +23,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "LocaleLayout" });
 
   return {
+    metadataBase: new URL("https://ruchicart.com"),
     title: t("title"), // Localized title
     description: t("description"), // Localized description
     openGraph: {
@@ -47,7 +47,6 @@ export async function generateMetadata({
     },
   };
 }
-
 export default async function RootLayout({ children, params }: Props) {
   const { locale } = await params;
   // Ensure that the incoming `locale` is valid

@@ -9,7 +9,7 @@ import { NearbyBranch } from "@/features/branch/nearbyBranch";
 import { ExploreCategories } from "@/features/home/categories/exploreCategories";
 import { DiscountBanner } from "@/features/home/discountBanner";
 import { FeaturedProducts } from "@/features/home/featuredProducts";
-import HeroSliderContainer from "@/features/home/heroSlider/HeroSliderContainer";
+import { HeroSlider } from "@/features/home/heroSlider/heroSlider";
 import { TrendingDishes } from "@/features/home/trendingDishes";
 import PageLayout from "@/layouts/pageLayout";
 import { getCategories } from "@/lib/api/services/category.service";
@@ -17,6 +17,7 @@ import {
   getFeaturedProducts,
   getTrendingProducts,
 } from "@/lib/api/services/product.service";
+import { getBanners } from "@/lib/hooks/queries/banner/useBanners";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -61,11 +62,12 @@ export async function generateMetadata({
 export default async function Home() {
   const featuredProducts = await getFeaturedProducts();
   const trendingProducts = await getTrendingProducts();
+  const slides = await getBanners();
   const categories = await getCategories();
   return (
     <PageLayout>
       <Suspense fallback={<HeroSkeleton />}>
-        <HeroSliderContainer />
+        <HeroSlider slides={slides} />
       </Suspense>
       <Suspense fallback={<CategorySkeleton />}>
         <ExploreCategories categories={categories} />

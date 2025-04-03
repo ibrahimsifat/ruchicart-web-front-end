@@ -45,30 +45,32 @@ export const HeroSlider = memo(function HeroSlider({
   const nextSlideIndex = (currentSlide + 1) % slidesCount;
 
   return (
-    <div className="relative w-full h-full">
-      {/* Preload next image */}
-      {slides[nextSlideIndex] && (
-        <link
-          rel="preload"
-          href={slides[nextSlideIndex].product.image}
-          as="image"
-        />
-      )}
-
-      {/* Only render current and next slide for better performance */}
-      {slides.map((slide, index) => {
-        // Only render current slide and the next one to reduce DOM elements
-        if (index !== currentSlide && index !== nextSlideIndex) return null;
-
-        return (
-          <SlideContent
-            key={slide.title}
-            slide={slide}
-            isActive={index === currentSlide}
-            priority={index === currentSlide}
+    <div className="relative overflow-hidden rounded-b-xl h-[400px] md:h-[500px]">
+      <div className="relative w-full h-full">
+        {/* Preload next image */}
+        {slides[nextSlideIndex] && (
+          <link
+            rel="preload"
+            href={slides[nextSlideIndex].product.image}
+            as="image"
           />
-        );
-      })}
+        )}
+
+        {/* Only render current and next slide for better performance */}
+        {slides.map((slide, index) => {
+          // Only render current slide and the next one to reduce DOM elements
+          if (index !== currentSlide && index !== nextSlideIndex) return null;
+
+          return (
+            <SlideContent
+              key={slide.title}
+              slide={slide}
+              isActive={index === currentSlide}
+              priority={index === currentSlide}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 });

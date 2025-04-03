@@ -8,6 +8,7 @@ import {
   useLatestProducts,
   usePopularProducts,
 } from "@/lib/hooks/queries/product/useProducts";
+import { revalidateTags } from "@/lib/utils/revalidate";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -27,8 +28,17 @@ export default function LanguageSwitcher() {
   const { refetch: refetchBranch } = useBranchProducts();
   const { refetch: refetchCategories } = useCategories();
 
-  const toggleLanguage = () => {
+  const toggleLanguage = async () => {
     const nextLocale = locale === "en" ? "bn" : "en";
+
+    // Call the server action to revalidate tags
+    try {
+      const result = await revalidateTags();
+      console.log("Tags revalidated:", result);
+    } catch (error) {
+      console.error("Failed to revalidate tags:", error);
+    }
+
     startTransition(() => {
       router.replace({ pathname, params }, { locale: nextLocale });
       // Refetch queries after locale change

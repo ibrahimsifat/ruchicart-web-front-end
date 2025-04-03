@@ -70,12 +70,12 @@ This food delivery platform provides a complete solution for online food orderin
 
 ## Project Structure
 
-![Project Documentation Link](https://ibrahimsifat.notion.site/RuchiCart-Frontend-1835ac2bfa4980d0a4cae9d86add0d3b?pvs=4)
+[Project Documentation Link](https://ibrahimsifat.notion.site/RuchiCart-Frontend-1835ac2bfa4980d0a4cae9d86add0d3b?pvs=4)
 
 ### Components tree
 
 ![Component tree image](/public/images/ruchicart-Front-end%20component%20tree.drawio.png)
-![Component tree Link](https://drive.google.com/file/d/1DFGjv9wP8WgIM80mS3G9G0t6Pa86OmFG/view)
+[Component tree Link](https://drive.google.com/file/d/1DFGjv9wP8WgIM80mS3G9G0t6Pa86OmFG/view?usp=sharing)
 
 ## Installation
 

@@ -18,7 +18,7 @@ export function FeaturedProducts({
   featuredProductsData: ProductResponse;
 }) {
   const products = featuredProductsData?.products;
-  // console.log(products);
+  console.log(products);
   const t = useTranslations("home");
   return (
     <section className="py-12">
