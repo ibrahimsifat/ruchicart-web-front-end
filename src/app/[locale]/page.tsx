@@ -17,7 +17,6 @@ import {
   getFeaturedProducts,
   getTrendingProducts,
 } from "@/lib/api/services/product.service";
-import { getBanners } from "@/lib/hooks/queries/banner/useBanners";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -62,12 +61,11 @@ export async function generateMetadata({
 export default async function Home() {
   const featuredProducts = await getFeaturedProducts();
   const trendingProducts = await getTrendingProducts();
-  const slides = await getBanners();
   const categories = await getCategories();
   return (
     <PageLayout>
       <Suspense fallback={<HeroSkeleton />}>
-        <HeroSlider slides={slides} />
+        <HeroSlider />
       </Suspense>
       <Suspense fallback={<CategorySkeleton />}>
         <ExploreCategories categories={categories} />

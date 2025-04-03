@@ -136,9 +136,8 @@ export const CheckoutForm = React.memo(
               ) : (
                 <TakeAwayOrderSection
                   branch={branch as BaseBranch}
-                  onSubmit={paymentHandler.handleTakeAwaySubmit}
+                  handleTakeAwaySubmit={paymentHandler.handleTakeAwaySubmit}
                   isLoading={isLoading}
-                  t={t}
                 />
               )}
             </CardContent>

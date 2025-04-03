@@ -181,7 +181,9 @@ export default function OrderTrackingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-between">
                       <OrderDetails orderStatus={orderStatus} />
                       <DeliveryInfo
-                        orderAddress={orderStatus.delivery_address.address}
+                        orderAddress={
+                          orderStatus.delivery_address?.address || "N/A"
+                        }
                         orderStatus={orderStatus}
                       />
                     </div>

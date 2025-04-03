@@ -1,17 +1,17 @@
 "use client";
 
+import { HeroSkeleton } from "@/components/ui/skeletons";
 import { useBanners } from "@/lib/hooks/queries/banner/useBanners";
+import { BannerItem } from "@/types/banner";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { SlideContent } from "./SlideContent";
 
 const SLIDE_DURATION = 5000;
 
 export const HeroSlider = memo(function HeroSlider() {
-  const { data: banners } = useBanners();
-  console.log(banners);
+  const { data: slides, isLoading } = useBanners();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const slidesCount = banners?.length ?? 0;
-  const slides = banners;
+  const slidesCount = slides?.length ?? 0;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const nextSlide = useCallback(() => {
@@ -38,7 +38,7 @@ export const HeroSlider = memo(function HeroSlider() {
     };
   }, [nextSlide, slidesCount, currentSlide]);
 
-  if (!slides?.length) return null;
+  if (isLoading) return <HeroSkeleton />;
 
   // Preload next slide image
   const nextSlideIndex = (currentSlide + 1) % slidesCount;
@@ -47,7 +47,7 @@ export const HeroSlider = memo(function HeroSlider() {
     <div className="relative overflow-hidden rounded-b-xl h-[400px] md:h-[500px]">
       <div className="relative w-full h-full">
         {/* Preload next image */}
-        {slides[nextSlideIndex] && (
+        {slides?.[nextSlideIndex] && (
           <link
             rel="preload"
             href={slides[nextSlideIndex].product.image}
@@ -56,7 +56,7 @@ export const HeroSlider = memo(function HeroSlider() {
         )}
 
         {/* Only render current and next slide for better performance */}
-        {slides.map((slide, index) => {
+        {slides?.map((slide: BannerItem, index: number) => {
           // Only render current slide and the next one to reduce DOM elements
           if (index !== currentSlide && index !== nextSlideIndex) return null;
 

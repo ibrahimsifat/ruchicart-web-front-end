@@ -154,7 +154,7 @@ export default function Checkout() {
 
       const data = response.data;
       //TODO:: clearCart
-      // clearCart();
+      clearCart();
 
       router.push(`/order-confirmation/${data.order_id}`);
 
