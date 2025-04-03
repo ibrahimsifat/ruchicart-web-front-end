@@ -75,7 +75,11 @@ This food delivery platform provides a complete solution for online food orderin
 ### Components tree
 
 ![Component tree image](/public/images/ruchicart-Front-end%20component%20tree.drawio.png)
+<<<<<<< HEAD
 [Component tree Link](https://drive.google.com/file/d/1DFGjv9wP8WgIM80mS3G9G0t6Pa86OmFG/view?usp=sharing)
+=======
+[Component tree Link](https://drive.google.com/file/d/1DFGjv9wP8WgIM80mS3G9G0t6Pa86OmFG/view)
+>>>>>>> 1c94bc4cf9a3bbf68c27651420a727bc6c74ff46
 
 ## Installation
 
