@@ -69,7 +69,7 @@ export function ExploreCategories({ categories }: { categories: Category[] }) {
               "grid md:grid-cols-4 grid-cols-3 lg:grid-cols-6 gap-4 transition-all duration-500 ease-in-out",
               isMounted &&
                 isSticky &&
-                "lg:flex d-none lg:fixed static lg:top-6 top-8 left-0 right-0 z-40 bg-background/70 backdrop-blur-sm mx-auto max-w-7xl rounded-lg lg:h-36 h-24 "
+                "lg:flex d-none lg:fixed static lg:top-6 top-8 left-0 right-0 z-40 bg-background/70 backdrop-blur-sm mx-auto max-w-7xl rounded-lg lg:h-40 h-24 "
             )}
           >
             {categories?.map((category: Category, index: number) => (

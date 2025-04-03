@@ -50,7 +50,9 @@ export function LocationSelector({
   const t = useTranslations("location");
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedAddress, setSelectedAddress] = useState<string>("");
+  const [selectedAddress, setSelectedAddress] = useState<string>(
+    "حي الراكة الشمالية EADA8249، 8249 الكاتب، 2603 Dammam 34225 Saudi Arabia"
+  );
 
   const [selectedLocation, setSelectedLocation] =
     useState<google.maps.LatLngLiteral | null>(
@@ -252,6 +254,7 @@ export function LocationSelector({
   }, [map, toast]);
 
   const handleConfirmLocation = useCallback(() => {
+    console.log(selectedLocation, selectedAddress);
     if (!selectedLocation || !selectedAddress) return;
 
     const location = {
@@ -407,7 +410,7 @@ export function LocationSelector({
         <Button
           onClick={handleConfirmLocation}
           className="flex-1"
-          disabled={!selectedLocation || !selectedAddress || isGettingLocation}
+          // disabled={!selectedLocation || !selectedAddress || isGettingLocation}
         >
           {t("confirmLocation")}
         </Button>

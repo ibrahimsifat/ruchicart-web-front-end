@@ -1,18 +1,17 @@
 "use client";
 
-import { BannerItem } from "@/types/banner";
+import { useBanners } from "@/lib/hooks/queries/banner/useBanners";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { SlideContent } from "./SlideContent";
 
 const SLIDE_DURATION = 5000;
 
-export const HeroSlider = memo(function HeroSlider({
-  slides,
-}: {
-  slides: BannerItem[];
-}) {
+export const HeroSlider = memo(function HeroSlider() {
+  const { data: banners } = useBanners();
+  console.log(banners);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const slidesCount = slides?.length ?? 0;
+  const slidesCount = banners?.length ?? 0;
+  const slides = banners;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const nextSlide = useCallback(() => {

@@ -2,7 +2,7 @@
 
 import { CONSTANT } from "@/config/constants";
 import { usePathname, useRouter } from "@/i18n/routing";
-import { useBranchProducts } from "@/lib/hooks/queries/Branch/useBranch";
+import { useBanners } from "@/lib/hooks/queries/banner/useBanners";
 import { useCategories } from "@/lib/hooks/queries/category/useCategories";
 import {
   useLatestProducts,
@@ -25,7 +25,7 @@ export default function LanguageSwitcher() {
   const enFlag = CONSTANT.images.usFlag;
   const { refetch: refetchPopular } = usePopularProducts();
   const { refetch: refetchLatest } = useLatestProducts();
-  const { refetch: refetchBranch } = useBranchProducts();
+  const { refetch: refetchBranch } = useBanners();
   const { refetch: refetchCategories } = useCategories();
 
   const toggleLanguage = async () => {

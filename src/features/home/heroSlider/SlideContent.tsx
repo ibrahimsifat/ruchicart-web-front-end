@@ -24,7 +24,7 @@ export const SlideContent = memo(function SlideContent({
         <div className="flex flex-col md:flex-row items-center justify-between h-full p-8 md:p-12">
           <div className="space-y-4 text-center md:text-left max-w-lg">
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
-              {slide.title}
+              {slide.product.name}
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground">
               {slide.product.description.slice(0, 100)}...
